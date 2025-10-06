@@ -82,6 +82,16 @@ const Achievements = () => {
   const currentProjects = [
     {
       icon: '🚀',
+      heading: 'CodeOra',
+      description: 'An ed-tech platform where students can access AI-generated projects, adaptive quizzes, recruiter portal, and college/club dashboards in a single integrated environment.'
+    },
+    {
+      icon: '💊',
+      heading: 'Trigo',
+      description: 'A medical startup that helps users order medicine from local vendors with instant delivery, bridging the gap between patients and pharmacies.'
+    },
+    {
+      icon: '🚀',
       heading: 'Smart Street Light System',
       description: 'Developing intelligent street lighting solutions for Meerut Nagar Nigam to optimize energy consumption and enhance urban infrastructure with IoT-enabled controls.'
     },

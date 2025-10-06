@@ -8,21 +8,37 @@ const Projects = () => {
     {
       id: 1,
       title: 'CodeOra',
-      tags: ['React.js', 'Java', 'Spring Boot', 'SQL'],
-      description: 'Developed a SaaS-based AI platform, CodeOra, using React.js and Spring Boot with MySQL to assist students in interview preparation and project development. Implemented features for tech-stack-based interview questions, AI-guided full-stack project generation with documentation, and curated interview podcasts. Designed a subscription model with Free and Pro tiers, integrated a secure payment gateway, and enhanced data handling efficiency by 6% through optimized backend APIs. Improved student engagement by 8% with an intuitive, responsive UI and role-based access control.',
+      tags: ['React.js', 'Java', 'Spring Boot', 'SQL', 'AI/ML'],
+      description: 'A SaaS-based ed-tech startup platform where students can access AI-generated projects, adaptive quizzes, recruiter portal, and college/club dashboards in a single integrated environment. As a founder, led the development of the full-stack platform using React.js and Spring Boot with MySQL, implementing features for tech-stack-based interview questions, AI-guided full-stack project generation with documentation, and curated interview podcasts. Designed a subscription model with Free and Pro tiers, integrated a secure payment gateway, and enhanced data handling efficiency by 6% through optimized backend APIs. Improved student engagement by 8% with an intuitive, responsive UI and role-based access control.',
       icon: '🏨',
       image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
       github: 'https://github.com/mukprabhakar/codeora-launchpad',
       demo: 'https://demo.hotelmanagement.com',
-      impact: 'Improved operational efficiency by 2%',
+      impact: 'Ed-tech startup with 500+ users',
       metrics: [
         { label: 'Users', value: '500+' },
         { label: 'Subscription', value: '10+' },
-        { label: 'Performance', value: '+5%' }
+        { label: 'Student Engagement', value: '+8%' }
       ]
     },
     {
       id: 2,
+      title: 'Trigo',
+      tags: ['React.js', 'Java', 'Spring Boot', 'SQL'],
+      description: 'A medical startup that helps users order medicine from local vendors with instant delivery, bridging the gap between patients and pharmacies. As a founder, developed the full-stack platform with real-time inventory management, location-based vendor discovery, and instant order processing. Implemented secure payment integration, user authentication, and vendor management dashboard. The platform reduces medicine delivery time by 70% compared to traditional methods and connects 50+ local pharmacies in the pilot region.',
+      icon: '💊',
+      image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+      github: 'https://github.com/mukprabhakar/trigo-medical',
+      demo: 'https://demo.trigo-medical.com',
+      impact: 'Medical startup with instant delivery',
+      metrics: [
+        { label: 'Pharmacies', value: '50+' },
+        { label: 'Delivery Time', value: '-70%' },
+        { label: 'User Satisfaction', value: '4.8/5' }
+      ]
+    },
+    {
+      id: 3,
       title: 'Crypto Trading Platform',
       tags: ['React.js', 'Java', 'Spring Boot', 'WebSockets'],
       description: 'Designed a crypto trading platform with functionalities for buying, selling, and tracking cryptocurrency prices. Executed secure authentication and real-time data updates using WebSockets. Leveraged historical data analysis for informed trading decisions within seconds.',
@@ -38,7 +54,7 @@ const Projects = () => {
       ]
     },
     {
-      id: 3,
+      id: 4,
       title: 'Automated Bus Scheduling System',
       tags: ['Java', 'Spring Boot', 'SQL', 'GIS'],
       description: 'Devised a bus scheduling system for Delhi Transport Corporation (DTC) to optimize routes and schedules within seconds according to the requirement. Integrated Spring Boot with GIS mapping for real-time route management and tracking, ensuring the best real-time monitoring suitable for passengers, passenger families, and the government. Orchestrated automated duty scheduling to reduce delays by 45%.',
@@ -54,7 +70,7 @@ const Projects = () => {
       ]
     },
     {
-      id: 4,
+      id: 5,
       title: 'E-commerce Backend Service',
       tags: ['Java', 'Spring Boot', 'SQL', 'Microservices'],
       description: 'Developed a scalable backend for an e-commerce platform, handling product catalog, user authentication, and order processing. Focused on microservices architecture for high availability and performance.',
@@ -70,9 +86,9 @@ const Projects = () => {
       ]
     },
     {
-      id: 5,
+      id: 6,
       title: 'Django-web-application-For-Drive',
-      tags: ['React.js', 'JavaScript', 'WebSockets', 'Node.js'],
+      tags: ['HTML', 'JavaScript', 'CSS', 'Python','Django'],
       description: 'Developed a Django-based web application that allows users to upload and view images directly on Google Drive, integrating Google Drive API for secure storage and seamless access.',
       icon: '💬',
       image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
@@ -86,9 +102,9 @@ const Projects = () => {
       ]
     },
     {
-      id: 6,
+      id: 7,
       title: 'CRM-App-with-RBAC-System',
-      tags: ['React.js', 'Java', 'Spring Boot', 'SQL'],
+      tags: ['HTML', 'JavaScript', 'CSS', 'Python','Django'],
       description: 'Created a web-based CRM system with role-based access control allowing users to manage customer information, track interactions, and generate reports. Secure data storage and user authentication implemented.',
       icon: '💰',
       image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
@@ -109,11 +125,14 @@ const Projects = () => {
     { id: 'Spring', label: 'Spring' },
     { id: 'React', label: 'React' },
     { id: 'SQL', label: 'SQL' },
-    { id: 'WebSockets', label: 'WebSockets' }
+    { id: 'WebSockets', label: 'WebSockets' },
+    { id: 'Startup', label: 'Startups' }
   ]
 
   const filteredProjects = activeFilter === 'all' 
     ? projectsData 
+    : activeFilter === 'Startup'
+    ? projectsData.filter(project => project.title === 'CodeOra' || project.title === 'Trigo')
     : projectsData.filter(project => 
         project.tags.some(tag => 
           tag.toLowerCase().includes(activeFilter.toLowerCase())

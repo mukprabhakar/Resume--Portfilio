@@ -139,6 +139,16 @@
     animation: fade-in 1s ease-out forwards;
   }
   
+  /* Fade in up animation */
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-fade-in-up {
+    animation: fade-in-up 1s ease-out forwards;
+  }
+  
   /* Slide in from left */
   @keyframes slide-in-left {
     from { opacity: 0; transform: translateX(-50px); }
@@ -188,5 +198,72 @@
   
   .animate-rotate {
     animation: rotate 8s linear infinite;
+  }
+  
+  /* Text rotation for dynamic descriptions */
+  @keyframes text-rotate {
+    0% { opacity: 0; transform: translateY(20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+  }
+  
+  .text-rotate-animation {
+    animation: text-rotate 3s ease-in-out infinite;
+  }
+  
+  /* Enhanced particle animation */
+  @keyframes particle-float {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(5px, 5px); }
+    50% { transform: translate(0, 10px); }
+    75% { transform: translate(-5px, 5px); }
+  }
+  
+  .particle-animation {
+    animation: particle-float 8s ease-in-out infinite;
+  }
+  
+  /* Grid pattern background */
+  .grid-pattern {
+    background-image: 
+      linear-gradient(rgba(52, 211, 153, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(52, 211, 153, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+  
+  /* Wave animation */
+  @keyframes wave {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100px); }
+  }
+  
+  .animate-wave {
+    animation: wave 15s linear infinite;
+  }
+  
+  /* Scroll bounce animation */
+  @keyframes scroll-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+  
+  .animate-scroll-bounce {
+    animation: scroll-bounce 1.5s ease-in-out infinite;
+  }
+  
+  /* Parallax effect for floating elements */
+  .parallax-element {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  /* Enhanced tech icon animations */
+  .tech-icon {
+    transition: all 0.3s ease;
+  }
+  
+  .tech-icon:hover {
+    transform: scale(1.1) rotate(0deg) !important;
   }
 }
