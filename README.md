@@ -64,6 +64,24 @@ To run the portfolio locally:
 6. **Open in Browser:**
    Visit `http://localhost:5173` in your preferred web browser.
 
+## ☁️ Deployment
+
+### Azure Deployment
+
+For deploying to Microsoft Azure, follow our comprehensive [Azure Deployment Guide](AZURE_DEPLOYMENT_GUIDE.md).
+
+To prepare your project for Azure deployment, you can run:
+```bash
+npm run deploy:azure
+```
+
+### Other Deployment Options
+
+The portfolio can also be deployed to:
+- **Vercel**: Connect your GitHub repository to Vercel for automatic deployments
+- **Netlify**: Drag and drop the `dist/` folder or connect to Git
+- **GitHub Pages**: Follow standard GitHub Pages deployment procedures
+
 ## 📁 Project Structure
 
 ```
@@ -91,6 +109,8 @@ portfolio-react/
 ├── postcss.config.cjs
 ├── vite.config.js
 ├── FORMSPREE_SETUP.md
+├── AZURE_DEPLOYMENT_GUIDE.md
+├── deploy-to-azure.js
 └── README.md
 ```
 
@@ -136,4 +156,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 Thanks to the developer community and contributors who inspire through open-source work.
 
-⭐️ **If you like this project, give it a star on GitHub!**"# Resume--Portfilio" 
+⭐️ **If you like this project, give it a star on GitHub!**
