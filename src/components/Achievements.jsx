@@ -1,39 +1,62 @@
 import React, { useState, useEffect } from 'react'
+import { fetchAllCodingStats } from '../services/codingStatsService'
 
 const Achievements = () => {
   const [counts, setCounts] = useState({
-    dsa: 0,
+    leetcode: 0,
+    gfg: 0,
     coding: 0,
-    entrepreneurship: 0
+    entrepreneurship: 0,
+    loading: true,
+    error: null
   })
 
-  const targetCounts = {
-    dsa: 169,
+  const [targetCounts, setTargetCounts] = useState({
+    leetcode: 0,
+    gfg: 0,
     coding: 25,
     entrepreneurship: 5
-  }
+  })
 
+  // Fetch data from LeetCode and GeeksforGeeks
   useEffect(() => {
-    const timers = []
-    
-    Object.keys(targetCounts).forEach((key) => {
-      const timer = setInterval(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch data from both platforms
+        const data = await fetchAllCodingStats('mukprabhakar', 'mukprabhakar')
+        
+        console.log('Fetched data:', data); // Debug log
+        
+        const leetcodeCount = data.leetCode?.totalSolved || 0;
+        const gfgCount = data.gfg?.problemsSolved || 0;
+        
+        console.log('LeetCode count:', leetcodeCount); // Debug log
+        console.log('GFG count:', gfgCount); // Debug log
+        
+        // Set the counts directly
         setCounts(prev => {
-          if (prev[key] < targetCounts[key]) {
-            return { ...prev, [key]: prev[key] + 1 }
-          } else {
-            clearInterval(timers.find(t => t.key === key)?.id)
-            return prev
-          }
-        })
-      }, 20)
-      
-      timers.push({ key, id: timer })
-    })
-    
-    return () => {
-      timers.forEach(timer => clearInterval(timer.id))
+          const newCounts = {
+            ...prev,
+            leetcode: leetcodeCount,
+            gfg: gfgCount,
+            coding: 25,
+            entrepreneurship: 5,
+            loading: false
+          };
+          console.log('Setting counts to:', newCounts); // Debug log
+          return newCounts;
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error)
+        setCounts(prev => ({
+          ...prev,
+          loading: false,
+          error: 'Failed to load problem-solving data'
+        }))
+      }
     }
+
+    fetchData()
   }, [])
 
   const achievements = [
@@ -116,19 +139,33 @@ const Achievements = () => {
           <p className="mt-3 sm:mt-4 text-zinc-400 max-w-md sm:max-w-2xl mx-auto text-base sm:text-lg">Milestones that demonstrate my capabilities and impact.</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 sm:gap-8 text-center mb-12 sm:mb-16">
+        <div className="grid md:grid-cols-4 gap-6 sm:gap-8 text-center mb-12 sm:mb-16">
           <div className="glass-card p-6 sm:p-8 rounded-xl card-3d">
-            <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">{counts.dsa}+</p>
-            <p className="text-lg sm:text-xl text-zinc-200">DSA Problems Solved</p>
-            <p className="text-xs sm:text-sm text-zinc-400">LeetCode & GFG</p>
+            <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">
+              {counts.loading ? '...' : `${counts.leetcode}+`}
+            </p>
+            <p className="text-lg sm:text-xl text-zinc-200">LeetCode Problems</p>
+            <p className="text-xs sm:text-sm text-zinc-400">Solved</p>
+            {counts.error && <p className="text-xs text-red-400 mt-1">{counts.error}</p>}
           </div>
           <div className="glass-card p-6 sm:p-8 rounded-xl card-3d">
-            <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">{counts.coding}%</p>
+            <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">
+              {counts.loading ? '...' : `${counts.gfg}+`}
+            </p>
+            <p className="text-lg sm:text-xl text-zinc-200">GFG Problems</p>
+            <p className="text-xs sm:text-sm text-zinc-400">Solved</p>
+          </div>
+          <div className="glass-card p-6 sm:p-8 rounded-xl card-3d">
+            <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">
+              {counts.loading ? '...' : `${counts.coding}%`}
+            </p>
             <p className="text-lg sm:text-xl text-zinc-200">Coding Environment Growth</p>
             <p className="text-xs sm:text-sm text-zinc-400">As Coding Club Lead</p>
           </div>
           <div className="glass-card p-6 sm:p-8 rounded-xl card-3d">
-            <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">{counts.entrepreneurship}x</p>
+            <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">
+              {counts.loading ? '...' : `${counts.entrepreneurship}x`}
+            </p>
             <p className="text-lg sm:text-xl text-zinc-200">Entrepreneurial Mindset Boost</p>
             <p className="text-xs sm:text-sm text-zinc-400">As E-Cell President</p>
           </div>
