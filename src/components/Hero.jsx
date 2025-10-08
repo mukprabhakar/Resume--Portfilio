@@ -272,7 +272,7 @@ const Hero = () => {
               </div>
               <div className="flex flex-col items-center lg:items-start">
                 <div className="text-2xl sm:text-3xl font-bold text-emerald-400">
-                  1+
+                  3+
                 </div>
                 <div className="text-zinc-400 text-sm">Years Experience</div>
               </div>
@@ -325,7 +325,7 @@ const Hero = () => {
               
               {/* Experience badge */}
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-bounce">
-                1+ Years
+                3+ Years
               </div>
             </div>
           </div>
