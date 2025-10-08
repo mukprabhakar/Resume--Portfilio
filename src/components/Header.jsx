@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('hero')
+  const navigate = useNavigate()
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -44,24 +46,39 @@ const Header = () => {
   }, [])
 
   const navItems = [
-    { id: 'about', label: 'About' },
-    { id: 'skills', label: 'Skills' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'experience', label: 'Journey' },
-    { id: 'achievements', label: 'Achievements' },
-    { id: 'testimonials', label: 'Testimonials' },
-    { id: 'blog', label: 'Blog' },
-    { id: 'contact', label: 'Contact' }
+    { id: 'about', label: 'About', type: 'internal' },
+    { id: 'skills', label: 'Skills', type: 'internal' },
+    { id: 'projects', label: 'Projects', type: 'internal' },
+    { id: 'experience', label: 'Journey', type: 'internal' },
+    { id: 'achievements', label: 'Achievements', type: 'internal' },
+    { id: 'testimonials', label: 'Testimonials', type: 'internal' },
+    { id: 'blog', label: 'Blog', type: 'internal' },
+    { id: 'badges', label: 'Badges', type: 'route' },
+    { id: 'contact', label: 'Contact', type: 'internal' }
   ]
 
-  const scrollToSection = (e, sectionId) => {
-    e.preventDefault()
+  const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId)
     if (element) {
       window.scrollTo({
         top: element.offsetTop - 80,
         behavior: 'smooth'
       })
+    }
+  }
+
+  const handleInternalLink = (e, sectionId) => {
+    e.preventDefault()
+    // If we're on the badges page, navigate to home first, then scroll
+    if (window.location.pathname === '/badges') {
+      navigate('/')
+      // Wait a bit for navigation to complete, then scroll
+      setTimeout(() => {
+        scrollToSection(sectionId)
+      }, 100)
+    } else {
+      // If we're already on the home page, just scroll
+      scrollToSection(sectionId)
     }
     setIsMobileMenuOpen(false)
   }
@@ -70,29 +87,53 @@ const Header = () => {
     <header className="bg-zinc-900/90 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-xl border-b border-zinc-800 transition-all duration-300" role="banner">
       <div className="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
         {/* Logo/Brand */}
-        <a href="#hero" className="flex items-center space-x-2 group" onClick={(e) => scrollToSection(e, 'hero')} aria-label="Mukesh Pal - Home">
+        <Link to="/" className="flex items-center space-x-2 group" aria-label="Mukesh Pal - Home">
           <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center transform transition-transform group-hover:rotate-6" aria-hidden="true">
             <span className="text-white font-bold text-lg">MP</span>
           </div>
           <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent hidden sm:block">Mukesh Pal</h1>
-        </a>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-1" role="navigation" aria-label="Main navigation">
           {navItems.map((item) => (
-            <a 
-              key={item.id} 
-              href={`#${item.id}`} 
-              onClick={(e) => scrollToSection(e, item.id)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                activeSection === item.id 
-                  ? 'text-emerald-400 bg-emerald-400/10' 
-                  : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
-              }`}
-              aria-current={activeSection === item.id ? 'page' : undefined}
-            >
-              {item.label}
-            </a>
+            item.type === 'route' ? (
+              <Link 
+                key={item.id} 
+                to={`/${item.id}`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                  window.location.pathname === `/${item.id}` 
+                    ? 'text-emerald-400 bg-emerald-400/10' 
+                    : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ) : item.type === 'external' ? (
+              <a 
+                key={item.id} 
+                href={item.href} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50 transition-all duration-300"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <a 
+                key={item.id} 
+                href={`#${item.id}`} 
+                onClick={(e) => handleInternalLink(e, item.id)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                  activeSection === item.id 
+                    ? 'text-emerald-400 bg-emerald-400/10' 
+                    : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
+                }`}
+                aria-current={activeSection === item.id ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            )
           ))}
         </nav>
 
@@ -130,19 +171,45 @@ const Header = () => {
       >
         <div className="container mx-auto px-4 py-3 flex flex-col space-y-1">
           {navItems.map((item) => (
-            <a 
-              key={item.id} 
-              href={`#${item.id}`} 
-              onClick={(e) => scrollToSection(e, item.id)}
-              className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                activeSection === item.id 
-                  ? 'text-emerald-400 bg-emerald-400/10' 
-                  : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
-              }`}
-              aria-current={activeSection === item.id ? 'page' : undefined}
-            >
-              {item.label}
-            </a>
+            item.type === 'route' ? (
+              <Link 
+                key={item.id} 
+                to={`/${item.id}`}
+                className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                  window.location.pathname === `/${item.id}` 
+                    ? 'text-emerald-400 bg-emerald-400/10' 
+                    : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ) : item.type === 'external' ? (
+              <a 
+                key={item.id} 
+                href={item.href} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-4 py-3 rounded-lg text-sm font-medium text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50 transition-all"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {item.label}
+              </a>
+            ) : (
+              <a 
+                key={item.id} 
+                href={`#${item.id}`} 
+                onClick={(e) => handleInternalLink(e, item.id)}
+                className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                  activeSection === item.id 
+                    ? 'text-emerald-400 bg-emerald-400/10' 
+                    : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
+                }`}
+                aria-current={activeSection === item.id ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            )
           ))}
         </div>
       </div>

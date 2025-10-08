@@ -1,6 +1,9 @@
 import React from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Footer = () => {
+  const navigate = useNavigate()
+
   const socialLinks = [
     {
       name: 'LinkedIn',
@@ -41,15 +44,16 @@ const Footer = () => {
   ]
 
   const quickLinks = [
-    { name: 'Home', href: '#hero' },
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Achievements', href: '#achievements' },
-    { name: 'Testimonials', href: '#testimonials' },
-    { name: 'Blog', href: '#blog' },
-    { name: 'Contact', href: '#contact' }
+    { name: 'Home', href: '/', type: 'route' },
+    { name: 'About', href: '#about', type: 'internal' },
+    { name: 'Skills', href: '#skills', type: 'internal' },
+    { name: 'Projects', href: '#projects', type: 'internal' },
+    { name: 'Experience', href: '#experience', type: 'internal' },
+    { name: 'Achievements', href: '#achievements', type: 'internal' },
+    { name: 'Testimonials', href: '#testimonials', type: 'internal' },
+    { name: 'Blog', href: '#blog', type: 'internal' },
+    { name: 'Badges', href: '/badges', type: 'route' },
+    { name: 'Contact', href: '#contact', type: 'internal' }
   ]
 
   const scrollToTop = () => {
@@ -57,6 +61,31 @@ const Footer = () => {
       top: 0,
       behavior: 'smooth'
     })
+  }
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - 80,
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  const handleInternalLink = (e, sectionId) => {
+    e.preventDefault()
+    // If we're on the badges page, navigate to home first, then scroll
+    if (window.location.pathname === '/badges') {
+      navigate('/')
+      // Wait a bit for navigation to complete, then scroll
+      setTimeout(() => {
+        scrollToSection(sectionId)
+      }, 100)
+    } else {
+      // If we're already on the home page, just scroll
+      scrollToSection(sectionId)
+    }
   }
 
   return (
@@ -94,14 +123,26 @@ const Footer = () => {
             <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
             <div className="grid grid-cols-2 gap-3">
               {quickLinks.map((link, index) => (
-                <a 
-                  key={index}
-                  href={link.href}
-                  className="text-zinc-400 hover:text-emerald-400 transition flex items-center py-1 group"
-                >
-                  <span className="mr-2 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                  <span className="group-hover:translate-x-1 transition-transform">{link.name}</span>
-                </a>
+                link.type === 'route' ? (
+                  <Link 
+                    key={index}
+                    to={link.href}
+                    className="text-zinc-400 hover:text-emerald-400 transition flex items-center py-1 group"
+                  >
+                    <span className="mr-2 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                    <span className="group-hover:translate-x-1 transition-transform">{link.name}</span>
+                  </Link>
+                ) : (
+                  <a 
+                    key={index}
+                    href={link.href}
+                    onClick={(e) => handleInternalLink(e, link.href.substring(1))}
+                    className="text-zinc-400 hover:text-emerald-400 transition flex items-center py-1 group"
+                  >
+                    <span className="mr-2 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                    <span className="group-hover:translate-x-1 transition-transform">{link.name}</span>
+                  </a>
+                )
               ))}
             </div>
           </div>

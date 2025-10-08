@@ -1,4 +1,5 @@
 import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './index.css'
 import Header from './components/Header'
 import Hero from './components/Hero'
@@ -12,25 +13,35 @@ import Blog from './components/Blog'
 import Profile from './components/Profile'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import CredlyBadges from './components/CredlyBadges'
 
 function App() {
   return (
-    <div className="antialiased">
-      <Header />
-      <main className="pt-20">
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Experience />
-        <Achievements />
-        <Testimonials />
-        <Blog />
-        <Profile />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
+    <Router>
+      <div className="antialiased">
+        <Header />
+        <main className="pt-20">
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Hero />
+                <About />
+                <Skills />
+                <Projects />
+                <Experience />
+                <Achievements />
+                <Testimonials />
+                <Blog />
+                <Profile />
+                <Contact />
+              </>
+            } />
+            <Route path="/badges" element={<CredlyBadges />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   )
 }
 
