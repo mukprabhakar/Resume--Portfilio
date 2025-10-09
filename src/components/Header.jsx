@@ -54,7 +54,8 @@ const Header = () => {
     { id: 'testimonials', label: 'Testimonials', type: 'internal' },
     { id: 'blog', label: 'Blog', type: 'internal' },
     { id: 'badges', label: 'Badges', type: 'route' },
-    { id: 'github-stats', label: 'GitHub', type: 'internal' }, // Changed to internal and updated id
+    { id: 'github', label: 'GitHub', type: 'route' },
+    { id: 'coding', label: 'Coding', type: 'route' },
     { id: 'contact', label: 'Contact', type: 'internal' }
   ]
 

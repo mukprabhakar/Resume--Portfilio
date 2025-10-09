@@ -15,6 +15,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import CredlyBadges from './components/CredlyBadges'
 import GitHubStats from './components/GitHubStats'
+import CodingChallenges from './components/CodingChallenges'
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             } />
             <Route path="/badges" element={<CredlyBadges />} />
             <Route path="/github" element={<GitHubStats />} />
+            <Route path="/coding" element={<CodingChallenges />} />
           </Routes>
         </main>
         <Footer />

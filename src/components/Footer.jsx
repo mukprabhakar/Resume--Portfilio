@@ -54,6 +54,7 @@ const Footer = () => {
     { name: 'Blog', href: '#blog', type: 'internal' },
     { name: 'Badges', href: '/badges', type: 'route' },
     { name: 'GitHub', href: '/github', type: 'route' },
+    { name: 'Coding', href: '/coding', type: 'route' },
     { name: 'Contact', href: '#contact', type: 'internal' }
   ]
 

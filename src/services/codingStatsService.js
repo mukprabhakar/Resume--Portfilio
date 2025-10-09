@@ -29,22 +29,22 @@ export const fetchGFGStats = async (username) => {
     // In a production environment, this would call a deployed API
     return {
       problemsSolved: 95,
-      school: 15,
-      basic: 20,
-      easy: 25,
-      medium: 12,
-      hard: 3
+      schoolProblems: 10,
+      basicProblems: 15,
+      easyProblems: 25,
+      mediumProblems: 30,
+      hardProblems: 15
     };
   } catch (error) {
     console.error('Error fetching GFG stats:', error);
     // Return mock data as fallback
     return {
-      problemsSolved: 75,
-      school: 15,
-      basic: 20,
-      easy: 25,
-      medium: 12,
-      hard: 3
+      problemsSolved: 95,
+      schoolProblems: 10,
+      basicProblems: 15,
+      easyProblems: 25,
+      mediumProblems: 30,
+      hardProblems: 15
     };
   }
 };
