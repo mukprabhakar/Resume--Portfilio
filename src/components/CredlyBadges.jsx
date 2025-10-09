@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { trackEvent } from '../utils/analytics'
 
 const CredlyBadges = () => {
   const [badges, setBadges] = useState([])
@@ -144,6 +145,10 @@ const CredlyBadges = () => {
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-xs bg-gradient-to-r from-emerald-400 to-blue-500 text-white px-3 py-1 rounded-lg hover:opacity-90 transition-opacity"
+                    onClick={() => {
+                      // Track badge view click
+                      trackEvent('click', 'badges', `view_badge_${badge.title.replace(/\s+/g, '_').toLowerCase()}`)
+                    }}
                   >
                     View Badge
                   </a>
@@ -159,6 +164,10 @@ const CredlyBadges = () => {
             target="_blank" 
             rel="noopener noreferrer"
             className="inline-flex items-center text-emerald-400 hover:text-emerald-300 transition-colors"
+            onClick={() => {
+              // Track view all badges click
+              trackEvent('click', 'badges', 'view_all_badges_on_credly')
+            }}
           >
             View all badges on Credly
             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

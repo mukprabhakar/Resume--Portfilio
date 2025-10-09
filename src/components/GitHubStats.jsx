@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { trackEvent } from '../utils/analytics'
 
 const GitHubStats = () => {
   const [stats, setStats] = useState({
@@ -340,7 +341,11 @@ const GitHubStats = () => {
         {/* Tab Navigation */}
         <div className="flex flex-wrap justify-center mb-8 border-b border-zinc-700">
           <button 
-            onClick={() => setActiveTab('overview')}
+            onClick={() => {
+              setActiveTab('overview')
+              // Track tab switch
+              trackEvent('click', 'github_stats', 'tab_overview')
+            }}
             className={`px-4 py-2 font-medium text-sm sm:text-base transition-all duration-300 rounded-t-lg ${
               activeTab === 'overview' 
                 ? 'text-emerald-400 bg-zinc-800 border-b-2 border-emerald-400' 
@@ -350,7 +355,11 @@ const GitHubStats = () => {
             Overview
           </button>
           <button 
-            onClick={() => setActiveTab('achievements')}
+            onClick={() => {
+              setActiveTab('achievements')
+              // Track tab switch
+              trackEvent('click', 'github_stats', 'tab_achievements')
+            }}
             className={`px-4 py-2 font-medium text-sm sm:text-base transition-all duration-300 rounded-t-lg ${
               activeTab === 'achievements' 
                 ? 'text-emerald-400 bg-zinc-800 border-b-2 border-emerald-400' 
@@ -360,7 +369,11 @@ const GitHubStats = () => {
             Achievements
           </button>
           <button 
-            onClick={() => setActiveTab('contributions')}
+            onClick={() => {
+              setActiveTab('contributions')
+              // Track tab switch
+              trackEvent('click', 'github_stats', 'tab_contributions')
+            }}
             className={`px-4 py-2 font-medium text-sm sm:text-base transition-all duration-300 rounded-t-lg ${
               activeTab === 'contributions' 
                 ? 'text-emerald-400 bg-zinc-800 border-b-2 border-emerald-400' 
@@ -370,7 +383,11 @@ const GitHubStats = () => {
             Contributions
           </button>
           <button 
-            onClick={() => setActiveTab('projects')}
+            onClick={() => {
+              setActiveTab('projects')
+              // Track tab switch
+              trackEvent('click', 'github_stats', 'tab_projects')
+            }}
             className={`px-4 py-2 font-medium text-sm sm:text-base transition-all duration-300 rounded-t-lg ${
               activeTab === 'projects' 
                 ? 'text-emerald-400 bg-zinc-800 border-b-2 border-emerald-400' 
@@ -612,7 +629,13 @@ const GitHubStats = () => {
                   type="text"
                   placeholder="Search repositories..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value)
+                    // Track search
+                    if (e.target.value.length > 2) {
+                      trackEvent('search', 'github_stats', `repo_search_${e.target.value}`)
+                    }
+                  }}
                   className="w-full px-4 py-3 bg-zinc-800 text-zinc-200 rounded-lg border border-zinc-700 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/20 transition-all"
                 />
                 <svg className="absolute right-3 top-3.5 w-5 h-5 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -656,6 +679,10 @@ const GitHubStats = () => {
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="flex flex-col items-center p-3 bg-zinc-800/50 rounded-lg hover:bg-zinc-700/50 transition-all hover:scale-105"
+                          onClick={() => {
+                            // Track follower profile click
+                            trackEvent('click', 'github_stats', `follower_${follower.login}`)
+                          }}
                         >
                           <img 
                             src={follower.avatar} 
@@ -689,6 +716,10 @@ const GitHubStats = () => {
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="flex flex-col items-center p-3 bg-zinc-800/50 rounded-lg hover:bg-zinc-700/50 transition-all hover:scale-105"
+                          onClick={() => {
+                            // Track following profile click
+                            trackEvent('click', 'github_stats', `following_${user.login}`)
+                          }}
                         >
                           <img 
                             src={user.avatar} 
@@ -723,6 +754,10 @@ const GitHubStats = () => {
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-lg font-bold text-emerald-400 hover:text-emerald-300 transition-colors"
+                        onClick={() => {
+                          // Track repository click
+                          trackEvent('click', 'github_stats', `repo_${repo.name}`)
+                        }}
                       >
                         {repo.name}
                       </a>
@@ -764,6 +799,10 @@ const GitHubStats = () => {
             target="_blank" 
             rel="noopener noreferrer"
             className="inline-flex items-center text-emerald-400 hover:text-emerald-300 transition-colors px-6 py-3 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-emerald-400/30 hover:shadow-lg hover:shadow-emerald-500/20 transform hover:-translate-y-1 transition-all duration-300 btn-primary"
+            onClick={() => {
+              // Track GitHub profile link click
+              trackEvent('click', 'github_stats', 'view_full_github_profile')
+            }}
           >
             View full GitHub profile
             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

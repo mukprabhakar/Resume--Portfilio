@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { trackEvent } from '../utils/analytics'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -69,6 +70,9 @@ const Contact = () => {
     setIsSubmitting(true)
     setSubmitStatus(null)
     
+    // Track form submission attempt
+    trackEvent('submit', 'contact_form', 'form_submission_attempt')
+    
     try {
       // FORMSPREE SETUP INSTRUCTIONS:
       // 1. Sign up at https://formspree.io/
@@ -98,6 +102,9 @@ const Contact = () => {
         setSubmitStatus('success')
         setFormData({ name: '', email: '', message: '' })
         
+        // Track successful form submission
+        trackEvent('submit', 'contact_form', 'form_submission_success')
+        
         // Add success animation
         const formElement = document.getElementById('contactForm')
         formElement.classList.add('animate-pulse')
@@ -110,6 +117,9 @@ const Contact = () => {
     } catch (error) {
       console.error('Formspree Error:', error)
       setSubmitStatus('error')
+      
+      // Track form submission error
+      trackEvent('error', 'contact_form', 'form_submission_error')
     } finally {
       setIsSubmitting(false)
     }
@@ -184,7 +194,7 @@ const Contact = () => {
       url: 'https://www.instagram.com/mukprabhakar/',
       icon: (
         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.057-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.668.07-4.849.196-4.358 2.618-6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.668.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
         </svg>
       )
     }
@@ -353,6 +363,10 @@ const Contact = () => {
                     className="flex items-start group"
                     {...(info.action ? {} : { onClick: (e) => e.preventDefault() })}
                     aria-label={`${info.label}: ${info.value}`}
+                    onClick={() => {
+                      // Track contact info clicks
+                      trackEvent('click', 'contact', `contact_info_${info.label.toLowerCase()}`)
+                    }}
                   >
                     <div className="text-emerald-400 mr-4 mt-1 group-hover:text-emerald-300 transition" aria-hidden="true">
                       {info.icon}
@@ -404,6 +418,11 @@ const Contact = () => {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center w-16 h-16 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-white hover:border-emerald-400 hover:bg-emerald-400/10 transition-all transform hover:scale-110 group"
                 aria-label={`Follow me on ${link.name}`}
+                onClick={() => {
+                  // Track social media clicks
+                  trackEvent('click', 'social', `social_${link.name.toLowerCase()}`)
+                  trackSocial(link.name.toLowerCase(), 'follow', link.url)
+                }}
               >
                 <div className="group-hover:scale-110 transition-transform">
                   {link.icon}

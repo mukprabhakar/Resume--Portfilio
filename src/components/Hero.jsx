@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { trackEvent } from '../utils/analytics'
 
 const Hero = () => {
   const canvasRef = useRef(null)
@@ -236,6 +237,10 @@ const Hero = () => {
               <a 
                 href="#projects" 
                 className="relative bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-full hover:shadow-2xl transition-all transform hover:scale-105 hover:shadow-emerald-400/30 group font-mono text-base sm:text-lg overflow-hidden z-10"
+                onClick={() => {
+                  // Track projects button click
+                  trackEvent('click', 'hero', 'view_projects_button')
+                }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="absolute inset-0 flex items-center justify-center">
@@ -247,6 +252,10 @@ const Hero = () => {
               <a 
                 href="#contact" 
                 className="relative border-2 border-emerald-400 text-emerald-400 font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-full hover:bg-emerald-400/10 transition-all transform hover:scale-105 group font-mono text-base sm:text-lg overflow-hidden z-10"
+                onClick={() => {
+                  // Track contact button click
+                  trackEvent('click', 'hero', 'get_in_touch_button')
+                }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="absolute inset-0 flex items-center justify-center">
@@ -332,7 +341,11 @@ const Hero = () => {
         </div>
         
         {/* Enhanced scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer animate-bounce hover:animate-none transition-all" onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}>
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer animate-bounce hover:animate-none transition-all" onClick={() => {
+          document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
+          // Track scroll indicator click
+          trackEvent('click', 'hero', 'scroll_indicator')
+        }}>
           <span className="text-zinc-400 text-sm mb-2 group-hover:text-emerald-400 transition-colors">Explore My Work</span>
           <div className="w-10 h-16 rounded-full border-2 border-emerald-400/50 flex justify-center p-1 relative overflow-hidden">
             <div className="w-3 h-3 bg-emerald-400 rounded-full absolute top-2 animate-scroll-bounce"></div>

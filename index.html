@@ -5,6 +5,24 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mukesh Pal - Innovative Developer Portfolio</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      // Check if we're in production and have a tracking ID
+      if (import.meta.env.VITE_GA_MEASUREMENT_ID) {
+        gtag('config', import.meta.env.VITE_GA_MEASUREMENT_ID);
+      } else {
+        // Fallback for development or when env var is not set
+        gtag('config', 'GA_MEASUREMENT_ID');
+      }
+    </script>
+    <!-- End Google Analytics -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">

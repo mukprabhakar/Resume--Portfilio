@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { trackEvent } from '../utils/analytics'
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -8,6 +9,8 @@ const Header = () => {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
+    // Track mobile menu toggle
+    trackEvent('click', 'navigation', `mobile_menu_${isMobileMenuOpen ? 'close' : 'open'}`)
   }
 
   // Close mobile menu when resizing to desktop
@@ -35,6 +38,8 @@ const Header = () => {
           const height = element.offsetHeight
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + height) {
             setActiveSection(section)
+            // Track section view
+            trackEvent('view', 'section', section)
             break
           }
         }
@@ -66,6 +71,8 @@ const Header = () => {
         top: element.offsetTop - 80,
         behavior: 'smooth'
       })
+      // Track navigation to section
+      trackEvent('click', 'navigation', `scroll_to_${sectionId}`)
     }
   }
 
@@ -74,6 +81,8 @@ const Header = () => {
     // If we're on a different route page, navigate to home first, then scroll
     if (window.location.pathname !== '/') {
       navigate('/')
+      // Track navigation to home
+      trackEvent('click', 'navigation', 'navigate_to_home')
       // Wait a bit for navigation to complete, then scroll
       setTimeout(() => {
         scrollToSection(sectionId)
@@ -89,7 +98,15 @@ const Header = () => {
     <header className="bg-zinc-900/90 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-xl border-b border-zinc-800 transition-all duration-300" role="banner">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 py-2 sm:py-3 flex justify-between items-center">
         {/* Logo/Brand */}
-        <Link to="/" className="flex items-center space-x-1.5 sm:space-x-2 group" aria-label="Mukesh Pal - Home">
+        <Link 
+          to="/" 
+          className="flex items-center space-x-1.5 sm:space-x-2 group" 
+          aria-label="Mukesh Pal - Home"
+          onClick={() => {
+            trackEvent('click', 'navigation', 'logo_click')
+            setActiveSection('hero')
+          }}
+        >
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center transform transition-transform group-hover:rotate-6" aria-hidden="true">
             <span className="text-white font-bold text-sm sm:text-lg">MP</span>
           </div>
@@ -108,6 +125,9 @@ const Header = () => {
                     ? 'text-emerald-400 bg-emerald-400/10' 
                     : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
                 }`}
+                onClick={() => {
+                  trackEvent('click', 'navigation', `route_link_${item.id}`)
+                }}
               >
                 {item.label}
               </Link>
@@ -118,6 +138,9 @@ const Header = () => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="px-2 py-1.5 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50 transition-all duration-300"
+                onClick={() => {
+                  trackEvent('click', 'navigation', `external_link_${item.id}`)
+                }}
               >
                 {item.label}
               </a>
@@ -125,7 +148,10 @@ const Header = () => {
               <a 
                 key={item.id} 
                 href={`#${item.id}`} 
-                onClick={(e) => handleInternalLink(e, item.id)}
+                onClick={(e) => {
+                  handleInternalLink(e, item.id)
+                  trackEvent('click', 'navigation', `internal_link_${item.id}`)
+                }}
                 className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeSection === item.id 
                     ? 'text-emerald-400 bg-emerald-400/10' 
@@ -182,7 +208,10 @@ const Header = () => {
                     ? 'text-emerald-400 bg-emerald-400/10' 
                     : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
                 }`}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  setIsMobileMenuOpen(false)
+                  trackEvent('click', 'navigation', `mobile_route_link_${item.id}`)
+                }}
               >
                 {item.label}
               </Link>
@@ -193,7 +222,10 @@ const Header = () => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm font-medium text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50 transition-all"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  setIsMobileMenuOpen(false)
+                  trackEvent('click', 'navigation', `mobile_external_link_${item.id}`)
+                }}
               >
                 {item.label}
               </a>
@@ -201,7 +233,11 @@ const Header = () => {
               <a 
                 key={item.id} 
                 href={`#${item.id}`} 
-                onClick={(e) => handleInternalLink(e, item.id)}
+                onClick={(e) => {
+                  handleInternalLink(e, item.id)
+                  setIsMobileMenuOpen(false)
+                  trackEvent('click', 'navigation', `mobile_internal_link_${item.id}`)
+                }}
                 className={`px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm font-medium transition-all ${
                   activeSection === item.id 
                     ? 'text-emerald-400 bg-emerald-400/10' 

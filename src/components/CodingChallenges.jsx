@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { fetchAllCodingStats } from '../services/codingStatsService'
+import { trackEvent } from '../utils/analytics'
 
 const CodingChallenges = () => {
   const [codingStats, setCodingStats] = useState({
@@ -507,6 +508,10 @@ const CodingChallenges = () => {
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center text-orange-400 hover:text-orange-300 transition-colors px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-orange-400/30 hover:shadow-lg hover:shadow-orange-500/20 transform hover:-translate-y-0.5 transition-all duration-300 text-xs sm:text-sm"
+              onClick={() => {
+                // Track LeetCode profile click
+                trackEvent('click', 'coding_challenges', 'leetcode_profile')
+              }}
             >
               LeetCode
               <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -518,6 +523,10 @@ const CodingChallenges = () => {
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center text-green-400 hover:text-green-300 transition-colors px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-green-400/30 hover:shadow-lg hover:shadow-green-500/20 transform hover:-translate-y-0.5 transition-all duration-300 text-xs sm:text-sm"
+              onClick={() => {
+                // Track GFG profile click
+                trackEvent('click', 'coding_challenges', 'gfg_profile')
+              }}
             >
               GFG
               <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -529,6 +538,10 @@ const CodingChallenges = () => {
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center text-red-400 hover:text-red-300 transition-colors px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-red-400/30 hover:shadow-lg hover:shadow-red-500/20 transform hover:-translate-y-0.5 transition-all duration-300 text-xs sm:text-sm"
+              onClick={() => {
+                // Track CodeChef profile click
+                trackEvent('click', 'coding_challenges', 'codechef_profile')
+              }}
             >
               CodeChef
               <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -540,6 +553,10 @@ const CodingChallenges = () => {
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-purple-400/30 hover:shadow-lg hover:shadow-purple-500/20 transform hover:-translate-y-0.5 transition-all duration-300 text-xs sm:text-sm"
+              onClick={() => {
+                // Track HackerRank profile click
+                trackEvent('click', 'coding_challenges', 'hackerrank_profile')
+              }}
             >
               HackerRank
               <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

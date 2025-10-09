@@ -56,6 +56,17 @@ To run the portfolio locally:
    - Update the Form ID in `src/components/Contact.jsx`
    - See `FORMSPREE_SETUP.md` for detailed instructions
 
+5. **Set Up Google Analytics (Optional):**
+   - Sign up at [Google Analytics](https://analytics.google.com/)
+   - Create a new property and get your Measurement ID (GA4)
+   - Create a `.env` file in the project root (copy from `.env.example`)
+   - Add your Measurement ID to the `.env` file:
+     ```
+     VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+     ```
+   - The tracking will automatically work in production builds
+   - For detailed instructions, see [GOOGLE_ANALYTICS_TRACKING.md](GOOGLE_ANALYTICS_TRACKING.md)
+
 5. **Start the Development Server:**
    ```bash
    npm run dev
@@ -108,11 +119,28 @@ portfolio-react/
 ├── tailwind.config.cjs
 ├── postcss.config.cjs
 ├── vite.config.js
+├── .env.example
+├── .env
 ├── FORMSPREE_SETUP.md
 ├── AZURE_DEPLOYMENT_GUIDE.md
 ├── deploy-to-azure.js
 └── README.md
 ```
+
+## 📊 Google Analytics Implementation
+
+This portfolio includes comprehensive Google Analytics tracking for user interactions:
+
+- **Page Views**: Automatic tracking of all page visits
+- **Navigation Events**: Tracking of all header/footer navigation clicks
+- **Project Interactions**: Tracking of project filtering, viewing, and external link clicks
+- **Contact Form**: Tracking of form submissions, errors, and successful sends
+- **Social Media**: Tracking of all social media link clicks
+- **GitHub Stats**: Detailed tracking of tab switches, searches, and profile interactions
+- **Coding Challenges**: Tracking of platform profile visits
+- **Hero Section**: Tracking of call-to-action button clicks
+
+All tracking events are implemented using the `trackEvent` utility function, which ensures consistent event naming and categorization.
 
 ## 🎯 Usage
 
