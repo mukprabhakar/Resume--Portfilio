@@ -14,57 +14,57 @@ const CredlyBadges = () => {
         const mockBadges = [
           {
             id: 1,
-            title: 'Microsoft Certified: Azure Fundamentals',
-            issuer: 'Microsoft',
-            issuedDate: '2023-05-15',
-            image: 'https://images.credly.com/size/680x680/images/39703994-095b-4218-950e-0f6647204c5c/image.png',
-            url: 'https://www.credly.com/org/microsoft-certification/badge/azure-fundamentals',
-            description: 'Earners of the Azure Fundamentals credential have demonstrated foundational knowledge of cloud services and how those services are provided with Microsoft Azure.'
+            title: 'Explore AI Level 1',
+            issuer: 'Microsoft MVP and Student Ambassadors Communities',
+            issuedDate: '2025-05-29',
+            image: 'https://images.credly.com/size/680x680/images/2d7c3d05-9554-42b9-9778-30e1c2fc90c6/blob',
+            url: 'https://www.credly.com/badges/484d07c4-8a54-4029-93d8-9434b524abcd',
+            description: 'Student Ambassadors who earned the Explore AI Level 1 badge skilled their friends and followers about the capabilities of generative AI using Microsoft Copilot. They helped them bring their personal creativity and passion to dream up a novel destination and create the content to tell its story.'
           },
           {
             id: 2,
-            title: 'AWS Certified Cloud Practitioner',
-            issuer: 'Amazon Web Services',
-            issuedDate: '2023-07-22',
-            image: 'https://images.credly.com/size/680x680/images/00634f82-b07f-4bbd-8751-0b6e121c2f1d/image.png',
-            url: 'https://www.credly.com/org/amazon-web-services/badge/aws-certified-cloud-practitioner',
-            description: 'This credential validates foundational, high-level understanding of AWS Cloud, services, and terminology.'
+            title: 'Microsoft Learn Student Ambassadors Cloud Skills Challenge Event Host',
+            issuer: 'Microsoft MVP and Student Ambassadors Communities',
+            issuedDate: '2024-07-25',
+            image: 'https://images.credly.com/size/680x680/images/4d840102-6ff9-4528-9371-ceedc393057d/image.png',
+            url: 'https://www.credly.com/badges/f668a1d8-1e78-4f72-bfa6-a0d3eedd6049',
+            description: 'The Microsoft Learn Student Ambassadors Cloud Skills Challenge Event Host badge is issued to Student Ambassadors who host a Microsoft Learn Cloud Skills Challenge to skill participants on Microsoft products and technologies via a gamified experience utilizing Microsoft Learn content. Student Ambassadors who host a Cloud Skills Challenge demonstrate a desire help their local and online communities build skills that open doors and spark possibility.'
           },
           {
             id: 3,
-            title: 'Google Cloud Digital Leader',
+            title: 'Google Cloud Computing Foundations Certificate',
             issuer: 'Google Cloud',
-            issuedDate: '2023-09-10',
-            image: 'https://images.credly.com/size/680x680/images/e285c9e4-0a5e-415d-9500-76c6207702d4/image.png',
-            url: 'https://www.credly.com/org/google-cloud/badge/google-cloud-digital-leader',
-            description: 'Validate understanding of cloud computing concepts, models, and Google Cloud products and services.'
+            issuedDate: '2024-07-24',
+            image: 'https://images.credly.com/size/680x680/images/4dda8ae4-99ee-476c-bca3-6f0adbab42fe/image.png',
+            url: 'https://www.credly.com/badges/3e21bf43-fa65-42bc-8617-0bc49bee4327',
+            description: 'This certificate program helps learners develop technical proficiency in cloud computing. This certificate is an ideal foundation for diverse career paths including those in IT infrastructure, cloud engineering, and cloud-native application development.'
           },
           {
             id: 4,
-            title: 'Certified Kubernetes Administrator',
-            issuer: 'Cloud Native Computing Foundation',
-            issuedDate: '2023-11-05',
-            image: 'https://images.credly.com/size/680x680/images/8b8edf16-24b0-451d-91a0-90c935505b63/image.png',
-            url: 'https://www.credly.com/org/cncf/badge/cka',
-            description: 'Demonstrates expertise in Kubernetes administration, including installation, configuration, and management.'
+            title: 'Data Science Foundations - Level 1',
+            issuer: ' IBM',
+            issuedDate: '2023-06-10',
+            image: 'https://images.credly.com/size/680x680/images/5950e6bd-1d0b-40f0-9313-4b2fa36622ce/blob',
+            url: 'https://www.credly.com/badges/b50ae2a8-4fca-4df4-845b-6a11569b44b2',
+            description: 'This badge earner has an understanding of the possibilities and opportunities that data science, analytics and big data bring to new applications in any industry.'
           },
           {
             id: 5,
-            title: 'NPTEL Elite + Silver Badge',
-            issuer: 'IIM Kharagpur',
-            issuedDate: '2023-03-10',
-            image: 'https://images.credly.com/size/680x680/images/43124ed3-96d3-459d-9680-9c5aa1e1f48d/NPTEL_Elite_Silver_Badge.png',
-            url: 'https://www.credly.com/org/nptel/badge/introduction-to-internet-of-things',
-            description: 'Achieved Elite certification with Silver Badge in Introduction to Internet of Things from IIM Kharagpur.'
+            title: 'Get Started with Cloud Storage Skill Badge',
+            issuer: 'Google Cloud',
+            issuedDate: '2024-08-13',
+            image: 'https://images.credly.com/size/680x680/images/8fae0693-0a1a-4c15-b3b6-10b4104d0e30/image.png',
+            url: 'https://www.credly.com/badges/cb0dc42e-390f-483f-a8e0-579a6e17c531',
+            description: 'Complete the Get Started with Cloud Storage skill badge to demonstrate skills in the following: how to create a Cloud Storage bucket, how to use the Cloud Storage command line, and how to use Bucket Lock to protect objects in a bucket.'
           },
           {
             id: 6,
-            title: 'HackerRank Problem Solving (Java)',
-            issuer: 'HackerRank',
-            issuedDate: '2023-04-18',
-            image: 'https://images.credly.com/size/680x680/images/145ca5b6-4a53-499d-9205-9102bf7ec35d/image.png',
-            url: 'https://www.credly.com/org/hackerrank/badge/problem-solving-java',
-            description: 'Earned 2-star recognition in Problem Solving (Java), validating advanced algorithmic skills.'
+            title: 'Build a Website on Google Cloud Skill Badge',
+            issuer: ' Google Cloud',
+            issuedDate: '2024-07-23',
+            image: 'https://images.credly.com/size/680x680/images/cfcacbf1-1f76-40ad-be09-a5b057e31ebf/image.png',
+            url: 'https://www.credly.com/badges/8f0ecf87-4ea6-46d3-a282-a47631c026b0',
+            description: 'Complete the introductory Build a Website on Google Cloud skill badge to demonstrate skills in the following: deploy a website on Cloud Run, Host a web app on Compute Engine, Create, deploy, and scale your website on Google Kubernetes Engine, Migrate from a monolithic application to a microservices architecture.'
           }
         ]
         
