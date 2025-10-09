@@ -54,6 +54,7 @@ const Header = () => {
     { id: 'testimonials', label: 'Testimonials', type: 'internal' },
     { id: 'blog', label: 'Blog', type: 'internal' },
     { id: 'badges', label: 'Badges', type: 'route' },
+    { id: 'github', label: 'GitHub', type: 'route' },
     { id: 'contact', label: 'Contact', type: 'internal' }
   ]
 

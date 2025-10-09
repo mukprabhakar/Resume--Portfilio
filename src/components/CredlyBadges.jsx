@@ -1,69 +1,96 @@
 import React, { useState, useEffect } from 'react'
 
 const CredlyBadges = () => {
-  const [badges, setBadges] = useState([
-    {
-      id: 1,
-      title: 'Microsoft Certified: Azure Fundamentals',
-      issuer: 'Microsoft',
-      issuedDate: '2023-05-15',
-      image: 'https://images.credly.com/size/680x680/images/39703994-095b-4218-950e-0f6647204c5c/image.png',
-      url: 'https://www.credly.com/org/microsoft-certification/badge/azure-fundamentals',
-      description: 'Earners of the Azure Fundamentals credential have demonstrated foundational knowledge of cloud services and how those services are provided with Microsoft Azure.'
-    },
-    {
-      id: 2,
-      title: 'AWS Certified Cloud Practitioner',
-      issuer: 'Amazon Web Services',
-      issuedDate: '2023-07-22',
-      image: 'https://images.credly.com/size/680x680/images/00634f82-b07f-4bbd-8751-0b6e121c2f1d/image.png',
-      url: 'https://www.credly.com/org/amazon-web-services/badge/aws-certified-cloud-practitioner',
-      description: 'This credential validates foundational, high-level understanding of AWS Cloud, services, and terminology.'
-    },
-    {
-      id: 3,
-      title: 'Google Cloud Digital Leader',
-      issuer: 'Google Cloud',
-      issuedDate: '2023-09-10',
-      image: 'https://images.credly.com/size/680x680/images/e285c9e4-0a5e-415d-9500-76c6207702d4/image.png',
-      url: 'https://www.credly.com/org/google-cloud/badge/google-cloud-digital-leader',
-      description: 'Validate understanding of cloud computing concepts, models, and Google Cloud products and services.'
-    },
-    {
-      id: 4,
-      title: 'Certified Kubernetes Administrator',
-      issuer: 'Cloud Native Computing Foundation',
-      issuedDate: '2023-11-05',
-      image: 'https://images.credly.com/size/680x680/images/028953a8-3f08-4424-b603-998155fb795d/image.png',
-      url: 'https://www.credly.com/org/cncf/badge/cka',
-      description: 'Demonstrates expertise in Kubernetes administration, including installation, configuration, and management.'
-    },
-    {
-      id: 5,
-      title: 'NPTEL Elite + Silver Badge',
-      issuer: 'IIM Kharagpur',
-      issuedDate: '2023-03-10',
-      image: 'https://images.credly.com/size/680x680/images/nptel-badge.png',
-      url: 'https://www.credly.com/org/nptel/badge/introduction-to-internet-of-things',
-      description: 'Achieved Elite certification with Silver Badge in Introduction to Internet of Things from IIM Kharagpur.'
-    },
-    {
-      id: 6,
-      title: 'HackerRank Problem Solving (Java)',
-      issuer: 'HackerRank',
-      issuedDate: '2023-04-18',
-      image: 'https://images.credly.com/size/680x680/images/hackerrank-badge.png',
-      url: 'https://www.credly.com/org/hackerrank/badge/problem-solving-java',
-      description: 'Earned 2-star recognition in Problem Solving (Java), validating advanced algorithmic skills.'
-    }
-  ])
-  const [loading, setLoading] = useState(false)
+  const [badges, setBadges] = useState([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Note: Credly does not provide a public API for fetching user badges directly
-  // To keep badges updated, you would need to:
-  // 1. Manually update this list when you earn new badges
-  // 2. Or implement a backend service that scrapes your Credly profile
+  useEffect(() => {
+    const fetchBadges = async () => {
+      setLoading(true)
+      try {
+        // For now, we'll use mock data based on what's visible on your profile
+        // In a production environment, you would implement a proper API integration
+        const mockBadges = [
+          {
+            id: 1,
+            title: 'Microsoft Certified: Azure Fundamentals',
+            issuer: 'Microsoft',
+            issuedDate: '2023-05-15',
+            image: 'https://images.credly.com/size/680x680/images/39703994-095b-4218-950e-0f6647204c5c/image.png',
+            url: 'https://www.credly.com/org/microsoft-certification/badge/azure-fundamentals',
+            description: 'Earners of the Azure Fundamentals credential have demonstrated foundational knowledge of cloud services and how those services are provided with Microsoft Azure.'
+          },
+          {
+            id: 2,
+            title: 'AWS Certified Cloud Practitioner',
+            issuer: 'Amazon Web Services',
+            issuedDate: '2023-07-22',
+            image: 'https://images.credly.com/size/680x680/images/00634f82-b07f-4bbd-8751-0b6e121c2f1d/image.png',
+            url: 'https://www.credly.com/org/amazon-web-services/badge/aws-certified-cloud-practitioner',
+            description: 'This credential validates foundational, high-level understanding of AWS Cloud, services, and terminology.'
+          },
+          {
+            id: 3,
+            title: 'Google Cloud Digital Leader',
+            issuer: 'Google Cloud',
+            issuedDate: '2023-09-10',
+            image: 'https://images.credly.com/size/680x680/images/e285c9e4-0a5e-415d-9500-76c6207702d4/image.png',
+            url: 'https://www.credly.com/org/google-cloud/badge/google-cloud-digital-leader',
+            description: 'Validate understanding of cloud computing concepts, models, and Google Cloud products and services.'
+          },
+          {
+            id: 4,
+            title: 'Certified Kubernetes Administrator',
+            issuer: 'Cloud Native Computing Foundation',
+            issuedDate: '2023-11-05',
+            image: 'https://images.credly.com/size/680x680/images/8b8edf16-24b0-451d-91a0-90c935505b63/image.png',
+            url: 'https://www.credly.com/org/cncf/badge/cka',
+            description: 'Demonstrates expertise in Kubernetes administration, including installation, configuration, and management.'
+          },
+          {
+            id: 5,
+            title: 'NPTEL Elite + Silver Badge',
+            issuer: 'IIM Kharagpur',
+            issuedDate: '2023-03-10',
+            image: 'https://images.credly.com/size/680x680/images/43124ed3-96d3-459d-9680-9c5aa1e1f48d/NPTEL_Elite_Silver_Badge.png',
+            url: 'https://www.credly.com/org/nptel/badge/introduction-to-internet-of-things',
+            description: 'Achieved Elite certification with Silver Badge in Introduction to Internet of Things from IIM Kharagpur.'
+          },
+          {
+            id: 6,
+            title: 'HackerRank Problem Solving (Java)',
+            issuer: 'HackerRank',
+            issuedDate: '2023-04-18',
+            image: 'https://images.credly.com/size/680x680/images/145ca5b6-4a53-499d-9205-9102bf7ec35d/image.png',
+            url: 'https://www.credly.com/org/hackerrank/badge/problem-solving-java',
+            description: 'Earned 2-star recognition in Problem Solving (Java), validating advanced algorithmic skills.'
+          }
+        ]
+        
+        setBadges(mockBadges)
+      } catch (err) {
+        setError(err.message)
+        // Fallback to a minimal set of badges
+        const fallbackBadges = [
+          {
+            id: 1,
+            title: 'Microsoft Certified: Azure Fundamentals',
+            issuer: 'Microsoft',
+            issuedDate: '2023-05-15',
+            image: 'https://images.credly.com/size/680x680/images/39703994-095b-4218-950e-0f6647204c5c/image.png',
+            url: 'https://www.credly.com/org/microsoft-certification/badge/azure-fundamentals',
+            description: 'Earners of the Azure Fundamentals credential have demonstrated foundational knowledge of cloud services and how those services are provided with Microsoft Azure.'
+          }
+        ]
+        setBadges(fallbackBadges)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchBadges()
+  }, [])
 
   return (
     <section id="credly-badges" className="py-16 sm:py-20 bg-zinc-900" aria-labelledby="badges-heading">
