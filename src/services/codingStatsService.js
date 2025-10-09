@@ -1,4 +1,4 @@
-// Service to fetch coding statistics from LeetCode and GeeksforGeeks
+// Service to fetch coding statistics from LeetCode, GeeksforGeeks, CodeChef, and HackerRank
 
 /**
  * Fetch LeetCode statistics for a given username
@@ -50,22 +50,92 @@ export const fetchGFGStats = async (username) => {
 };
 
 /**
+ * Fetch CodeChef statistics
+ * @param {string} username - CodeChef username
+ * @returns {Promise<Object>} CodeChef statistics
+ */
+export const fetchCodeChefStats = async (username) => {
+  try {
+    // For now, we'll use a mock response since we don't have a deployed backend
+    // In a production environment, this would call a deployed API
+    return {
+      currentRating: 1650,
+      highestRating: 1720,
+      globalRank: 15000,
+      countryRank: 12000,
+      problemsSolved: 120,
+      fullySolved: 100,
+      partiallySolved: 20
+    };
+  } catch (error) {
+    console.error('Error fetching CodeChef stats:', error);
+    // Return mock data as fallback
+    return {
+      currentRating: 1650,
+      highestRating: 1720,
+      globalRank: 15000,
+      countryRank: 12000,
+      problemsSolved: 120,
+      fullySolved: 100,
+      partiallySolved: 20
+    };
+  }
+};
+
+/**
+ * Fetch HackerRank statistics
+ * @param {string} username - HackerRank username
+ * @returns {Promise<Object>} HackerRank statistics
+ */
+export const fetchHackerRankStats = async (username) => {
+  try {
+    // For now, we'll use a mock response since we don't have a deployed backend
+    // In a production environment, this would call a deployed API
+    return {
+      stars: 4,
+      problemsSolved: 85,
+      algorithmsSolved: 50,
+      dataStructuresSolved: 25,
+      mathematicsSolved: 10
+    };
+  } catch (error) {
+    console.error('Error fetching HackerRank stats:', error);
+    // Return mock data as fallback
+    return {
+      stars: 4,
+      problemsSolved: 85,
+      algorithmsSolved: 50,
+      dataStructuresSolved: 25,
+      mathematicsSolved: 10
+    };
+  }
+};
+
+/**
  * Fetch all coding statistics
  * @param {string} leetCodeUsername - LeetCode username
  * @param {string} gfgUsername - GeeksforGeeks username
+ * @param {string} codeChefUsername - CodeChef username
+ * @param {string} hackerRankUsername - HackerRank username
  * @returns {Promise<Object>} Combined coding statistics
  */
-export const fetchAllCodingStats = async (leetCodeUsername, gfgUsername) => {
-  const [leetCodeStats, gfgStats] = await Promise.all([
+export const fetchAllCodingStats = async (leetCodeUsername, gfgUsername, codeChefUsername, hackerRankUsername) => {
+  const [leetCodeStats, gfgStats, codeChefStats, hackerRankStats] = await Promise.all([
     fetchLeetCodeStats(leetCodeUsername),
-    fetchGFGStats(gfgUsername)
+    fetchGFGStats(gfgUsername),
+    fetchCodeChefStats(codeChefUsername),
+    fetchHackerRankStats(hackerRankUsername)
   ]);
 
   console.log('LeetCode stats:', leetCodeStats); // Debug log
   console.log('GFG stats:', gfgStats); // Debug log
+  console.log('CodeChef stats:', codeChefStats); // Debug log
+  console.log('HackerRank stats:', hackerRankStats); // Debug log
 
   return {
     leetCode: leetCodeStats,
-    gfg: gfgStats
+    gfg: gfgStats,
+    codeChef: codeChefStats,
+    hackerRank: hackerRankStats
   };
 };

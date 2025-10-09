@@ -21,13 +21,33 @@ const CodingChallenges = () => {
       hardProblems: 0,
       loading: true,
       error: null
+    },
+    codeChef: {
+      currentRating: 0,
+      highestRating: 0,
+      globalRank: 0,
+      countryRank: 0,
+      problemsSolved: 0,
+      fullySolved: 0,
+      partiallySolved: 0,
+      loading: true,
+      error: null
+    },
+    hackerRank: {
+      stars: 0,
+      problemsSolved: 0,
+      algorithmsSolved: 0,
+      dataStructuresSolved: 0,
+      mathematicsSolved: 0,
+      loading: true,
+      error: null
     }
   })
 
   useEffect(() => {
     const fetchCodingStats = async () => {
       try {
-        const data = await fetchAllCodingStats('mukprabhakar', 'mukprabhakar')
+        const data = await fetchAllCodingStats('mukprabhakar', 'mukprabhakar', 'mukprabhakar', 'mukprabhakar')
         
         // Update LeetCode stats
         setCodingStats(prev => ({
@@ -50,6 +70,26 @@ const CodingChallenges = () => {
             mediumProblems: data.gfg?.mediumProblems || 0,
             hardProblems: data.gfg?.hardProblems || 0,
             loading: false
+          },
+          codeChef: {
+            ...prev.codeChef,
+            currentRating: data.codeChef?.currentRating || 0,
+            highestRating: data.codeChef?.highestRating || 0,
+            globalRank: data.codeChef?.globalRank || 0,
+            countryRank: data.codeChef?.countryRank || 0,
+            problemsSolved: data.codeChef?.problemsSolved || 0,
+            fullySolved: data.codeChef?.fullySolved || 0,
+            partiallySolved: data.codeChef?.partiallySolved || 0,
+            loading: false
+          },
+          hackerRank: {
+            ...prev.hackerRank,
+            stars: data.hackerRank?.stars || 0,
+            problemsSolved: data.hackerRank?.problemsSolved || 0,
+            algorithmsSolved: data.hackerRank?.algorithmsSolved || 0,
+            dataStructuresSolved: data.hackerRank?.dataStructuresSolved || 0,
+            mathematicsSolved: data.hackerRank?.mathematicsSolved || 0,
+            loading: false
           }
         }))
       } catch (error) {
@@ -65,6 +105,16 @@ const CodingChallenges = () => {
             ...prev.gfg,
             loading: false,
             error: 'Failed to load GeeksforGeeks stats'
+          },
+          codeChef: {
+            ...prev.codeChef,
+            loading: false,
+            error: 'Failed to load CodeChef stats'
+          },
+          hackerRank: {
+            ...prev.hackerRank,
+            loading: false,
+            error: 'Failed to load HackerRank stats'
           }
         }))
       }
@@ -294,6 +344,159 @@ const CodingChallenges = () => {
               </div>
             )}
           </div>
+
+          {/* CodeChef Section */}
+          <div className="glass-card p-6 rounded-xl card-3d transform transition-all duration-300 hover:shadow-lg hover-glow">
+            <div className="flex items-center mb-6">
+              <div className="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center mr-4">
+                <span className="text-2xl font-bold text-red-500">CC</span>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white">CodeChef</h3>
+                <p className="text-zinc-400 text-sm">Competitive programming platform</p>
+              </div>
+            </div>
+
+            {codingStats.codeChef.loading ? (
+              <div className="text-center py-8">
+                <div className="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-red-500"></div>
+                <p className="mt-3 text-zinc-400">Loading CodeChef stats...</p>
+              </div>
+            ) : codingStats.codeChef.error ? (
+              <div className="text-center py-8">
+                <p className="text-red-400">{codingStats.codeChef.error}</p>
+                <p className="text-zinc-400 mt-2">Displaying sample data instead.</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-zinc-800/50 p-4 rounded-lg">
+                    <p className="text-3xl font-bold gradient-text">{codingStats.codeChef.problemsSolved}</p>
+                    <p className="text-zinc-300 text-sm">Problems Solved</p>
+                  </div>
+                  <div className="bg-zinc-800/50 p-4 rounded-lg">
+                    <p className="text-3xl font-bold text-red-400">{codingStats.codeChef.currentRating}</p>
+                    <p className="text-zinc-300 text-sm">Current Rating</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-3">Competition Stats</h4>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-zinc-300">Global Rank</span>
+                      <span className="font-medium text-red-400">{codingStats.codeChef.globalRank}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-zinc-300">Country Rank</span>
+                      <span className="font-medium text-red-400">{codingStats.codeChef.countryRank}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-zinc-300">Highest Rating</span>
+                      <span className="font-medium text-red-400">{codingStats.codeChef.highestRating}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-zinc-300">Fully Solved</span>
+                      <span className="font-medium text-red-400">{codingStats.codeChef.fullySolved}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-zinc-300">Partially Solved</span>
+                      <span className="font-medium text-red-400">{codingStats.codeChef.partiallySolved}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* HackerRank Section */}
+          <div className="glass-card p-6 rounded-xl card-3d transform transition-all duration-300 hover:shadow-lg hover-glow">
+            <div className="flex items-center mb-6">
+              <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center mr-4">
+                <span className="text-2xl font-bold text-purple-500">HR</span>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white">HackerRank</h3>
+                <p className="text-zinc-400 text-sm">Coding skills platform</p>
+              </div>
+            </div>
+
+            {codingStats.hackerRank.loading ? (
+              <div className="text-center py-8">
+                <div className="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-500"></div>
+                <p className="mt-3 text-zinc-400">Loading HackerRank stats...</p>
+              </div>
+            ) : codingStats.hackerRank.error ? (
+              <div className="text-center py-8">
+                <p className="text-red-400">{codingStats.hackerRank.error}</p>
+                <p className="text-zinc-400 mt-2">Displaying sample data instead.</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-zinc-800/50 p-4 rounded-lg">
+                    <p className="text-3xl font-bold gradient-text">{codingStats.hackerRank.problemsSolved}</p>
+                    <p className="text-zinc-300 text-sm">Problems Solved</p>
+                  </div>
+                  <div className="bg-zinc-800/50 p-4 rounded-lg">
+                    <p className="text-3xl font-bold text-purple-400">{codingStats.hackerRank.stars}</p>
+                    <p className="text-zinc-300 text-sm">Stars</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-3">Skills Breakdown</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-zinc-300 flex items-center">
+                          <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
+                          Algorithms
+                        </span>
+                        <span className="font-medium text-blue-400">{codingStats.hackerRank.algorithmsSolved}</span>
+                      </div>
+                      <div className="w-full bg-zinc-800 rounded-full h-2">
+                        <div 
+                          className="bg-blue-500 h-2 rounded-full" 
+                          style={{ width: `${codingStats.hackerRank.problemsSolved ? (codingStats.hackerRank.algorithmsSolved / codingStats.hackerRank.problemsSolved) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-zinc-300 flex items-center">
+                          <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                          Data Structures
+                        </span>
+                        <span className="font-medium text-green-400">{codingStats.hackerRank.dataStructuresSolved}</span>
+                      </div>
+                      <div className="w-full bg-zinc-800 rounded-full h-2">
+                        <div 
+                          className="bg-green-500 h-2 rounded-full" 
+                          style={{ width: `${codingStats.hackerRank.problemsSolved ? (codingStats.hackerRank.dataStructuresSolved / codingStats.hackerRank.problemsSolved) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-zinc-300 flex items-center">
+                          <span className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                          Mathematics
+                        </span>
+                        <span className="font-medium text-yellow-400">{codingStats.hackerRank.mathematicsSolved}</span>
+                      </div>
+                      <div className="w-full bg-zinc-800 rounded-full h-2">
+                        <div 
+                          className="bg-yellow-500 h-2 rounded-full" 
+                          style={{ width: `${codingStats.hackerRank.problemsSolved ? (codingStats.hackerRank.mathematicsSolved / codingStats.hackerRank.problemsSolved) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Profile Links */}
@@ -317,6 +520,28 @@ const CodingChallenges = () => {
               className="inline-flex items-center text-green-400 hover:text-green-300 transition-colors px-5 py-2.5 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-green-400/30 hover:shadow-lg hover:shadow-green-500/20 transform hover:-translate-y-1 transition-all duration-300"
             >
               View GFG Profile
+              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+            </a>
+            <a 
+              href="https://www.codechef.com/users/mukprabhakar" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-red-400 hover:text-red-300 transition-colors px-5 py-2.5 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-red-400/30 hover:shadow-lg hover:shadow-red-500/20 transform hover:-translate-y-1 transition-all duration-300"
+            >
+              View CodeChef Profile
+              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+            </a>
+            <a 
+              href="https://www.hackerrank.com/mukprabhakar" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors px-5 py-2.5 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-purple-400/30 hover:shadow-lg hover:shadow-purple-500/20 transform hover:-translate-y-1 transition-all duration-300"
+            >
+              View HackerRank Profile
               <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
               </svg>
