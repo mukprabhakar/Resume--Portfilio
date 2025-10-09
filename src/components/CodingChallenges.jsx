@@ -136,7 +136,7 @@ const CodingChallenges = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* LeetCode Section */}
           <div className="glass-card p-6 rounded-xl card-3d transform transition-all duration-300 hover:shadow-lg hover-glow">
             <div className="flex items-center mb-6">
