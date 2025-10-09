@@ -162,6 +162,21 @@ const Projects = () => {
           </p>
         </div>
 
+        {/* Note about private repositories */}
+        <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 mb-8 text-center text-zinc-300 text-sm sm:text-base">
+          <p>
+            <strong>Note:</strong> Most of our project repositories are private, and several personal projects are not currently hosted, so live previews are unavailable. 
+            If you're interested in viewing the code or learning more about the projects, please{' '}
+            <a href="mailto:mukesh.mmp1234@gmail.com" className="text-emerald-400 hover:text-emerald-300 underline transition-colors">
+              contact me
+            </a>{' '}
+            or schedule a Google Meet at{' '}
+            <a href="mailto:mukesh.mmp1234@gmail.com" className="text-emerald-400 hover:text-emerald-300 underline transition-colors">
+              mukesh.mmp1234@gmail.com
+            </a>.
+          </p>
+        </div>
+
         <div className="flex justify-center mb-8 sm:mb-12 flex-wrap gap-2 animate-slide-in-left">
           {filterButtons.map((button) => (
             <button
