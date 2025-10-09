@@ -93,17 +93,17 @@ const Header = () => {
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center transform transition-transform group-hover:rotate-6" aria-hidden="true">
             <span className="text-white font-bold text-sm sm:text-lg">MP</span>
           </div>
-          <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent hidden sm:block">Mukesh Pal</h1>
+          <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent hidden xs:block">Mukesh Pal</h1>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden sm:flex items-center space-x-0.5 md:space-x-1" role="navigation" aria-label="Main navigation">
+        <nav className="hidden md:flex items-center space-x-0.5 lg:space-x-1" role="navigation" aria-label="Main navigation">
           {navItems.map((item) => (
             item.type === 'route' ? (
               <Link 
                 key={item.id} 
                 to={`/${item.id}`}
-                className={`px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 ${
+                className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all duration-300 ${
                   window.location.pathname === `/${item.id}` 
                     ? 'text-emerald-400 bg-emerald-400/10' 
                     : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
@@ -117,7 +117,7 @@ const Header = () => {
                 href={item.href} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50 transition-all duration-300"
+                className="px-2 py-1.5 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50 transition-all duration-300"
               >
                 {item.label}
               </a>
@@ -126,7 +126,7 @@ const Header = () => {
                 key={item.id} 
                 href={`#${item.id}`} 
                 onClick={(e) => handleInternalLink(e, item.id)}
-                className={`px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 ${
+                className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all duration-300 ${
                   activeSection === item.id 
                     ? 'text-emerald-400 bg-emerald-400/10' 
                     : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
@@ -142,7 +142,7 @@ const Header = () => {
         {/* Mobile menu button */}
         <button 
           id="mobile-menu-button" 
-          className={`sm:hidden p-1.5 sm:p-2 rounded-md sm:rounded-lg transition-all ${
+          className={`md:hidden p-1.5 sm:p-2 rounded-md transition-all ${
             isMobileMenuOpen 
               ? 'text-emerald-400 bg-zinc-800' 
               : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800'
@@ -165,8 +165,8 @@ const Header = () => {
       {/* Mobile menu */}
       <div 
         id="mobile-menu"
-        className={`sm:hidden bg-zinc-900/95 backdrop-blur-lg border-t border-zinc-800 transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+        className={`md:hidden bg-zinc-900/95 backdrop-blur-lg border-t border-zinc-800 transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
         }`}
         role="navigation"
         aria-label="Mobile navigation"
@@ -177,7 +177,7 @@ const Header = () => {
               <Link 
                 key={item.id} 
                 to={`/${item.id}`}
-                className={`px-3 py-2 sm:px-4 sm:py-3 rounded-md sm:rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm font-medium transition-all ${
                   window.location.pathname === `/${item.id}` 
                     ? 'text-emerald-400 bg-emerald-400/10' 
                     : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
@@ -192,7 +192,7 @@ const Header = () => {
                 href={item.href} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="px-3 py-2 sm:px-4 sm:py-3 rounded-md sm:rounded-lg text-sm font-medium text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50 transition-all"
+                className="px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm font-medium text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50 transition-all"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.label}
@@ -202,7 +202,7 @@ const Header = () => {
                 key={item.id} 
                 href={`#${item.id}`} 
                 onClick={(e) => handleInternalLink(e, item.id)}
-                className={`px-3 py-2 sm:px-4 sm:py-3 rounded-md sm:rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm font-medium transition-all ${
                   activeSection === item.id 
                     ? 'text-emerald-400 bg-emerald-400/10' 
                     : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'

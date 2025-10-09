@@ -53,19 +53,33 @@ export const fetchGFGStats = async (username) => {
  * Fetch CodeChef statistics
  * @param {string} username - CodeChef username
  * @returns {Promise<Object>} CodeChef statistics
+ * 
+ * Note: Direct scraping of CodeChef is not possible from frontend due to CORS restrictions.
+ * In a production environment, this would require a backend service to:
+ * 1. Fetch the HTML content from https://www.codechef.com/users/mukprabhakar
+ * 2. Parse the relevant data (problems solved, ratings, ranks, etc.)
+ * 3. Return the structured data as JSON
+ * 
+ * For demonstration purposes, we're using mock data that represents the structure
+ * and type of data that would be extracted from the CodeChef profile page.
  */
 export const fetchCodeChefStats = async (username) => {
   try {
+    // In a real implementation, you would have a backend endpoint like:
+    // const response = await fetch(`/api/codechef/${username}`);
+    // const data = await response.json();
+    // return data;
+    
     // For now, we'll use a mock response since we don't have a deployed backend
-    // In a production environment, this would call a deployed API
+    // In a production environment, this would call a deployed API that scrapes the CodeChef profile
     return {
       currentRating: 1650,
       highestRating: 1720,
       globalRank: 15000,
       countryRank: 12000,
-      problemsSolved: 120,
-      fullySolved: 100,
-      partiallySolved: 20
+      problemsSolved: 229,
+      fullySolved: 200,
+      partiallySolved: 29
     };
   } catch (error) {
     console.error('Error fetching CodeChef stats:', error);
@@ -75,9 +89,9 @@ export const fetchCodeChefStats = async (username) => {
       highestRating: 1720,
       globalRank: 15000,
       countryRank: 12000,
-      problemsSolved: 120,
-      fullySolved: 100,
-      partiallySolved: 20
+      problemsSolved: 229,
+      fullySolved: 200,
+      partiallySolved: 29
     };
   }
 };
