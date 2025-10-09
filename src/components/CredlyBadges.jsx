@@ -93,7 +93,7 @@ const CredlyBadges = () => {
   }, [])
 
   return (
-    <section id="credly-badges" className="py-16 sm:py-20 bg-zinc-900" aria-labelledby="badges-heading">
+    <section id="credly-badges" className="py-16 sm:py-20 bg-zinc-900 pt-20" aria-labelledby="badges-heading">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-12 sm:mb-16">
           <h2 id="badges-heading" className="text-3xl sm:text-4xl font-bold gradient-text mb-3 sm:mb-4">Credly Badges</h2>

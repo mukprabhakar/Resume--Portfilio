@@ -188,7 +188,7 @@ const GitHubStats = () => {
   )
 
   return (
-    <section id="github-stats" className="py-16 sm:py-20 bg-zinc-900" aria-labelledby="github-stats-heading">
+    <section id="github-stats" className="py-16 sm:py-20 bg-zinc-900 pt-20" aria-labelledby="github-stats-heading">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-12 sm:mb-16">
           <h2 id="github-stats-heading" className="text-3xl sm:text-4xl font-bold gradient-text mb-3 sm:mb-4 animate-float">GitHub Statistics</h2>

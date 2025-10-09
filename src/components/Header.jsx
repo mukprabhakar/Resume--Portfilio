@@ -71,8 +71,8 @@ const Header = () => {
 
   const handleInternalLink = (e, sectionId) => {
     e.preventDefault()
-    // If we're on the badges page, navigate to home first, then scroll
-    if (window.location.pathname === '/badges') {
+    // If we're on a different route page, navigate to home first, then scroll
+    if (window.location.pathname !== '/') {
       navigate('/')
       // Wait a bit for navigation to complete, then scroll
       setTimeout(() => {

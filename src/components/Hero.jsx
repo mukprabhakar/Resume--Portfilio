@@ -12,7 +12,7 @@ const Hero = () => {
   const [isVisible, setIsVisible] = useState(false)
 
   const roles = [
-    "Full-Stack Developer",
+    "SpringBoot Developer",
     "Tech Entrepreneur",
     "Innovation Catalyst",
     "Problem Solver"
