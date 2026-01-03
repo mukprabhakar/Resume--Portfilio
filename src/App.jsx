@@ -16,11 +16,15 @@ import Footer from './components/Footer'
 import CredlyBadges from './components/CredlyBadges'
 import GitHubStats from './components/GitHubStats'
 import CodingChallenges from './components/CodingChallenges'
+import CustomCursor from './components/CustomCursor'
+import ScrollProgress from './components/ScrollProgress'
 
 function App() {
   return (
     <Router>
       <div className="antialiased">
+        <CustomCursor />
+        <ScrollProgress />
         <Header />
         <main className="pt-20">
           <Routes>

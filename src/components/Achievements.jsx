@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { fetchAllCodingStats } from '../services/codingStatsService'
+import TiltCard from './TiltCard'
 
 const Achievements = () => {
   const [counts, setCounts] = useState({
@@ -24,15 +25,15 @@ const Achievements = () => {
       try {
         // Fetch data from both platforms
         const data = await fetchAllCodingStats('mukprabhakar', 'mukprabhakar')
-        
+
         console.log('Fetched data:', data); // Debug log
-        
+
         const leetcodeCount = data.leetCode?.totalSolved || 0;
         const gfgCount = data.gfg?.problemsSolved || 0;
-        
+
         console.log('LeetCode count:', leetcodeCount); // Debug log
         console.log('GFG count:', gfgCount); // Debug log
-        
+
         // Set the counts directly
         setCounts(prev => {
           const newCounts = {
@@ -140,40 +141,40 @@ const Achievements = () => {
         </div>
 
         <div className="grid md:grid-cols-4 gap-6 sm:gap-8 text-center mb-12 sm:mb-16">
-          <div className="glass-card p-6 sm:p-8 rounded-xl card-3d">
+          <TiltCard className="glass-card p-6 sm:p-8 rounded-xl card-3d">
             <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">
               {counts.loading ? '...' : `${counts.leetcode}+`}
             </p>
             <p className="text-lg sm:text-xl text-zinc-200">LeetCode Problems</p>
             <p className="text-xs sm:text-sm text-zinc-400">Solved</p>
             {counts.error && <p className="text-xs text-red-400 mt-1">{counts.error}</p>}
-          </div>
-          <div className="glass-card p-6 sm:p-8 rounded-xl card-3d">
+          </TiltCard>
+          <TiltCard className="glass-card p-6 sm:p-8 rounded-xl card-3d">
             <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">
               {counts.loading ? '...' : `${counts.gfg}+`}
             </p>
             <p className="text-lg sm:text-xl text-zinc-200">GFG Problems</p>
             <p className="text-xs sm:text-sm text-zinc-400">Solved</p>
-          </div>
-          <div className="glass-card p-6 sm:p-8 rounded-xl card-3d">
+          </TiltCard>
+          <TiltCard className="glass-card p-6 sm:p-8 rounded-xl card-3d">
             <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">
               {counts.loading ? '...' : `${counts.coding}%`}
             </p>
             <p className="text-lg sm:text-xl text-zinc-200">Coding Environment Growth</p>
             <p className="text-xs sm:text-sm text-zinc-400">As Coding Club Lead</p>
-          </div>
-          <div className="glass-card p-6 sm:p-8 rounded-xl card-3d">
+          </TiltCard>
+          <TiltCard className="glass-card p-6 sm:p-8 rounded-xl card-3d">
             <p className="text-4xl sm:text-5xl font-extrabold gradient-text mb-2">
               {counts.loading ? '...' : `${counts.entrepreneurship}x`}
             </p>
             <p className="text-lg sm:text-xl text-zinc-200">Entrepreneurial Mindset Boost</p>
             <p className="text-xs sm:text-sm text-zinc-400">As E-Cell President</p>
-          </div>
+          </TiltCard>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
           {achievements.map((achievement, index) => (
-            <div key={index} className="glass-card p-4 sm:p-6 rounded-xl card-3d">
+            <TiltCard key={index} className="glass-card p-4 sm:p-6 rounded-xl card-3d">
               <h4 className="font-bold text-lg sm:text-xl mb-3 sm:mb-4 text-white">{achievement.title}</h4>
               <ul className="space-y-3 sm:space-y-4">
                 {achievement.items.map((item, itemIndex) => (
@@ -186,7 +187,7 @@ const Achievements = () => {
                   </li>
                 ))}
               </ul>
-            </div>
+            </TiltCard>
           ))}
         </div>
 

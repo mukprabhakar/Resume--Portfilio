@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
+import TiltCard from './TiltCard'
 import { Bar, Radar } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -31,23 +32,23 @@ const Skills = () => {
     { name: 'Java', percent: 0, target: 90, category: 'Languages', icon: '☕', level: 'Expert' },
     { name: 'SQL', percent: 0, target: 85, category: 'Languages', icon: '🗄️', level: 'Advanced' },
     { name: 'JavaScript', percent: 0, target: 80, category: 'Languages', icon: '📜', level: 'Advanced' },
-    
+
     // Web Technologies
     { name: 'HTML', percent: 0, target: 95, category: 'Web Technology', icon: '🌐', level: 'Expert' },
     { name: 'CSS', percent: 0, target: 90, category: 'Web Technology', icon: '🎨', level: 'Expert' },
     { name: 'React.js', percent: 0, target: 75, category: 'Web Technology', icon: '⚛️', level: 'Intermediate' },
     { name: 'Spring Boot', percent: 0, target: 85, category: 'Web Technology', icon: '🌱', level: 'Advanced' },
-    
+
     // Databases
     { name: 'MySQL', percent: 0, target: 80, category: 'Databases', icon: '🐬', level: 'Advanced' },
-    
+
     // Developer Tools
     { name: 'VS Code', percent: 0, target: 90, category: 'Developer Tools', icon: '💻', level: 'Expert' },
     { name: 'IntelliJ IDEA', percent: 0, target: 85, category: 'Developer Tools', icon: '🔧', level: 'Advanced' },
     { name: 'Postman', percent: 0, target: 80, category: 'Developer Tools', icon: '📬', level: 'Advanced' },
     { name: 'Git', percent: 0, target: 85, category: 'Developer Tools', icon: '🐙', level: 'Advanced' },
     { name: 'n8n', percent: 0, target: 70, category: 'Developer Tools', icon: '🔄', level: 'Intermediate' },
-    
+
     // Soft Skills
     { name: 'Problem-Solving', percent: 0, target: 90, category: 'Soft Skills', icon: '🧠', level: 'Expert' },
     { name: 'Communication', percent: 0, target: 85, category: 'Soft Skills', icon: '💬', level: 'Advanced' },
@@ -117,7 +118,7 @@ const Skills = () => {
   useEffect(() => {
     // Animate skill bars
     const timer = setTimeout(() => {
-      setSkills(prevSkills => 
+      setSkills(prevSkills =>
         prevSkills.map(skill => ({
           ...skill,
           percent: skill.target
@@ -131,18 +132,18 @@ const Skills = () => {
 
   // Filter and sort skills
   const filteredAndSortedSkills = useMemo(() => {
-    let result = activeCategory === 'All' 
-      ? skills 
+    let result = activeCategory === 'All'
+      ? skills
       : skills.filter(skill => skill.category === activeCategory)
-    
+
     // Apply search filter
     if (searchTerm) {
-      result = result.filter(skill => 
+      result = result.filter(skill =>
         skill.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         skill.category.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
-    
+
     // Apply sorting
     switch (sortBy) {
       case 'name':
@@ -159,7 +160,7 @@ const Skills = () => {
   // Chart data - Updated to include all skills
   const radarData = {
     labels: [
-      'Java', 'Spring Boot', 'SQL', 'React.js', 'JavaScript', 
+      'Java', 'Spring Boot', 'SQL', 'React.js', 'JavaScript',
       'HTML/CSS', 'MySQL', 'Problem Solving', 'Communication',
       'Time Management', 'Leadership', 'Team Player'
     ],
@@ -314,7 +315,7 @@ const Skills = () => {
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-emerald-500/5 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-      
+
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center mb-12 sm:mb-16 animate-fade-in">
           <h3 id="skills-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent mb-3 sm:mb-4">My Skills</h3>
@@ -344,7 +345,7 @@ const Skills = () => {
                   </svg>
                 </div>
               </div>
-              
+
               <div>
                 <label htmlFor="sort-by" className="block text-sm font-medium text-zinc-300 mb-2">Sort By</label>
                 <select
@@ -359,16 +360,15 @@ const Skills = () => {
                 </select>
               </div>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
               {skillCategories.map((category) => (
                 <button
                   key={category.title}
-                  className={`px-3 sm:px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                    activeCategory === category.title
-                      ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg transform scale-105'
-                      : 'bg-zinc-800 text-zinc-300 hover:text-emerald-400 hover:bg-zinc-700'
-                  }`}
+                  className={`px-3 sm:px-4 py-2 rounded-full text-sm font-medium transition-all ${activeCategory === category.title
+                    ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg transform scale-105'
+                    : 'bg-zinc-800 text-zinc-300 hover:text-emerald-400 hover:bg-zinc-700'
+                    }`}
                   onClick={() => setActiveCategory(category.title)}
                   aria-pressed={activeCategory === category.title}
                 >
@@ -381,8 +381,8 @@ const Skills = () => {
           {/* Skills Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
             {filteredAndSortedSkills.map((skill, index) => (
-              <div 
-                key={index} 
+              <TiltCard
+                key={index}
                 className="glass-card p-3 sm:p-4 rounded-xl hover:bg-zinc-800/50 transition-all duration-300 group card-3d border border-zinc-700 hover:border-emerald-400/30 animate-scale-in"
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
@@ -395,14 +395,14 @@ const Skills = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mb-2 sm:mb-3">
                   <div className="flex justify-between text-xs sm:text-sm mb-1">
                     <span className="text-zinc-400">{skill.category}</span>
                     <span className="text-zinc-300 font-medium">{skill.percent}%</span>
                   </div>
                   <div className="h-2 sm:h-2.5 bg-zinc-700 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-emerald-400 to-blue-500 rounded-full transition-all duration-1000 ease-out"
                       style={{ width: `${skill.percent}%` }}
                       aria-valuenow={skill.percent}
@@ -413,40 +413,40 @@ const Skills = () => {
                     ></div>
                   </div>
                 </div>
-                
+
                 <p className="text-xs sm:text-sm text-zinc-500">
                   {getLevelDescription(skill.level)}
                 </p>
-              </div>
+              </TiltCard>
             ))}
           </div>
 
           {/* Data Visualization */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-16">
             {/* Radar Chart */}
-            <div className="glass-card p-4 sm:p-6 rounded-xl card-3d hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-700 hover:border-emerald-400/30 animate-slide-in-left">
+            <TiltCard className="glass-card p-4 sm:p-6 rounded-xl card-3d hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-700 hover:border-emerald-400/30 animate-slide-in-left">
               <h4 className="font-bold text-xl sm:text-2xl text-white mb-4 sm:mb-6 text-center">Skill Proficiency Radar</h4>
               <div className="h-64 sm:h-80">
                 <Radar data={radarData} options={radarOptions} />
               </div>
-            </div>
-            
+            </TiltCard>
+
             {/* Bar Chart */}
-            <div className="glass-card p-4 sm:p-6 rounded-xl card-3d hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-700 hover:border-emerald-400/30 animate-slide-in-right">
+            <TiltCard className="glass-card p-4 sm:p-6 rounded-xl card-3d hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-700 hover:border-emerald-400/30 animate-slide-in-right">
               <h4 className="font-bold text-xl sm:text-2xl text-white mb-4 sm:mb-6 text-center">Key Technologies</h4>
               <div className="h-64 sm:h-80">
                 <Bar data={barData} options={barOptions} />
               </div>
-            </div>
+            </TiltCard>
           </div>
 
           {/* Certifications */}
-          <div className="glass-card p-4 sm:p-6 rounded-xl card-3d hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-700 hover:border-emerald-400/30 animate-fade-in">
+          <TiltCard className="glass-card p-4 sm:p-6 rounded-xl card-3d hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-700 hover:border-emerald-400/30 animate-fade-in">
             <h4 className="font-bold text-xl sm:text-2xl text-white mb-4 sm:mb-6 text-center">Certifications</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
               {certifications.map((cert, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className="glass-card p-4 sm:p-6 rounded-xl border border-emerald-400/20 hover:border-emerald-400/40 transition-all duration-300 card-3d hover:shadow-lg hover:shadow-emerald-400/10 transform hover:-translate-y-1"
                 >
                   <div className="flex items-center mb-3 sm:mb-4">
@@ -466,10 +466,10 @@ const Skills = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </TiltCard>
         </div>
       </div>
-    </section>
+    </section >
   )
 }
 

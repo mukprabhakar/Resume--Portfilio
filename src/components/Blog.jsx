@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'
+import TiltCard from './TiltCard'
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -77,8 +78,8 @@ const Blog = () => {
   // Filter posts based on search and tag
   const filteredPosts = useMemo(() => {
     return blogPosts.filter(post => {
-      const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                           post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
       const matchesTag = selectedTag === 'All' || post.tag === selectedTag
       return matchesSearch && matchesTag
     })
@@ -113,7 +114,7 @@ const Blog = () => {
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
-      
+
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center mb-12 sm:mb-16">
           <h3 id="blog-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold gradient-text mb-3 sm:mb-4">My Blog</h3>
@@ -134,44 +135,48 @@ const Blog = () => {
             </h4>
             <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
               {featuredPosts.slice(0, 2).map((post) => (
-                <a 
+                <TiltCard
                   key={post.id}
-                  href={post.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="glass-card rounded-xl overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-500 hover:shadow-xl hover:shadow-emerald-400/10 transform hover:-translate-y-2"
-                  aria-label={`Read featured article: ${post.title}`}
+                  className="glass-card rounded-xl overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-500 hover:shadow-xl hover:shadow-emerald-400/10"
                 >
-                  <div className="md:flex">
-                    <div className="md:flex-shrink-0">
-                      <img 
-                        src={post.image} 
-                        alt={post.title}
-                        className="h-40 sm:h-48 w-full md:w-40 md:h-full object-cover"
-                        onError={(e) => {
-                          e.target.onerror = null
-                          e.target.src = 'https://placehold.co/600x400/18181b/34d399?text=Blog+Image'
-                        }}
-                      />
-                    </div>
-                    <div className="p-4 sm:p-6">
-                      <div className="flex justify-between items-center mb-2 sm:mb-3">
-                        <span className={`text-xs font-semibold px-2 sm:px-3 py-1 rounded-full ${getTagClass(post.tag)}`}>
-                          {post.tag}
-                        </span>
-                        <span className="text-zinc-400 text-xs sm:text-sm">{post.date}</span>
+                  <a
+                    href={post.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full h-full"
+                    aria-label={`Read featured article: ${post.title}`}
+                  >
+                    <div className="md:flex">
+                      <div className="md:flex-shrink-0">
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          className="h-40 sm:h-48 w-full md:w-40 md:h-full object-cover"
+                          onError={(e) => {
+                            e.target.onerror = null
+                            e.target.src = 'https://placehold.co/600x400/18181b/34d399?text=Blog+Image'
+                          }}
+                        />
                       </div>
-                      <h5 className="font-bold text-base sm:text-xl text-white mb-2">{post.title}</h5>
-                      <p className="text-zinc-400 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">{post.excerpt}</p>
-                      <div className="flex justify-between items-center">
-                        <div className="text-emerald-400 hover:text-emerald-300 text-xs sm:text-sm font-semibold transition flex items-center">
-                          Read More <span className="ml-1">→</span>
+                      <div className="p-4 sm:p-6">
+                        <div className="flex justify-between items-center mb-2 sm:mb-3">
+                          <span className={`text-xs font-semibold px-2 sm:px-3 py-1 rounded-full ${getTagClass(post.tag)}`}>
+                            {post.tag}
+                          </span>
+                          <span className="text-zinc-400 text-xs sm:text-sm">{post.date}</span>
                         </div>
-                        <span className="text-zinc-500 text-xs">{post.readTime}</span>
+                        <h5 className="font-bold text-base sm:text-xl text-white mb-2">{post.title}</h5>
+                        <p className="text-zinc-400 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">{post.excerpt}</p>
+                        <div className="flex justify-between items-center">
+                          <div className="text-emerald-400 hover:text-emerald-300 text-xs sm:text-sm font-semibold transition flex items-center">
+                            Read More <span className="ml-1">→</span>
+                          </div>
+                          <span className="text-zinc-500 text-xs">{post.readTime}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </a>
+                  </a>
+                </TiltCard>
               ))}
             </div>
           </div>
@@ -205,11 +210,10 @@ const Blog = () => {
                     setSelectedTag(tag)
                     setCurrentPage(1)
                   }}
-                  className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
-                    selectedTag === tag
+                  className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${selectedTag === tag
                       ? 'bg-emerald-400 text-zinc-900'
                       : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                  }`}
+                    }`}
                   aria-pressed={selectedTag === tag}
                 >
                   {tag}
@@ -224,12 +228,12 @@ const Blog = () => {
           <>
             <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
               {paginatedPosts.map((post) => (
-                <div 
+                <TiltCard
                   key={post.id}
-                  className="glass-card rounded-xl overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-500 hover:shadow-xl hover:shadow-emerald-400/10 transform hover:-translate-y-2"
+                  className="glass-card rounded-xl overflow-hidden border border-zinc-800 hover:border-emerald-400/50 transition-all duration-500 hover:shadow-xl hover:shadow-emerald-400/10"
                 >
-                  <img 
-                    src={post.image} 
+                  <img
+                    src={post.image}
                     alt={post.title}
                     className="w-full h-40 sm:h-48 object-cover"
                     onError={(e) => {
@@ -247,14 +251,14 @@ const Blog = () => {
                     <h4 className="font-bold text-base sm:text-xl text-white mb-2 sm:mb-3">{post.title}</h4>
                     <p className="text-zinc-400 text-xs sm:text-sm mb-4 sm:mb-5 line-clamp-3">{post.excerpt}</p>
                     <div className="flex justify-between items-center">
-                      <a 
-                        href={post.url} 
-                        target="_blank" 
+                      <a
+                        href={post.url}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center text-emerald-400 hover:text-emerald-300 text-xs sm:text-sm font-semibold transition"
                         aria-label={`Read article: ${post.title}`}
                       >
-                        Read More 
+                        Read More
                         <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                         </svg>
@@ -262,7 +266,7 @@ const Blog = () => {
                       <span className="text-zinc-500 text-xs">{post.readTime}</span>
                     </div>
                   </div>
-                </div>
+                </TiltCard>
               ))}
             </div>
 
@@ -273,27 +277,25 @@ const Blog = () => {
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm ${
-                      currentPage === 1 
-                        ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' 
+                    className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm ${currentPage === 1
+                        ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
                         : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white'
-                    }`}
+                      }`}
                     aria-label="Previous page"
                   >
                     Previous
                   </button>
-                  
+
                   {[...Array(totalPages)].map((_, index) => {
                     const page = index + 1
                     return (
                       <button
                         key={page}
                         onClick={() => handlePageChange(page)}
-                        className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm ${
-                          currentPage === page
+                        className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm ${currentPage === page
                             ? 'bg-emerald-400 text-zinc-900 font-bold'
                             : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                        }`}
+                          }`}
                         aria-current={currentPage === page ? 'page' : undefined}
                         aria-label={`Page ${page}`}
                       >
@@ -301,15 +303,14 @@ const Blog = () => {
                       </button>
                     )
                   })}
-                  
+
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm ${
-                      currentPage === totalPages 
-                        ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' 
+                    className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm ${currentPage === totalPages
+                        ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
                         : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white'
-                    }`}
+                      }`}
                     aria-label="Next page"
                   >
                     Next
@@ -340,9 +341,9 @@ const Blog = () => {
 
         {/* View All Button */}
         <div className="text-center mt-12 sm:mt-16">
-          <a 
-            href="https://medium.com/@mukprabhakar" 
-            target="_blank" 
+          <a
+            href="https://medium.com/@mukprabhakar"
+            target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center border-2 border-emerald-400 text-emerald-400 font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-full hover:bg-emerald-400/10 transition-all transform hover:scale-105 text-sm sm:text-base"
             aria-label="View all articles on Medium"

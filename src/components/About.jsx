@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import TiltCard from './TiltCard'
 
 const About = () => {
   const [activeTab, setActiveTab] = useState('bio')
@@ -56,7 +57,7 @@ const About = () => {
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
-      
+
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center mb-12 sm:mb-16">
           <h3 id="about-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent mb-3 sm:mb-4">About Me</h3>
@@ -72,11 +73,10 @@ const About = () => {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                className={`px-4 sm:px-6 py-2 sm:py-3 m-1 rounded-lg text-sm sm:text-base font-medium transition-all ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg'
-                    : 'bg-zinc-800 text-zinc-300 hover:text-emerald-400 hover:bg-zinc-700'
-                }`}
+                className={`px-4 sm:px-6 py-2 sm:py-3 m-1 rounded-lg text-sm sm:text-base font-medium transition-all ${activeTab === tab.id
+                  ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg'
+                  : 'bg-zinc-800 text-zinc-300 hover:text-emerald-400 hover:bg-zinc-700'
+                  }`}
                 onClick={() => setActiveTab(tab.id)}
                 aria-selected={activeTab === tab.id}
                 role="tab"
@@ -93,30 +93,29 @@ const About = () => {
                 <div>
                   <h4 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">My Story</h4>
                   <p className="text-zinc-300 mb-4 leading-relaxed">
-                    I'm a passionate software developer with a strong foundation in Java, Spring Boot, and modern web technologies. 
-                    My journey in technology began with a curiosity to understand how things work, which evolved into a deep passion 
+                    I'm a passionate software developer with a strong foundation in Java, Spring Boot, and modern web technologies.
+                    My journey in technology began with a curiosity to understand how things work, which evolved into a deep passion
                     for creating innovative solutions.
                   </p>
                   <p className="text-zinc-300 mb-4 leading-relaxed">
-                    As a Computer Science student at IIMT University, I've combined academic excellence with practical experience 
-                    through internships and leadership roles. I believe in continuous learning and staying updated with the latest 
+                    As a Computer Science student at IIMT University, I've combined academic excellence with practical experience
+                    through internships and leadership roles. I believe in continuous learning and staying updated with the latest
                     industry trends to deliver cutting-edge solutions.
                   </p>
                   <p className="text-zinc-300 leading-relaxed">
-                    When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, 
+                    When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects,
                     or mentoring fellow students in programming and software development.
                   </p>
                 </div>
-                
+
                 <div>
                   <h4 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Core Strengths</h4>
                   <div className="space-y-4">
                     {features.map((feature, index) => (
-                      <div 
+                      <TiltCard
                         key={index}
-                        className={`glass-card p-4 sm:p-6 rounded-xl card-3d hover:bg-zinc-800/50 transition-all duration-300 cursor-pointer ${
-                          activeFeature === index ? 'border border-emerald-400/30' : 'border border-zinc-700'
-                        }`}
+                        className={`glass-card p-4 sm:p-6 rounded-xl card-3d hover:bg-zinc-800/50 transition-all duration-300 cursor-pointer ${activeFeature === index ? 'border border-emerald-400/30' : 'border border-zinc-700'
+                          }`}
                         onClick={() => setActiveFeature(index)}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
@@ -135,7 +134,7 @@ const About = () => {
                             <p className="text-zinc-400 text-sm sm:text-base">{feature.description}</p>
                           </div>
                         </div>
-                      </div>
+                      </TiltCard>
                     ))}
                   </div>
                 </div>
@@ -153,7 +152,7 @@ const About = () => {
                         <span className="text-sm text-zinc-400">90%</span>
                       </div>
                       <div className="h-2.5 sm:h-3 bg-zinc-700 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-emerald-400 to-blue-500 rounded-full transition-all duration-1000 ease-out"
                           style={{ width: '90%' }}
                           aria-valuenow="90"
@@ -164,14 +163,14 @@ const About = () => {
                         ></div>
                       </div>
                     </div>
-                    
+
                     <div>
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-medium text-zinc-300">React.js & JavaScript</span>
                         <span className="text-sm text-zinc-400">80%</span>
                       </div>
                       <div className="h-2.5 sm:h-3 bg-zinc-700 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-emerald-400 to-blue-500 rounded-full transition-all duration-1000 ease-out"
                           style={{ width: '80%' }}
                           aria-valuenow="80"
@@ -182,14 +181,14 @@ const About = () => {
                         ></div>
                       </div>
                     </div>
-                    
+
                     <div>
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-medium text-zinc-300">Database Design (SQL)</span>
                         <span className="text-sm text-zinc-400">85%</span>
                       </div>
                       <div className="h-2.5 sm:h-3 bg-zinc-700 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-emerald-400 to-blue-500 rounded-full transition-all duration-1000 ease-out"
                           style={{ width: '85%' }}
                           aria-valuenow="85"
@@ -201,7 +200,7 @@ const About = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="glass-card p-4 sm:p-6 rounded-xl border border-emerald-400/30 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/5 to-blue-500/5"></div>
                     <div className="relative">
@@ -241,7 +240,7 @@ const About = () => {
                 <div className="relative">
                   {/* Timeline line */}
                   <div className="absolute left-4 sm:left-6 top-0 h-full w-0.5 bg-gradient-to-b from-emerald-400 to-blue-500"></div>
-                  
+
                   <div className="space-y-8 sm:space-y-10 pl-10 sm:pl-14">
                     {timeline.map((item, index) => (
                       <div key={index} className="relative">
@@ -249,7 +248,7 @@ const About = () => {
                         <div className="absolute -left-10 sm:-left-14 top-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center text-white font-bold border-4 border-zinc-900">
                           {item.year}
                         </div>
-                        
+
                         <div className="glass-card p-4 sm:p-6 rounded-xl border border-zinc-700 hover:border-emerald-400/30 transition-all duration-300">
                           <h5 className="font-bold text-lg sm:text-xl text-white mb-2">{item.title}</h5>
                           <p className="text-zinc-400 mb-3">{item.description}</p>

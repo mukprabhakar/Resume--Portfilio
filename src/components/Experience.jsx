@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import TiltCard from './TiltCard'
 
 const Experience = () => {
   const [expandedId, setExpandedId] = useState(null)
@@ -157,7 +158,7 @@ const Experience = () => {
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
-      
+
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center mb-12 sm:mb-16">
           <h3 id="experience-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold gradient-text mb-3 sm:mb-4">My Journey</h3>
@@ -172,19 +173,19 @@ const Experience = () => {
           <div className="relative">
             {/* Vertical line */}
             <div className="absolute left-8 sm:left-10 h-full w-1 bg-gradient-to-b from-emerald-400 to-blue-500 rounded-full"></div>
-            
+
             {experiences.map((exp, index) => (
-              <div 
-                key={exp.id} 
+              <div
+                key={exp.id}
                 className="timeline-item relative pl-16 sm:pl-20 pb-10 sm:pb-12 last:pb-0"
               >
                 {/* Timeline dot */}
                 <div className="timeline-dot absolute left-0 top-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center text-white font-bold transform scale-100 transition-transform hover:scale-120 shadow-lg border-4 border-zinc-900 z-10">
                   <span className="text-lg sm:text-xl" aria-hidden="true">{exp.logo}</span>
                 </div>
-                
+
                 {/* Content card */}
-                <div className="timeline-content relative p-4 sm:p-6 bg-zinc-800/50 rounded-xl transition-all duration-300 transform hover:translate-x-2 sm:hover:translate-x-3 hover:shadow-xl hover:shadow-emerald-400/10 glass-card border border-zinc-700 hover:border-emerald-400/30">
+                <TiltCard className="timeline-content relative p-4 sm:p-6 bg-zinc-800/50 rounded-xl transition-all duration-300 transform hover:translate-x-2 sm:hover:translate-x-3 hover:shadow-xl hover:shadow-emerald-400/10 glass-card border border-zinc-700 hover:border-emerald-400/30">
                   <div className="flex flex-wrap justify-between items-start mb-2 sm:mb-3">
                     <div>
                       <h4 className="font-bold text-lg sm:text-xl mb-1 text-white">{exp.title}</h4>
@@ -195,18 +196,18 @@ const Experience = () => {
                     </span>
                   </div>
                   <p className="text-zinc-300 text-xs sm:text-sm mb-3 sm:mb-4">{exp.description}</p>
-                  
+
                   <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4">
                     {exp.skills.slice(0, 4).map((skill, skillIndex) => (
-                      <span 
-                        key={skillIndex} 
+                      <span
+                        key={skillIndex}
                         className="bg-zinc-700 text-zinc-300 text-xs font-semibold px-2 py-1 rounded-full"
                       >
                         {skill}
                       </span>
                     ))}
                   </div>
-                  
+
                   {expandedId === exp.id && (
                     <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-zinc-700">
                       <h5 className="font-bold text-emerald-400 mb-2 sm:mb-3 flex items-center text-sm sm:text-base">
@@ -225,25 +226,25 @@ const Experience = () => {
                       </div>
                     </div>
                   )}
-                  
-                  <button 
+
+                  <button
                     onClick={() => toggleExpand(exp.id)}
                     className="mt-2 sm:mt-3 text-emerald-400 hover:text-emerald-300 text-xs sm:text-sm font-medium flex items-center"
                     aria-expanded={expandedId === exp.id}
                     aria-controls={`achievements-${exp.id}`}
                   >
                     {expandedId === exp.id ? 'Show Less' : 'Show More'}
-                    <svg 
-                      className={`w-3 h-3 sm:w-4 sm:h-4 ml-1 transition-transform ${expandedId === exp.id ? 'rotate-180' : ''}`} 
-                      fill="none" 
-                      stroke="currentColor" 
+                    <svg
+                      className={`w-3 h-3 sm:w-4 sm:h-4 ml-1 transition-transform ${expandedId === exp.id ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
                       viewBox="0 0 24 24"
                       aria-hidden="true"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                   </button>
-                </div>
+                </TiltCard>
               </div>
             ))}
           </div>
@@ -251,22 +252,22 @@ const Experience = () => {
 
         {/* Stats Section */}
         <div className="mt-12 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
-          <div className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
+          <TiltCard className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
             <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">3+</div>
             <div className="text-zinc-400 text-xs sm:text-sm">Years Experience</div>
-          </div>
-          <div className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
+          </TiltCard>
+          <TiltCard className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
             <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">15+</div>
             <div className="text-zinc-400 text-xs sm:text-sm">Projects Completed</div>
-          </div>
-          <div className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
+          </TiltCard>
+          <TiltCard className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
             <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">2</div>
             <div className="text-zinc-400 text-xs sm:text-sm">Internships</div>
-          </div>
-          <div className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
+          </TiltCard>
+          <TiltCard className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
             <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">1500+</div>
             <div className="text-zinc-400 text-xs sm:text-sm">Students Impacted</div>
-          </div>
+          </TiltCard>
         </div>
       </div>
     </section>
