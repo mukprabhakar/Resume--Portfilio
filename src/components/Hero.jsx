@@ -13,10 +13,10 @@ const Hero = () => {
   const [isVisible, setIsVisible] = useState(false)
 
   const roles = [
-    "SpringBoot Developer",
-    "Tech Entrepreneur",
-    "Innovation Catalyst",
-    "Problem Solver"
+    "Full-Stack Freelancer",
+    "SaaS Product Builder",
+    "Technical Co-Founder",
+    "Digital Solution Architect"
   ]
 
   // Animate counters for social proof
@@ -213,7 +213,7 @@ const Hero = () => {
           <div className={`text-center lg:text-left lg:w-1/2 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <div className="mb-4 sm:mb-6 animate-fade-in-up">
               <span className="inline-block px-3 sm:px-4 py-1 sm:py-2 bg-zinc-800/50 border border-emerald-400/30 rounded-full text-emerald-400 text-xs sm:text-sm font-medium backdrop-blur-sm animate-pulse">
-                Software Developer & Innovator
+                Freelance Full-Stack Developer
               </span>
             </div>
             
@@ -230,38 +230,38 @@ const Hero = () => {
             </div>
             
             <p className="text-lg sm:text-xl text-zinc-400 mb-6 sm:mb-8 max-w-2xl animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-              I craft <span className="text-emerald-400 font-medium">innovative digital solutions</span> with code, transforming ideas into reality through clean, efficient, and scalable software development.
+              I build <span className="text-emerald-400 font-medium">high-performing digital products</span> that solve real business problems and deliver measurable ROI for startups and growing businesses.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
               <a 
-                href="#projects" 
+                href="#work" 
                 className="relative bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-full hover:shadow-2xl transition-all transform hover:scale-105 hover:shadow-emerald-400/30 group font-mono text-base sm:text-lg overflow-hidden z-10"
                 onClick={() => {
-                  // Track projects button click
-                  trackEvent('click', 'hero', 'view_projects_button')
+                  // Track case studies button click
+                  trackEvent('click', 'hero', 'view_case_studies_button')
                 }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="absolute inset-0 flex items-center justify-center">
                   <span className="absolute w-0 h-0 bg-white/20 rounded-full transition-all duration-500 group-hover:w-64 group-hover:h-64"></span>
                 </span>
-                <span className="relative z-10">View Projects</span>
+                <span className="relative z-10">View Case Studies</span>
               </a>
               
               <a 
                 href="#contact" 
                 className="relative border-2 border-emerald-400 text-emerald-400 font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-full hover:bg-emerald-400/10 transition-all transform hover:scale-105 group font-mono text-base sm:text-lg overflow-hidden z-10"
                 onClick={() => {
-                  // Track contact button click
-                  trackEvent('click', 'hero', 'get_in_touch_button')
+                  // Track discovery call button click
+                  trackEvent('click', 'hero', 'book_discovery_call_button')
                 }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="absolute inset-0 flex items-center justify-center">
                   <span className="absolute w-0 h-0 bg-emerald-400/10 rounded-full transition-all duration-500 group-hover:w-64 group-hover:h-64"></span>
                 </span>
-                <span className="relative z-10">Get In Touch</span>
+                <span className="relative z-10">Book Discovery Call</span>
               </a>
             </div>
             
@@ -277,7 +277,7 @@ const Hero = () => {
                 <div className="text-2xl sm:text-3xl font-bold text-emerald-400">
                   {studentCount}+
                 </div>
-                <div className="text-zinc-400 text-sm">Students Impacted</div>
+                <div className="text-zinc-400 text-sm">Happy Clients</div>
               </div>
               <div className="flex flex-col items-center lg:items-start">
                 <div className="text-2xl sm:text-3xl font-bold text-emerald-400">
@@ -313,6 +313,11 @@ const Hero = () => {
                 
                 {/* Online status indicator */}
                 <div className="absolute bottom-4 right-4 w-6 h-6 bg-emerald-500 rounded-full border-4 border-zinc-900 animate-pulse"></div>
+                              
+                {/* Availability badge */}
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-bounce">
+                  Available for Projects
+                </div>
               </div>
               
               {/* Enhanced floating tech icons with animations */}

@@ -28,7 +28,7 @@ const Header = () => {
   // Handle scroll to update active section
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['hero', 'about', 'skills', 'projects', 'experience', 'achievements', 'testimonials', 'blog', 'profile', 'contact']
+      const sections = ['hero', 'about', 'services', 'skills', 'work', 'experience', 'achievements', 'testimonials', 'blog', 'profile', 'contact']
       const scrollPosition = window.scrollY + 100
 
       for (const section of sections) {
@@ -52,8 +52,9 @@ const Header = () => {
 
   const navItems = [
     { id: 'about', label: 'About', type: 'internal' },
+    { id: 'services', label: 'Services', type: 'internal' },
     { id: 'skills', label: 'Skills', type: 'internal' },
-    { id: 'projects', label: 'Projects', type: 'internal' },
+    { id: 'work', label: 'Work', type: 'internal' },
     { id: 'experience', label: 'Journey', type: 'internal' },
     { id: 'achievements', label: 'Achievements', type: 'internal' },
     { id: 'testimonials', label: 'Testimonials', type: 'internal' },
@@ -65,7 +66,9 @@ const Header = () => {
   ]
 
   const scrollToSection = (sectionId) => {
+    console.log('Attempting to scroll to section:', sectionId);
     const element = document.getElementById(sectionId)
+    console.log('Element found:', element);
     if (element) {
       window.scrollTo({
         top: element.offsetTop - 80,
@@ -73,6 +76,9 @@ const Header = () => {
       })
       // Track navigation to section
       trackEvent('click', 'navigation', `scroll_to_${sectionId}`)
+      console.log('Successfully scrolled to:', sectionId);
+    } else {
+      console.error('Element not found for section:', sectionId);
     }
   }
 
@@ -98,9 +104,9 @@ const Header = () => {
     <header className="bg-zinc-900/90 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-xl border-b border-zinc-800 transition-all duration-300" role="banner">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 py-2 sm:py-3 flex justify-between items-center">
         {/* Logo/Brand */}
-        <Link 
-          to="/" 
-          className="flex items-center space-x-1.5 sm:space-x-2 group" 
+        <Link
+          to="/"
+          className="flex items-center space-x-1.5 sm:space-x-2 group"
           aria-label="Mukesh Pal - Home"
           onClick={() => {
             trackEvent('click', 'navigation', 'logo_click')
@@ -117,14 +123,13 @@ const Header = () => {
         <nav className="hidden md:flex items-center space-x-0.5 lg:space-x-1" role="navigation" aria-label="Main navigation">
           {navItems.map((item) => (
             item.type === 'route' ? (
-              <Link 
-                key={item.id} 
+              <Link
+                key={item.id}
                 to={`/${item.id}`}
-                className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all duration-300 ${
-                  window.location.pathname === `/${item.id}` 
-                    ? 'text-emerald-400 bg-emerald-400/10' 
-                    : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
-                }`}
+                className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all duration-300 ${window.location.pathname === `/${item.id}`
+                  ? 'text-emerald-400 bg-emerald-400/10'
+                  : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
+                  }`}
                 onClick={() => {
                   trackEvent('click', 'navigation', `route_link_${item.id}`)
                 }}
@@ -132,10 +137,10 @@ const Header = () => {
                 {item.label}
               </Link>
             ) : item.type === 'external' ? (
-              <a 
-                key={item.id} 
-                href={item.href} 
-                target="_blank" 
+              <a
+                key={item.id}
+                href={item.href}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="px-2 py-1.5 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50 transition-all duration-300"
                 onClick={() => {
@@ -145,18 +150,17 @@ const Header = () => {
                 {item.label}
               </a>
             ) : (
-              <a 
-                key={item.id} 
-                href={`#${item.id}`} 
+              <a
+                key={item.id}
+                href={`#${item.id}`}
                 onClick={(e) => {
                   handleInternalLink(e, item.id)
                   trackEvent('click', 'navigation', `internal_link_${item.id}`)
                 }}
-                className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all duration-300 ${
-                  activeSection === item.id 
-                    ? 'text-emerald-400 bg-emerald-400/10' 
-                    : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
-                }`}
+                className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all duration-300 ${activeSection === item.id
+                  ? 'text-emerald-400 bg-emerald-400/10'
+                  : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
+                  }`}
                 aria-current={activeSection === item.id ? 'page' : undefined}
               >
                 {item.label}
@@ -166,13 +170,12 @@ const Header = () => {
         </nav>
 
         {/* Mobile menu button */}
-        <button 
-          id="mobile-menu-button" 
-          className={`md:hidden p-1.5 sm:p-2 rounded-md transition-all ${
-            isMobileMenuOpen 
-              ? 'text-emerald-400 bg-zinc-800' 
-              : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800'
-          }`}
+        <button
+          id="mobile-menu-button"
+          className={`md:hidden p-1.5 sm:p-2 rounded-md transition-all ${isMobileMenuOpen
+            ? 'text-emerald-400 bg-zinc-800'
+            : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800'
+            }`}
           onClick={toggleMobileMenu}
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-menu"
@@ -189,25 +192,23 @@ const Header = () => {
       </div>
 
       {/* Mobile menu */}
-      <div 
+      <div
         id="mobile-menu"
-        className={`md:hidden bg-zinc-900/95 backdrop-blur-lg border-t border-zinc-800 transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
-        }`}
+        className={`md:hidden bg-zinc-900/95 backdrop-blur-lg border-t border-zinc-800 transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+          }`}
         role="navigation"
         aria-label="Mobile navigation"
       >
         <div className="container mx-auto px-3 py-2 sm:px-4 sm:py-3 flex flex-col space-y-1">
           {navItems.map((item) => (
             item.type === 'route' ? (
-              <Link 
-                key={item.id} 
+              <Link
+                key={item.id}
                 to={`/${item.id}`}
-                className={`px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm font-medium transition-all ${
-                  window.location.pathname === `/${item.id}` 
-                    ? 'text-emerald-400 bg-emerald-400/10' 
-                    : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
-                }`}
+                className={`px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm font-medium transition-all ${window.location.pathname === `/${item.id}`
+                  ? 'text-emerald-400 bg-emerald-400/10'
+                  : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
+                  }`}
                 onClick={() => {
                   setIsMobileMenuOpen(false)
                   trackEvent('click', 'navigation', `mobile_route_link_${item.id}`)
@@ -216,10 +217,10 @@ const Header = () => {
                 {item.label}
               </Link>
             ) : item.type === 'external' ? (
-              <a 
-                key={item.id} 
-                href={item.href} 
-                target="_blank" 
+              <a
+                key={item.id}
+                href={item.href}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm font-medium text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50 transition-all"
                 onClick={() => {
@@ -230,19 +231,18 @@ const Header = () => {
                 {item.label}
               </a>
             ) : (
-              <a 
-                key={item.id} 
-                href={`#${item.id}`} 
+              <a
+                key={item.id}
+                href={`#${item.id}`}
                 onClick={(e) => {
                   handleInternalLink(e, item.id)
                   setIsMobileMenuOpen(false)
                   trackEvent('click', 'navigation', `mobile_internal_link_${item.id}`)
                 }}
-                className={`px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm font-medium transition-all ${
-                  activeSection === item.id 
-                    ? 'text-emerald-400 bg-emerald-400/10' 
-                    : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
-                }`}
+                className={`px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm font-medium transition-all ${activeSection === item.id
+                  ? 'text-emerald-400 bg-emerald-400/10'
+                  : 'text-zinc-300 hover:text-emerald-400 hover:bg-zinc-800/50'
+                  }`}
                 aria-current={activeSection === item.id ? 'page' : undefined}
               >
                 {item.label}

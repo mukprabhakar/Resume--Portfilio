@@ -93,18 +93,16 @@ const About = () => {
                 <div>
                   <h4 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">My Story</h4>
                   <p className="text-zinc-300 mb-4 leading-relaxed">
-                    I'm a passionate software developer with a strong foundation in Java, Spring Boot, and modern web technologies.
-                    My journey in technology began with a curiosity to understand how things work, which evolved into a deep passion
-                    for creating innovative solutions.
+                    I'm a freelance full-stack developer specializing in building scalable web applications and SaaS products that drive real business results.
+                    With 3+ years of experience, I help startups and growing businesses transform their ideas into high-performing digital solutions.
                   </p>
                   <p className="text-zinc-300 mb-4 leading-relaxed">
-                    As a Computer Science student at IIMT University, I've combined academic excellence with practical experience
-                    through internships and leadership roles. I believe in continuous learning and staying updated with the latest
-                    industry trends to deliver cutting-edge solutions.
+                    My expertise spans the entire development lifecycle - from technical discovery and architecture to implementation and deployment.
+                    I focus on delivering solutions that not only work perfectly but also provide measurable business value and ROI.
                   </p>
                   <p className="text-zinc-300 leading-relaxed">
-                    When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects,
-                    or mentoring fellow students in programming and software development.
+                    I believe in transparent communication, collaborative development, and building long-term partnerships with clients
+                    who are serious about leveraging technology to grow their business.
                   </p>
                 </div>
 
@@ -148,7 +146,7 @@ const About = () => {
                   <div className="space-y-4">
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="font-medium text-zinc-300">Java & Spring Boot</span>
+                        <span className="font-medium text-zinc-300">Backend Development (Java/Spring)</span>
                         <span className="text-sm text-zinc-400">90%</span>
                       </div>
                       <div className="h-2.5 sm:h-3 bg-zinc-700 rounded-full overflow-hidden">
@@ -166,7 +164,7 @@ const About = () => {
 
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="font-medium text-zinc-300">React.js & JavaScript</span>
+                        <span className="font-medium text-zinc-300">Frontend Development (React/JS)</span>
                         <span className="text-sm text-zinc-400">80%</span>
                       </div>
                       <div className="h-2.5 sm:h-3 bg-zinc-700 rounded-full overflow-hidden">
@@ -184,7 +182,7 @@ const About = () => {
 
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="font-medium text-zinc-300">Database Design (SQL)</span>
+                        <span className="font-medium text-zinc-300">Database & Architecture</span>
                         <span className="text-sm text-zinc-400">85%</span>
                       </div>
                       <div className="h-2.5 sm:h-3 bg-zinc-700 rounded-full overflow-hidden">

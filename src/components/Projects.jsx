@@ -122,13 +122,13 @@ const Projects = () => {
   ]
 
   const filterButtons = [
-    { id: 'all', label: 'All Projects' },
-    { id: 'Java', label: 'Java' },
-    { id: 'Spring', label: 'Spring' },
-    { id: 'React', label: 'React' },
-    { id: 'SQL', label: 'SQL' },
-    { id: 'WebSockets', label: 'WebSockets' },
-    { id: 'Startup', label: 'Startups' }
+    { id: 'all', label: 'All Work' },
+    { id: 'Java', label: 'Backend Solutions' },
+    { id: 'Spring', label: 'Enterprise Apps' },
+    { id: 'React', label: 'Web Applications' },
+    { id: 'SQL', label: 'Data Solutions' },
+    { id: 'WebSockets', label: 'Real-time Systems' },
+    { id: 'Startup', label: 'Startup Projects' }
   ]
 
   const filteredProjects = activeFilter === 'all'
@@ -152,32 +152,25 @@ const Projects = () => {
   }
 
   return (
-    <section id="projects" className="py-16 sm:py-20 bg-gradient-to-br from-zinc-900 to-zinc-800 relative overflow-hidden" aria-labelledby="projects-heading">
+    <section id="work" className="py-16 sm:py-20 bg-gradient-to-br from-zinc-900 to-zinc-800 relative overflow-hidden" aria-labelledby="work-heading">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-emerald-500/5 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center mb-12 sm:mb-16 animate-fade-in">
-          <h3 id="projects-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent mb-3 sm:mb-4">Projects Showcase</h3>
+          <h3 id="work-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent mb-3 sm:mb-4">Case Studies</h3>
           <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto mb-4 sm:mb-6 rounded-full"></div>
           <p className="mt-3 sm:mt-4 text-zinc-400 max-w-md sm:max-w-2xl mx-auto text-base sm:text-lg">
-            Innovative solutions to real-world problems with measurable impact
+            Real business solutions that delivered measurable ROI and transformed operations
           </p>
         </div>
 
         {/* Note about private repositories */}
         <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 mb-8 text-center text-zinc-300 text-sm sm:text-base">
           <p>
-            <strong>Note:</strong> Most of our project repositories are private, and several personal projects are not currently hosted, so live previews are unavailable.
-            If you're interested in viewing the code or learning more about the projects, please{' '}
-            <a href="mailto:mukesh.mmp1234@gmail.com" className="text-emerald-400 hover:text-emerald-300 underline transition-colors">
-              contact me
-            </a>{' '}
-            or schedule a Google Meet at{' '}
-            <a href="mailto:mukesh.mmp1234@gmail.com" className="text-emerald-400 hover:text-emerald-300 underline transition-colors">
-              mukesh.mmp1234@gmail.com
-            </a>.
+            <strong>Note:</strong> Many client projects are under NDA and several repositories are private. For detailed case studies and project insights, I'd be happy to discuss during our discovery call.
+            Let's schedule a conversation to explore how I can help solve your specific business challenges.
           </p>
         </div>
 
