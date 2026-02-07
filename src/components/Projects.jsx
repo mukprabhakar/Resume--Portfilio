@@ -169,8 +169,8 @@ const Projects = () => {
         {/* Note about private repositories */}
         <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 mb-8 text-center text-zinc-300 text-sm sm:text-base">
           <p>
-            <strong>Note:</strong> Many client projects are under NDA and several repositories are private. For detailed case studies and project insights, I'd be happy to discuss during our discovery call.
-            Let's schedule a conversation to explore how I can help solve your specific business challenges.
+<strong>Note:</strong> Many client projects are under NDA and several repositories are private. For detailed case studies and project insights, I&apos;d be happy to discuss during our discovery call.
+            Let&apos;s schedule a conversation to explore how I can help solve your specific business challenges.
           </p>
         </div>
 

@@ -218,7 +218,7 @@ const Hero = () => {
             </div>
             
             <h1 id="hero-heading" className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              <span className="block mb-2">Hi, I'm</span>
+              <span className="block mb-2">Hi, I&apos;m</span>
               <span className="bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent animate-fade-in">Mukesh Pal</span>
             </h1>
             

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { trackEvent } from '../utils/analytics'
+import { trackEvent, trackSocial } from '../utils/analytics'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -211,7 +211,7 @@ const Contact = () => {
           <h3 id="contact-heading" className="text-4xl md:text-5xl font-bold gradient-text mb-4">Get In Touch</h3>
           <div className="w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto mb-6" aria-hidden="true"></div>
           <p className="mt-4 text-zinc-400 max-w-2xl mx-auto text-lg">
-            Have a project in mind or want to collaborate? I'd love to hear from you!
+            Have a project in mind or want to collaborate? I&apos;d love to hear from you!
           </p>
         </div>
 
@@ -226,7 +226,7 @@ const Contact = () => {
                   <svg className="w-6 h-6 text-emerald-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
-                  <span className="text-emerald-400 font-medium">Message sent successfully! I'll get back to you within 24 hours.</span>
+  <span className="text-emerald-400 font-medium">Message sent successfully! I&apos;ll get back to you within 24 hours.</span>
                 </div>
               </div>
             )}

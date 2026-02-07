@@ -24,29 +24,16 @@ export const fetchLeetCodeStats = async (username) => {
  * @returns {Promise<Object>} GeeksforGeeks statistics
  */
 export const fetchGFGStats = async (username) => {
-  try {
-    // For now, we'll use a mock response since we don't have a deployed backend
-    // In a production environment, this would call a deployed API
-    return {
-      problemsSolved: 95,
-      schoolProblems: 10,
-      basicProblems: 15,
-      easyProblems: 25,
-      mediumProblems: 30,
-      hardProblems: 15
-    };
-  } catch (error) {
-    console.error('Error fetching GFG stats:', error);
-    // Return mock data as fallback
-    return {
-      problemsSolved: 95,
-      schoolProblems: 10,
-      basicProblems: 15,
-      easyProblems: 25,
-      mediumProblems: 30,
-      hardProblems: 15
-    };
-  }
+  // For now, we'll use a mock response since we don't have a deployed backend
+  // In a production environment, this would call a deployed API
+  return {
+    problemsSolved: 95,
+    schoolProblems: 10,
+    basicProblems: 15,
+    easyProblems: 25,
+    mediumProblems: 30,
+    hardProblems: 15
+  };
 };
 
 /**
@@ -64,36 +51,22 @@ export const fetchGFGStats = async (username) => {
  * and type of data that would be extracted from the CodeChef profile page.
  */
 export const fetchCodeChefStats = async (username) => {
-  try {
-    // In a real implementation, you would have a backend endpoint like:
-    // const response = await fetch(`/api/codechef/${username}`);
-    // const data = await response.json();
-    // return data;
-    
-    // For now, we'll use a mock response since we don't have a deployed backend
-    // In a production environment, this would call a deployed API that scrapes the CodeChef profile
-    return {
-      currentRating: 1650,
-      highestRating: 1720,
-      globalRank: 15000,
-      countryRank: 12000,
-      problemsSolved: 229,
-      fullySolved: 200,
-      partiallySolved: 29
-    };
-  } catch (error) {
-    console.error('Error fetching CodeChef stats:', error);
-    // Return mock data as fallback
-    return {
-      currentRating: 1650,
-      highestRating: 1720,
-      globalRank: 15000,
-      countryRank: 12000,
-      problemsSolved: 229,
-      fullySolved: 200,
-      partiallySolved: 29
-    };
-  }
+  // In a real implementation, you would have a backend endpoint like:
+  // const response = await fetch(`/api/codechef/${username}`);
+  // const data = await response.json();
+  // return data;
+  
+  // For now, we'll use a mock response since we don't have a deployed backend
+  // In a production environment, this would call a deployed API that scrapes the CodeChef profile
+  return {
+    currentRating: 1650,
+    highestRating: 1720,
+    globalRank: 15000,
+    countryRank: 12000,
+    problemsSolved: 229,
+    fullySolved: 200,
+    partiallySolved: 29
+  };
 };
 
 /**
@@ -102,27 +75,15 @@ export const fetchCodeChefStats = async (username) => {
  * @returns {Promise<Object>} HackerRank statistics
  */
 export const fetchHackerRankStats = async (username) => {
-  try {
-    // For now, we'll use a mock response since we don't have a deployed backend
-    // In a production environment, this would call a deployed API
-    return {
-      stars: 4,
-      problemsSolved: 85,
-      algorithmsSolved: 50,
-      dataStructuresSolved: 25,
-      mathematicsSolved: 10
-    };
-  } catch (error) {
-    console.error('Error fetching HackerRank stats:', error);
-    // Return mock data as fallback
-    return {
-      stars: 4,
-      problemsSolved: 85,
-      algorithmsSolved: 50,
-      dataStructuresSolved: 25,
-      mathematicsSolved: 10
-    };
-  }
+  // For now, we'll use a mock response since we don't have a deployed backend
+  // In a production environment, this would call a deployed API
+  return {
+    stars: 4,
+    problemsSolved: 85,
+    algorithmsSolved: 50,
+    dataStructuresSolved: 25,
+    mathematicsSolved: 10
+  };
 };
 
 /**

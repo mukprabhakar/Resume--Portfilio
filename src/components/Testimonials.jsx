@@ -141,7 +141,7 @@ const Testimonials = () => {
                   </div>
 
                   <p className="text-zinc-300 text-base sm:text-lg italic mb-4 sm:mb-6 relative">
-                    <span className="absolute top-0 left-0 text-6xl sm:text-8xl opacity-5 text-emerald-400 font-serif" aria-hidden="true">"</span>
+<span className="absolute top-0 left-0 text-6xl sm:text-8xl opacity-5 text-emerald-400 font-serif" aria-hidden="true">&quot;</span>
                     <span className="relative z-10">{testimonials[currentIndex].content}</span>
                   </p>
 
@@ -153,7 +153,7 @@ const Testimonials = () => {
                   </div>
 
                   <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-zinc-800/50 to-zinc-800/30 rounded-xl border-l-4 border-emerald-400 backdrop-blur-sm">
-                    <p className="text-zinc-200 italic text-sm sm:text-base font-medium">"{testimonials[currentIndex].quote}"</p>
+<p className="text-zinc-200 italic text-sm sm:text-base font-medium">&quot;{testimonials[currentIndex].quote}&quot;</p>
                   </div>
                 </div>
               </div>

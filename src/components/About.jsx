@@ -93,7 +93,7 @@ const About = () => {
                 <div>
                   <h4 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">My Story</h4>
                   <p className="text-zinc-300 mb-4 leading-relaxed">
-                    I'm a freelance full-stack developer specializing in building scalable web applications and SaaS products that drive real business results.
+                    I&apos;m a freelance full-stack developer specializing in building scalable web applications and SaaS products that drive real business results.
                     With 3+ years of experience, I help startups and growing businesses transform their ideas into high-performing digital solutions.
                   </p>
                   <p className="text-zinc-300 mb-4 leading-relaxed">
@@ -263,7 +263,7 @@ const About = () => {
           <div className="mt-12 sm:mt-16 text-center">
             <div className="inline-block p-6 sm:p-8 glass-card rounded-2xl border border-emerald-400/20 hover:border-emerald-400/40 transition-all duration-300 card-3d hover:shadow-lg hover:shadow-emerald-400/10">
               <p className="text-xl sm:text-2xl font-medium text-zinc-300 italic max-w-3xl">
-                "The best way to predict the future is to create it. I believe in building solutions that make a difference."
+&quot;The best way to predict the future is to create it. I believe in building solutions that make a difference.&quot;
               </p>
               <p className="mt-4 text-emerald-400 font-bold text-lg sm:text-xl">- Mukesh Pal</p>
             </div>

@@ -168,7 +168,7 @@ const Services = () => {
                 <div className="relative z-10">
                     <h3 className="text-3xl font-bold text-white mb-6">Ready to Start Your Project?</h3>
                     <p className="text-zinc-300 mb-8 max-w-2xl mx-auto text-lg">
-                        Let's discuss how I can help you achieve your business goals. 
+                        Let&apos;s discuss how I can help you achieve your business goals.
                         Book a free 15-minute discovery call today.
                     </p>
                     <a 

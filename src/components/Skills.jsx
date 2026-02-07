@@ -148,9 +148,10 @@ const Skills = () => {
     switch (sortBy) {
       case 'name':
         return result.sort((a, b) => a.name.localeCompare(b.name))
-      case 'level':
+      case 'level': {
         const levelOrder = { 'Expert': 4, 'Advanced': 3, 'Intermediate': 2, 'Beginner': 1 }
         return result.sort((a, b) => levelOrder[b.level] - levelOrder[a.level])
+      }
       case 'percent':
       default:
         return result.sort((a, b) => b.percent - a.percent)
