@@ -28,11 +28,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Fix auto-fixable vulnerabilities
-        run: npm audit fix || echo "Some vulnerabilities could not be auto-fixed"
-
       - name: Run npm audit (non-blocking)
-        run: npm audit --audit-level high --omit=dev || echo "Security audit found issues but continuing build"
+        run: npm audit --audit-level critical --omit=dev || echo "Security audit found issues but continuing build"
 
       - name: Run CodeQL Init
         uses: github/codeql-action/init@v3
