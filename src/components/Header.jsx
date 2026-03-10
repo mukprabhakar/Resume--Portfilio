@@ -53,6 +53,7 @@ const Header = () => {
   const navItems = [
     { id: 'about', label: 'About', type: 'internal' },
     { id: 'services', label: 'Services', type: 'internal' },
+    { id: 'clients', label: 'Clients', type: 'internal' },
     { id: 'skills', label: 'Skills', type: 'internal' },
     { id: 'work', label: 'Work', type: 'internal' },
     { id: 'experience', label: 'Journey', type: 'internal' },

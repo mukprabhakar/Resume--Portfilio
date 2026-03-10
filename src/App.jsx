@@ -19,6 +19,8 @@ import GitHubStats from './components/GitHubStats'
 import CodingChallenges from './components/CodingChallenges'
 import CustomCursor from './components/CustomCursor'
 import ScrollProgress from './components/ScrollProgress'
+import Clients from './components/Clients'
+import ClientsSection from './components/ClientsSection'
 
 function App() {
   return (
@@ -34,6 +36,7 @@ function App() {
                 <Hero />
                 <About />
                 <Services />
+                <ClientsSection />
                 <Skills />
                 <Projects />
                 <Experience />
@@ -44,6 +47,7 @@ function App() {
                 <Contact />
               </>
             } />
+            <Route path="/clients" element={<Clients />} />
             <Route path="/badges" element={<CredlyBadges />} />
             <Route path="/github" element={<GitHubStats />} />
             <Route path="/coding" element={<CodingChallenges />} />

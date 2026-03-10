@@ -286,6 +286,71 @@ const Hero = () => {
                 <div className="text-zinc-400 text-sm">Years Experience</div>
               </div>
             </div>
+
+            {/* Trusted Clients Section */}
+            <div className="mt-12 pt-8 border-t border-zinc-700/50 animate-fade-in-up" style={{ animationDelay: '1.2s' }}>
+              <p className="text-sm text-zinc-500 mb-4 font-medium">Trusted by Innovative Organizations</p>
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6 items-center">
+                {/* Client Logo 1- IIMT University */}
+                <a 
+                  href="/clients" 
+                 className="group flex items-center justify-center w-20 h-20 bg-zinc-800/50 rounded-xl border border-zinc-700 hover:border-emerald-400/50 transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-400/20"
+                  onClick={() => trackEvent('click', 'hero', 'client_logo_iimt')}
+                  title="IIMT University"
+                >
+                  <img 
+                    src="https://iimtu.edu.in/images/logo.png" 
+                   alt="IIMT University" 
+                   className="w-14 h-14 object-contain group-hover:scale-110 transition-transform duration-300"
+                  />
+                </a>
+
+                {/* Client Logo 2 - Oye College */}
+                <a 
+                  href="/clients" 
+                 className="group flex items-center justify-center w-20 h-20 bg-zinc-800/50 rounded-xl border border-zinc-700 hover:border-teal-400/50 transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg hover:shadow-teal-400/20"
+                  onClick={() => trackEvent('click', 'hero', 'client_logo_oye')}
+                  title="Oye College"
+                >
+                  <img 
+                    src="https://oyecollege.com/assets/images/logo2.png" 
+                   alt="Oye College" 
+                   className="w-14 h-14 object-contain group-hover:scale-110 transition-transform duration-300"
+                  />
+                </a>
+
+                {/* Client Logo 3 - RBS Tours */}
+                <a 
+                  href="/clients" 
+                 className="group flex items-center justify-center w-20 h-20 bg-zinc-800/50 rounded-xl border border-zinc-700 hover:border-orange-400/50 transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-400/20"
+                  onClick={() => trackEvent('click', 'hero', 'client_logo_rbs')}
+                  title="RBS Tours and Travels"
+                >
+                  <img 
+                    src="https://rbstourandtravels.in/assets/rbs_logo-Fp0bdru1.png" 
+                   alt="RBS Tours and Travels" 
+                   className="w-14 h-14 object-contain group-hover:scale-110 transition-transform duration-300"
+                  />
+                </a>
+
+                {/* View All Link */}
+                <a 
+                  href="/clients" 
+                  className="group flex items-center gap-2 px-4 py-2 text-sm text-emerald-400 hover:text-emerald-300 transition-colors duration-300"
+                  onClick={() => trackEvent('click', 'hero', 'view_all_clients')}
+                >
+                  <span>View All</span>
+                  <svg 
+                    className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+            </div>
           </div>
           
           {/* Enhanced profile section with image */}

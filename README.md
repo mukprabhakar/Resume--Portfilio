@@ -13,6 +13,7 @@ This is a responsive, single-page application built with React, Tailwind CSS, an
 - **Experience Timeline**: Curved timeline design showcasing professional journey
 - **Achievements & Current Projects**: Highlighting ongoing work and key accomplishments
 - **Testimonials Carousel**: Rotating endorsements from peers and mentors
+- **Clients Showcase**: Displaying trusted clients with detailed information
 - **Coding Profiles**: Links to LeetCode, CodeChef, HackerRank, and other coding platforms
 - **Blog Section**: Articles and tech insights with search and filtering capabilities
 - **Contact Form**: Fully functional contact form with validation and email integration
