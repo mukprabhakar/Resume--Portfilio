@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "jest",
     "validate": "npm run lint && npm run test && npm run build",
-    "deploy:azure": "node deploy-to-azure.js"
+    "deploy:azure": "node deploy-to-azure.js",
+   "server": "node server.js # Development only - not used in production (Azure Static Web Apps doesn't support Node.js backend)"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

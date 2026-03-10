@@ -16,12 +16,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Cache Node Modules
+      uses: actions/cache@v3
+     with:
+         path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+      restore-keys: |
+          ${{ runner.os }}-node-
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+           
+      - name: Validate Environment Variables
+       run: |
+         echo "Checking required environment variables..."
+         if [ -z "${{ secrets.VITE_GA_MEASUREMENT_ID }}" ]; then
+           echo "::warning::VITE_GA_MEASUREMENT_ID secret is not set. Google Analytics will be disabled."
+         fi
+         echo "✅ Environment variable check complete"
+           
       - name: Install Dependencies
         run: npm ci
       
@@ -31,8 +48,10 @@ jobs:
       - name: Run Tests
         run: npm run test -- --coverage --ci --passWithNoTests
       
-      - name: Audit Dependencies (non-blocking)
-        run: npm audit --audit-level high || echo "Security audit found issues but continuing build"
+      - name: Audit Dependencies (NON-BLOCKING)
+        run: |
+          echo "Running security audit..."
+          npm audit --audit-level high || echo "::warning::Security vulnerabilities found. Please run 'npm audit' locally to fix them."
       
       - name: Build Application
         run: npm run build
@@ -43,36 +62,39 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     permissions:
-       id-token: write
-       contents: read
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
-        with:
+       with:
           submodules: true
           lfs: false
-      - name: Install OIDC Client from Core Package
-        run: npm install @actions/core@1.6.0 @actions/http-client
-      - name: Get Id Token
-        uses: actions/github-script@v6
-        id: idtoken
-        with:
-           script: |
-               const coredemo = require('@actions/core')
-               return await coredemo.getIDToken()
-           result-encoding: string
       - name: Build And Deploy
         id: builddeploy
-        uses: Azure/static-web-apps-deploy@v1
-        with:
+      uses: Azure/static-web-apps-deploy@v1
+      with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ZEALOUS_ISLAND_0A19AA010 }}
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to address your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
-          api_location: "" # Api source code path - optional
+        app_location: "/" # App source code path
+        api_location: "" # Api source code path - optional
           output_location: "dist" # Built app content directory - optional
-          github_id_token: ${{ steps.idtoken.outputs.result }}
           ###### End of Repository/Build Configurations ######
+        env:
+          VITE_GA_MEASUREMENT_ID: ${{ secrets.VITE_GA_MEASUREMENT_ID }}
+      
+      - name: Notify Deployment Status
+       if: always()
+      run: |
+         DEPLOY_STATUS="${{ job.status }}"
+        if [ "$DEPLOY_STATUS" == "success" ]; then
+          echo "✅ Deployment successful!"
+         echo "🚀 Site is live on Azure Static Web Apps"
+       else
+          echo "❌ Deployment failed with status: $DEPLOY_STATUS"
+         echo "🔍 Check GitHub Actions logs for details"
+        fi
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

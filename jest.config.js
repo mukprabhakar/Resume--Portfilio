@@ -7,9 +7,21 @@ export default {
   transform: {
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
-  collectCoverageFrom: [
+  testMatch: [
+    '**/__tests__/**/*.[jt]s?(x)',
+    '**/?(*.)+(spec|test).[jt]s?(x)'
+  ],
+ collectCoverageFrom: [
     'src/**/*.{js,jsx}',
     '!src/index.js',
-    '!src/reportWebVitals.js',
+    '!src/main.jsx',
   ],
+ coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 50,
+      lines: 50,
+     statements: 50
+    }
+  },
 };
