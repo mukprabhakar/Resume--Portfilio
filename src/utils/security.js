@@ -101,7 +101,7 @@ export const escapeHTML = (text) => {
    '=': '&#x3D;'
   };
   
-  return text.replace(/[&<>"'`=\/]/g, char => escapeMap[char]);
+  return text.replace(/[&<>"'`=/]/g, char => escapeMap[char]);
 };
 
 /**

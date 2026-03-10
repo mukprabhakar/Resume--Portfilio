@@ -9,9 +9,7 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives",
     "preview": "vite preview",
     "test": "jest",
-    "validate": "npm run lint && npm run test && npm run build",
-    "deploy:azure": "node deploy-to-azure.js",
-   "server": "node server.js # Development only - not used in production (Azure Static Web Apps doesn't support Node.js backend)"
+    "validate": "npm run lint && npm run test && npm run build"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

@@ -29,7 +29,7 @@ This is a responsive, single-page application built with React, Tailwind CSS, an
 | Form Handling| Formspree                              |
 | Build Tool   | Vite                                   |
 | Package Manager | npm                                 |
-| Deployment   | Vercel, Netlify, or GitHub Pages       |
+| Deployment   | Azure Static Web Apps, Vercel, Netlify, or GitHub Pages       |
 
 ## 🚀 Installation and Setup (Local)
 
@@ -79,9 +79,25 @@ To run the portfolio locally:
 
 The portfolio can be deployed to various platforms:
 
+- **Azure Static Web Apps**: Recommended - Free tier with automatic CI/CD (see [AZURE_DEPLOYMENT.md](AZURE_DEPLOYMENT.md))
 - **Vercel**: Connect your GitHub repository for automatic deployments
 - **Netlify**: Drag and drop the `dist/` folder or connect to Git
 - **GitHub Pages**: Deploy the `dist/` folder
+
+### 🚀 Azure Static Web Apps Deployment (Recommended)
+
+For detailed Azure deployment instructions, see [AZURE_DEPLOYMENT.md](AZURE_DEPLOYMENT.md).
+
+**Quick Start:**
+1. Push your code to GitHub
+2. Create a Static Web App in Azure Portal
+3. Connect your GitHub repository
+4. Configure build settings:
+  - App Location: `/`
+  - Output Location: `dist`
+5. Deploy!
+
+Your app will be live at `https://<your-app-name>.azurestaticapps.net`
 
 ### Build for Production
 
