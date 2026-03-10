@@ -29,7 +29,7 @@ This is a responsive, single-page application built with React, Tailwind CSS, an
 | Form Handling| Formspree                              |
 | Build Tool   | Vite                                   |
 | Package Manager | npm                                 |
-| Deployment   | Azure Static Web Apps, Vercel, Netlify |
+| Deployment   | Vercel, Netlify, or GitHub Pages       |
 
 ## 🚀 Installation and Setup (Local)
 
@@ -77,42 +77,24 @@ To run the portfolio locally:
 
 ## ☁️ Deployment
 
-### Azure Static Web Apps (Recommended)
+The portfolio can be deployed to various platforms:
 
-The project includes automated CI/CD pipelines for Azure deployment:
-
-1. **Create Azure Static Web App** in Azure Portal
-2. **Connect GitHub Repository**
-3. **Configure Build Settings**:
-  - App location: `/`
-  - Output location: `dist`
-  - App build command: `npm run build`
-4. **Add GitHub Secrets**:
-  - `AZURE_STATIC_WEB_APPS_API_TOKEN_ZEALOUS_ISLAND_0A19AA010`
-  - `VITE_GA_MEASUREMENT_ID` (optional)
-
-The workflow automatically handles:
-- Dependency caching
-- Linting and testing
-- Security scanning
-- Performance checks
-- Automated deployment
-
-### Other Deployment Options
-
-The portfolio can also be deployed to:
 - **Vercel**: Connect your GitHub repository for automatic deployments
 - **Netlify**: Drag and drop the `dist/` folder or connect to Git
 - **GitHub Pages**: Deploy the `dist/` folder
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+The production-ready files will be generated in the `dist/` folder. Deploy this folder to your hosting platform of choice.
 
 ## 📁 Project Structure
 
 ```
 portfolio-react/
-├── .github/workflows/
-│   ├── azure-static-web-apps-*.yml  # Azure deployment pipeline
-│   ├── security-scanning.yml        # CodeQL and security scans
-│   └── performance-check.yml        # Lighthouse performance tests
 ├── public/
 ├── src/
 │   ├── components/
@@ -137,9 +119,6 @@ portfolio-react/
 │   ├── App.jsx
 │   ├── main.jsx
 │   └── index.css
-├── .gitleaks.toml                    # Secret scanning configuration
-├── codeql-config.yml                 # CodeQL analysis configuration
-├── staticwebapp.config.json            # Azure Static Web Apps config
 ├── .env.example
 ├── package.json
 ├── vite.config.js
@@ -162,16 +141,9 @@ This portfolio implements enterprise-grade security practices:
 - **No Dangerous Patterns**: No `innerHTML`, `dangerouslySetInnerHTML`, or `document.write` usage
 
 ### Secret Management
-- **GitHub Secrets**: All sensitive credentials stored securely
 - **Environment Variables**: Configuration via `.env` files (not committed)
 - **No Hardcoded Secrets**: Zero credentials in source code
-- **Automated Scanning**: Gitleaks secret detection in CI/CD
-
-### Security Scanning
-- **CodeQL Analysis**: Automated vulnerability detection
-- **Dependency Audits**: Regular security audits with `npm audit`
-- **Gitleaks Scanning**: Automatic secret detection
-- **Weekly Scheduled Scans**: Proactive security monitoring
+- **Secure Storage**: All sensitive values stored in `.env` (gitignored)
 
 ## 🧪 Testing
 
@@ -206,7 +178,6 @@ npm run build
 | `npm run preview` | Preview production build |
 | `npm test` | Run Jest tests |
 | `npm run lint` | Run ESLint code analysis |
-| `npm run deploy:azure` | Run Azure deployment helper |
 | `npm run validate` | Run all validations (lint + test + build) |
 
 ## 📊 Google Analytics Implementation
@@ -239,69 +210,6 @@ The portfolio is fully responsive and optimized for:
 - **Typography**: Clear hierarchy with Google Fonts integration
 - **Iconography**: Custom SVG icons and brand icons
 
-## 🚦 CI/CD Pipeline Status
-
-The project includes three automated workflows:
-
-### 1. Azure Deployment Workflow
-- **Triggers**: Push to main/develop branches, PR events
-- **Jobs**: Validation → Build → Deploy
-- **Features**: Caching, environment variables, OIDC authentication
-
-### 2. Security Scanning Workflow
-- **Triggers**: Push, PR, weekly scheduled scans
-- **Tools**: CodeQL, Gitleaks, npm audit
-- **Features**: Non-blocking reports, automated dismissal of false positives
-
-### 3. Performance Check Workflow
-- **Triggers**: Pull requests
-- **Tools**: Lighthouse CI
-- **Thresholds**: Performance ≥ 0.75, Accessibility ≥ 0.90
-
-## 🔧 Configuration Files
-
-### Security Configurations
-
-**.gitleaks.toml** - Secret scanning allowlist:
-```toml
-[allowlist]
-  paths = ['''\.md$''', '''\.env\.example''']
- regexes = ['''G-XXXXXXXXXX''', '''mldprgag''']
-```
-
-**codeql-config.yml** - CodeQL analysis tuning:
-```yaml
-query-filters:
-  - exclude:
-      id: js/xss
-    tags contain: client-xss
-```
-
-### Performance Configuration
-
-**.lighthouserc.json** - Lighthouse CI thresholds:
-```json
-{
-  "assert": {
-    "categories:performance": ["warn", {"minScore": 0.75}],
-    "categories:accessibility": ["error", {"minScore": 0.90}]
-  }
-}
-```
-
-## 🐛 Known Issues and Resolutions
-
-### False Positive Security Warnings
-
-**Issue**: CodeQL and Gitleaks may report false positives
-
-**Resolution**:
-- CodeQL configured to ignore React-specific false positives
-- Gitleaks configured to allowlist documentation and placeholders
-- All actual security issues properly caught and addressed
-
-**Documentation**: See Security Features section above
-
 ## 📬 Contact
 
 Feel free to reach out:
@@ -321,47 +229,22 @@ This project is licensed under the [MIT License](LICENSE).
 
 Thanks to the developer community and contributors who inspire through open-source work.
 
-## 🏆 Project Highlights
+## 🏆 Key Improvements
 
-### Completed Improvements (March 2026)
-
-#### CI/CD Pipeline Enhancements
-- ✅ Removed dangerous `npm audit fix` from workflows
-- ✅ Simplified OIDC authentication
-- ✅ Added dependency caching (50% faster builds)
-- ✅ Implemented environment variable validation
-- ✅ Added deployment status notifications
-- ✅ Configured realistic performance thresholds
-
-#### Security Enhancements
+### Security Enhancements
 - ✅ Enhanced XSS prevention with DOMPurify
 - ✅ Added comprehensive security utilities
-- ✅ Configured CodeQL and Gitleaks
 - ✅ Implemented error message sanitization
 - ✅ Zero real security vulnerabilities
 
-#### Testing Improvements
+### Testing Improvements
 - ✅ Added component tests (Contact, Hero, Skills)
 - ✅ Increased code coverage to 50%+
 - ✅ Configured Jest for React testing
-- ✅ Implemented test caching
 
-#### Documentation
+### Documentation
 - ✅ Consolidated all documentation into README
-- ✅ Created security configuration guides
-- ✅ Documented deployment procedures
-- ✅ Maintained comprehensive security records
-
-### Metrics
-
-| Metric | Value |
-|--------|-------|
-| Build Time | ~3-4 minutes (with caching) |
-| Test Coverage | 50%+ (enforced) |
-| Lighthouse Performance | 0.75+ target |
-| Lighthouse Accessibility | 0.90+ (enforced) |
-| Security Vulnerabilities | 0 |
-| False Positive Rate | < 5% (after tuning) |
+- ✅ Simplified project structure
 
 ---
 
