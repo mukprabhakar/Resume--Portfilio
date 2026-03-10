@@ -7,37 +7,59 @@ const Testimonials = () => {
 
   const testimonials = [
     {
-      id: 1,
-      name: 'Pankaj Kumar Singh',
+     id: 1,
+     name: 'Pankaj Kumar Singh',
       position: 'Dean, School of Engineering & Technology',
-      company: 'IIMT University',
+     company: 'IIMT University',
       image: 'https://media.licdn.com/dms/image/v2/C4D03AQGUL28p4SpMWQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1657521793944?e=1756339200&v=beta&t=l4vIMHZqJ3WpG6z-wFQf5_JcZb_vMIpilBFAASwwTsU',
-      content: '"Mukesh Pal is a remarkable student who exemplifies dedication, innovation, and leadership within the School of Engineering & Technology. His contributions, especially in initiatives like the INNOTECH CULTURE CLUB and various tech projects, have greatly enriched our university\'s academic and practical learning environment. Mukesh\'s ability to lead, mentor peers, and develop impactful solutions has consistently impressed faculty and students alike."',
+     content: '"Mukesh Pal is a remarkable student who exemplifies dedication, innovation, and leadership within the School of Engineering & Technology. His contributions, especially in initiatives like the INNOTECH CULTURE CLUB and various tech projects, have greatly enriched our university\'s academic and practical learning environment. Mukesh\'s ability to lead, mentor peers, and develop impactful solutions has consistently impressed faculty and students alike."',
       quote: '"He embodies the values we strive to instill in our students and stands out as a true asset to IIMT University."',
       rating: 5,
-      relationship: 'Academic Supervisor'
+     relationship: 'Academic Supervisor'
     },
     {
-      id: 2,
-      name: 'Archana Jain',
+     id: 2,
+     name: 'Archana Jain',
       position: 'HOD, Computer Science Engineering',
-      company: 'IIMT University',
+     company: 'IIMT University',
       image: 'https://media.licdn.com/dms/image/v2/C5103AQFxWMMyuP8h7Q/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1549548204982?e=1756339200&v=beta&t=gv79243dFQtlePGuMx7x4AcTGc3iupgJuLSnp96iZLE',
-      content: '"Mukesh Pal exemplifies dedication and technical proficiency. As a student, he consistently demonstrates a deep commitment to his studies and extracurricular projects, especially in areas like software development and leadership within the university. His innovative approach to problem-solving and collaborative spirit make him an exceptional team member."',
+     content: '"Mukesh Pal exemplifies dedication and technical proficiency. As a student, he consistently demonstrates a deep commitment to his studies and extracurricular projects, especially in areas like software development and leadership within the university. His innovative approach to problem-solving and collaborative spirit make him an exceptional team member."',
       quote: '"His role as a leader in various clubs reflects his passion for innovation and his ability to inspire and guide his peers. Mukesh is not only a diligent student but also a promising leader."',
       rating: 5,
-      relationship: 'Department Head'
+     relationship: 'Department Head'
     },
     {
-      id: 3,
-      name: 'Kuldeep Kumar Singh',
+     id: 3,
+     name: 'Kuldeep Kumar Singh',
       position: 'HOD, 1st Year Engineering',
-      company: 'IIMT University',
+     company: 'IIMT University',
       image: 'https://media.licdn.com/dms/image/v2/D5603AQF0tRBoH4x3Rg/profile-displayphoto-crop_800_800/B56ZfK3LRBH8AQ-/0/1751455153064?e=1756339200&v=beta&t=7xAt9bT7KjDYY_UwektbasdQhuYBwHW2d0__IYp6P5U',
-      content: '"I am pleased to recommend Mukesh Pal, a dedicated B.Tech student in Computer Science and Engineering at IIMT University. As the Head of the 1st Year Engineering Department, I have observed his strong commitment to academics and his passion for technology. His leadership as President of the E-Cell and as a Microsoft Learn Student Ambassador demonstrates exceptional organizational and communication skills."',
+     content: '"I am pleased to recommend Mukesh Pal, a dedicated B.Tech student in Computer Science and Engineering at IIMT University. As the Head of the 1st Year Engineering Department, I have observed his strong commitment to academics and his passion for technology. His leadership as President of the E-Cell and as a Microsoft Learn Student Ambassador demonstrates exceptional organizational and communication skills."',
       quote: '"Mukesh has excelled as the President of the E-Cell and as a Microsoft Learn Student Ambassador, demonstrating leadership and dedication to skill development. He possesses excellent communication and teamwork abilities."',
       rating: 5,
-      relationship: 'Academic Mentor'
+     relationship: 'Academic Mentor'
+    },
+    {
+     id: 4,
+     name: 'Dr. Vaibhav Sharma',
+      position: 'CEO',
+     company: 'IIMT BIF',
+      image: 'https://media.licdn.com/dms/image/v2/D5603AQE2EsFbeetXnw/profile-displayphoto-scale_400_400/B56ZsZSSjCI0Ag-/0/1765655785530?e=1774483200&v=beta&t=9Co4Ala8ikgrA4oUouQwDdtwT_R3f3oRIjebuG2RVsI',
+     content: '"Mukesh Pal is an exceptional young professional with remarkable leadership qualities and technical expertise. His innovative thinking and entrepreneurial mindset set him apart from his peers. During his time at IIMT BIF, he demonstrated outstanding capabilities in project management and strategic planning."',
+      quote: '"His ability to translate complex business requirements into effective technical solutions makes him an invaluable asset to any organization."',
+      rating: 5,
+     relationship: 'Industry Mentor'
+    },
+    {
+     id: 5,
+     name: 'Dr. Akshay Raj',
+      position: 'Senior Manager',
+     company: 'IIMT BIF',
+      image: 'https://media.licdn.com/dms/image/v2/D5603AQFQv-1lsFvCEA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1721674596004?e=1774483200&v=beta&t=3p6-UKE0z3_HABYZKgkRNAZbYqUS_SINGrbihc6NYhk',
+     content: '"Working with Mukesh has been a pleasure. His dedication to excellence and continuous learning is truly commendable. He consistently delivers high-quality results and shows great potential in both technical and managerial domains."',
+      quote: '"Mukesh\'s proactive approach and problem-solving abilities make him a standout performer. I\'m confident he will achieve great success in his career."',
+      rating: 5,
+     relationship: 'Professional Reference'
     }
   ]
 
