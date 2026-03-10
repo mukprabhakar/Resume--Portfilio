@@ -67,7 +67,12 @@ const Achievements = () => {
         {
           icon: '✓',
           heading: 'NPTEL Elite + Silver Badge',
-          description: 'Achieved Elite certification with Silver Badge in Introduction to Internet of Things from IIM Kharagpur, demonstrating expertise in IoT fundamentals and applications.'
+          description: 'Achieved Elite certification with Silver Badge in Introduction to Internet of Things from IIT Kharagpur, demonstrating expertise in IoT fundamentals and applications.'
+        },
+        {
+          icon: '✓',
+          heading: 'NPTEL Cloud Computing Certification',
+          description: 'Earned certification in Cloud Computing from IIT Kharagpur through NPTEL, mastering cloud architecture, services, deployment models, and hands-on implementation of scalable cloud solutions.'
         },
         {
           icon: '✓',
@@ -86,18 +91,23 @@ const Achievements = () => {
       items: [
         {
           icon: '★',
+          heading: 'Co-Founder & CTO at CodeByte',
+          description: 'Leading technology strategy and product development for an innovative tech startup focused on developer tools and educational platforms.'
+        },
+        {
+          icon: '★',
+          heading: 'Google Student Ambassador',
+          description: 'Promoting Google technologies through workshops, events, and mentorship programs, impacting 500+ students with cloud skills training.'
+        },
+        {
+          icon: '★',
+          heading: 'Team Head at TEDx IIMT University',
+          description: 'Organizing TEDx events featuring inspiring speakers, managing cross-functional teams, and inspiring 1000+ attendees.'
+        },
+        {
+          icon: '★',
           heading: 'President of E-Cell',
           description: 'Led entrepreneurial initiatives at IIMT University, organizing 15+ innovation events and mentoring student startups that secured initial funding.'
-        },
-        {
-          icon: '★',
-          heading: 'Microsoft Learn Student Ambassador',
-          description: 'Recognized as Top Regional Ambassador for promoting tech learning on campus, conducting 25+ workshops and building a community of 500+ student developers.'
-        },
-        {
-          icon: '★',
-          heading: 'Coding Ninjas Campus Captain',
-          description: 'Spearheaded coding culture among students, organizing competitive programming sessions and technical events that enhanced campus coding standards.'
         }
       ]
     }

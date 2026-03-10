@@ -53,9 +53,15 @@ const Skills = () => {
     { name: 'Problem-Solving', percent: 0, target: 90, category: 'Soft Skills', icon: '🧠', level: 'Expert' },
     { name: 'Communication', percent: 0, target: 85, category: 'Soft Skills', icon: '💬', level: 'Advanced' },
     { name: 'Time Management', percent: 0, target: 80, category: 'Soft Skills', icon: '⏱️', level: 'Advanced' },
-    { name: 'Leadership', percent: 0, target: 75, category: 'Soft Skills', icon: '👑', level: 'Intermediate' },
+    { name: 'Leadership', percent: 0, target: 95, category: 'Soft Skills', icon: '👑', level: 'Expert' },
     { name: 'Team Player', percent: 0, target: 90, category: 'Soft Skills', icon: '👥', level: 'Expert' },
-    { name: 'Quick Learner', percent: 0, target: 95, category: 'Soft Skills', icon: '⚡', level: 'Expert' }
+    { name: 'Quick Learner', percent: 0, target: 95, category: 'Soft Skills', icon: '⚡', level: 'Expert' },
+    
+    // Entrepreneurship & Leadership
+    { name: 'Product Strategy', percent: 0, target: 85, category: 'Entrepreneurship', icon: '📊', level: 'Advanced' },
+    { name: 'Team Building', percent: 0, target: 90, category: 'Entrepreneurship', icon: '🤝', level: 'Expert' },
+    { name: 'Public Speaking', percent: 0, target: 85, category: 'Entrepreneurship', icon: '🎤', level: 'Advanced' },
+    { name: 'Event Management', percent: 0, target: 90, category: 'Entrepreneurship', icon: '📅', level: 'Expert' }
   ])
 
   const [activeCategory, setActiveCategory] = useState('All')
@@ -84,6 +90,10 @@ const Skills = () => {
     {
       title: 'Soft Skills',
       items: skills.filter(skill => skill.category === 'Soft Skills').map(skill => skill.name)
+    },
+    {
+      title: 'Entrepreneurship',
+      items: skills.filter(skill => skill.category === 'Entrepreneurship').map(skill => skill.name)
     }
   ]
 

@@ -14,41 +14,41 @@ const About = () => {
   const features = [
     {
       icon: '🚀',
-      title: 'Full-Stack Development',
-      description: 'Building robust applications with modern technologies from frontend to backend'
+      title: 'Entrepreneurship & Leadership',
+      description: 'Co-Founder & CTO at CodeByte, leading technology strategy and product development'
     },
     {
-      icon: '📱',
-      title: 'Responsive Design',
-      description: 'Creating seamless experiences across all devices and screen sizes'
+      icon: '🌟',
+      title: 'Community Building',
+      description: 'Google Student Ambassador & TEDx Team Head, impacting 2000+ students through workshops and events'
     },
     {
-      icon: '⚡',
-      title: 'Performance Optimization',
-      description: 'Ensuring fast, efficient applications with optimized code and resources'
+      icon: '💼',
+      title: 'Freelance Development',
+      description: 'Delivering custom software solutions for clients worldwide with modern technologies'
     }
   ]
 
   const timeline = [
     {
-      year: '2022',
-      title: 'Started Programming Journey',
-      description: 'Began learning Java and web development fundamentals'
-    },
-    {
-      year: '2023',
-      title: 'First Internship',
-      description: 'Gained practical experience in enterprise software development'
+      year: '2025',
+      title: 'Entrepreneurship & Leadership',
+      description: 'Co-Founder & CTO at CodeByte, Google Student Ambassador, and Team Head at TEDx IIMT University'
     },
     {
       year: '2024',
-      title: 'Leadership Roles',
-      description: 'Took on leadership positions in university tech initiatives'
+      title: 'Professional Growth',
+      description: 'Spring Boot Developer Intern at RideBuddy, building backend services for transportation management'
     },
     {
-      year: '2025',
-      title: 'Professional Experience',
-      description: 'Working as a Software Trainee at Warals Technology'
+      year: '2023',
+      title: 'Leadership Beginnings',
+      description: 'Started as Microsoft Learn Student Ambassador and President of E-Cell IIMTU'
+    },
+    {
+      year: '2022',
+      title: 'Started Programming Journey',
+      description: 'Began learning Java and web development fundamentals at IIMT University'
     }
   ]
 

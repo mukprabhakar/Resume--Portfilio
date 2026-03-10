@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { trackEvent } from '../utils/analytics'
+import { sanitizeHTML, sanitizeURL, sanitizeObject } from '../utils/security'
 
 const GitHubStats = () => {
   const [stats, setStats] = useState({
@@ -98,34 +99,34 @@ const GitHubStats = () => {
         }
         
         // Calculate total stars from repositories
-        const totalStars = reposData.reduce((sum, repo) => sum + repo.stargazers_count, 0);
+       const totalStars = reposData.reduce((sum, repo) => sum + repo.stargazers_count, 0);
         
-        // Process repositories for display
-        const processedRepos = reposData.map(repo => ({
+        // Process repositories for display with sanitization
+       const processedRepos = reposData.map(repo => ({
           id: repo.id,
-          name: repo.name,
-          description: repo.description,
+          name: sanitizeHTML(repo.name),
+          description: repo.description ? sanitizeHTML(repo.description) : '',
           stars: repo.stargazers_count,
           forks: repo.forks_count,
-          language: repo.language,
-          url: repo.html_url,
-          updatedAt: repo.updated_at
+         language: sanitizeHTML(repo.language || 'Unknown'),
+          url: sanitizeURL(repo.html_url),
+         updatedAt: repo.updated_at
         }));
         
-        // Process followers for display
-        const processedFollowers = followersData.map(follower => ({
+        // Process followers for display with sanitization
+       const processedFollowers = followersData.map(follower => ({
           id: follower.id,
-          login: follower.login,
-          avatar: follower.avatar_url,
-          url: follower.html_url
+          login: sanitizeHTML(follower.login),
+          avatar: sanitizeURL(follower.avatar_url),
+          url: sanitizeURL(follower.html_url)
         }));
         
-        // Process following for display
-        const processedFollowing = followingData.map(user => ({
+        // Process following for display with sanitization
+       const processedFollowing = followingData.map(user => ({
           id: user.id,
-          login: user.login,
-          avatar: user.avatar_url,
-          url: user.html_url
+          login: sanitizeHTML(user.login),
+          avatar: sanitizeURL(user.avatar_url),
+          url: sanitizeURL(user.html_url)
         }));
         
         // Combine real data with mock data for other stats

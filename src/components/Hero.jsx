@@ -13,10 +13,10 @@ const Hero = () => {
   const [isVisible, setIsVisible] = useState(false)
 
   const roles = [
-    "Full-Stack Freelancer",
-    "SaaS Product Builder",
-    "Technical Co-Founder",
-    "Digital Solution Architect"
+    "Co-Founder & CTO",
+    "Google Student Ambassador",
+    "Freelance Software Developer",
+    "Technical Team Lead"
   ]
 
   // Animate counters for social proof
@@ -30,14 +30,14 @@ const Hero = () => {
       const elapsed = Date.now() - startTime
       const progress = Math.min(elapsed / duration, 1)
       
-      setProjectCount(Math.floor(15 * progress))
-      setStudentCount(Math.floor(1500 * progress))
+      setProjectCount(Math.floor(20 * progress))
+      setStudentCount(Math.floor(2000 * progress))
       
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animateCounters)
       } else {
-        setProjectCount(15)
-        setStudentCount(1500)
+        setProjectCount(20)
+        setStudentCount(2000)
       }
     }
     

@@ -6,10 +6,102 @@ const Experience = () => {
 
   const experiences = [
     {
+      id: 7,
+      title: 'Co-Founder & CTO',
+     company: 'CodeByte',
+      period: 'Jan 2025 – Present',
+      description: 'Leading technology strategy and product development for an innovative tech startup focused on developer tools and educational platforms.',
+      logo: '🚀',
+      skills: ['Leadership', 'System Architecture', 'Product Strategy', 'Team Building'],
+      achievements: [
+        {
+          title: 'Technical Leadership',
+          description: 'Spearheading the development of cutting-edge developer tools and platforms, establishing technical vision and architecture decisions.'
+        },
+        {
+          title: 'Product Development',
+          description: 'Building scalable solutions that serve developers and students, focusing on user experience and performance optimization.'
+        },
+        {
+          title: 'Team Management',
+          description: 'Leading a talented team of engineers and designers, fostering innovation and collaborative problem-solving culture.'
+        }
+      ]
+    },
+    {
+      id: 6,
+      title: 'Google Student Ambassador',
+     company: 'Google',
+      period: 'Jul 2025 – Feb 2026',
+      description: 'Promoting Google technologies and fostering student developer communities through workshops, events, and mentorship programs.',
+      logo: '🔍',
+      skills: ['Community Building', 'Public Speaking', 'Event Management', 'Mentorship'],
+      achievements: [
+        {
+          title: 'Technical Workshops',
+          description: 'Conducting hands-on sessions on Google Cloud Platform, Firebase, and modern web development technologies for 500+ students.'
+        },
+        {
+          title: 'Campus Outreach',
+          description: 'Organizing hackathons, study jams, and developer meetups to build a vibrant technical community on campus.'
+        },
+        {
+          title: 'Student Mentorship',
+          description: 'Guiding students in their learning journey with Google technologies, helping them achieve certifications and build projects.'
+        }
+      ]
+    },
+    {
+      id: 5,
+      title: 'Software Developer (Freelance)',
+     company: 'Self-Employed',
+      period: 'Sep 2025 – Present',
+      description: 'Delivering custom software solutions for clients worldwide, specializing in full-stack web development and modern technologies.',
+      logo: '💼',
+      skills: ['Full-Stack Development', 'Client Communication', 'Project Management', 'Agile'],
+      achievements: [
+        {
+          title: 'Client Projects',
+          description: 'Successfully delivered multiple web applications for diverse clients, from startups to established businesses, ensuring high-quality code and timely delivery.'
+        },
+        {
+          title: 'Technology Stack',
+          description: 'Expertise in React, Node.js, Python, and cloud platforms, providing end-to-end solutions tailored to client needs.'
+        },
+        {
+          title: 'Business Growth',
+          description: 'Built strong client relationships leading to repeat business and referrals, growing freelance practice organically.'
+        }
+      ]
+    },
+    {
+      id: 4,
+      title: 'Team Head',
+     company: 'TEDx IIMT University',
+      period: 'May 2025 – Present',
+      description: 'Leading the organizing team for TEDx events at IIMT University, curating speakers and managing event execution.',
+      logo: '🎤',
+      skills: ['Event Planning', 'Team Leadership', 'Speaker Coordination', 'Marketing'],
+      achievements: [
+        {
+          title: 'Event Organization',
+          description: 'Successfully organized TEDx IIMT University events featuring inspiring speakers and thought leaders from various industries.'
+        },
+        {
+          title: 'Team Coordination',
+          description: 'Managed cross-functional teams handling logistics, marketing, sponsorship, and speaker relations for seamless event delivery.'
+        },
+        {
+          title: 'Community Impact',
+          description: 'Created a platform for sharing ideas worth spreading, inspiring 1000+ attendees through powerful talks and discussions.'
+        }
+      ]
+    },
+    {
       id: 1,
       title: 'Software Trainee',
       company: 'Warals Technology, G 35, Near Kalindi Kunj, Okhla, New Delhi',
-      period: 'July 2025 – Present',
+      period: 'July 2025 – Feb 2026',
       description: 'Working on the Flashweb Project, enhancing quiz practice functionality to improve user engagement and learning outcomes.',
       logo: '💻',
       skills: ['React.js', 'JavaScript', 'API Integration', 'UI/UX'],
@@ -105,7 +197,7 @@ const Experience = () => {
       id: 5,
       title: 'President Of E-Cell IIMTU',
       company: 'IIMT University',
-      period: 'Dec 2022 – Present',
+      period: 'Dec 2022 – DEC 2025',
       description: 'Leading entrepreneurial initiatives and fostering innovation among students through events, workshops, and startup mentorship programs.',
       logo: '🚀',
       skills: ['Leadership', 'Event Management', 'Team Building', 'Public Speaking'],
@@ -128,7 +220,7 @@ const Experience = () => {
       id: 6,
       title: 'Microsoft Learn Student Ambassador',
       company: 'Microsoft',
-      period: 'Dec 2022 – Present',
+      period: 'Dec 2022 – DEC 2025',
       description: 'Promoting Microsoft technologies and organizing tech events on campus to build a community of student developers and innovators.',
       logo: 'Ⓜ️',
       skills: ['Cloud Computing', 'Azure', 'Workshop Facilitation', 'Community Building'],
@@ -253,19 +345,19 @@ const Experience = () => {
         {/* Stats Section */}
         <div className="mt-12 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
           <TiltCard className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
-            <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">3+</div>
+            <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">4+</div>
             <div className="text-zinc-400 text-xs sm:text-sm">Years Experience</div>
           </TiltCard>
           <TiltCard className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
-            <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">15+</div>
+            <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">20+</div>
             <div className="text-zinc-400 text-xs sm:text-sm">Projects Completed</div>
           </TiltCard>
           <TiltCard className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
-            <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">2</div>
-            <div className="text-zinc-400 text-xs sm:text-sm">Internships</div>
+            <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">6</div>
+            <div className="text-zinc-400 text-xs sm:text-sm">Leadership Roles</div>
           </TiltCard>
           <TiltCard className="glass-card p-4 sm:p-5 rounded-xl text-center border border-zinc-700 hover:border-emerald-400/30 transition-all">
-            <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">1500+</div>
+            <div className="text-2xl sm:text-3xl font-bold gradient-text mb-1 sm:mb-2">2000+</div>
             <div className="text-zinc-400 text-xs sm:text-sm">Students Impacted</div>
           </TiltCard>
         </div>
