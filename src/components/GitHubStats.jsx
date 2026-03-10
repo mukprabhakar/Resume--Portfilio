@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { trackEvent } from '../utils/analytics'
-import { sanitizeHTML, sanitizeURL, sanitizeObject } from '../utils/security'
+import { sanitizeHTML, sanitizeURL, sanitizeObject, sanitizeErrorMessage } from '../utils/security'
 
 const GitHubStats = () => {
   const [stats, setStats] = useState({

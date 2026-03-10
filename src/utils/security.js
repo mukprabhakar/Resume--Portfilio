@@ -79,3 +79,77 @@ export const sanitizeObject = (obj, fieldsToSanitize) => {
   
  return sanitized;
 };
+
+/**
+ * Escape HTML entities to prevent XSS
+ * @param {string} text - Text to escape
+ * @returns {string} - Escaped text safe for DOM insertion
+ */
+export const escapeHTML = (text) => {
+  if (!text || typeof text !== 'string') {
+  return '';
+  }
+  
+  const escapeMap = {
+   '&': '&amp;',
+   '<': '&lt;',
+   '>': '&gt;',
+   '"': '&quot;',
+   "'": '&#039;',
+   '/': '&#x2F;',
+   '`': '&#x60;',
+   '=': '&#x3D;'
+  };
+  
+  return text.replace(/[&<>"'`=\/]/g, char => escapeMap[char]);
+};
+
+/**
+ * Validate and sanitize error messages before display
+ * Prevents exception text from being reinterpreted as HTML
+ * @param {string|Error} error - Error message or Error object
+ * @returns {string} - Safe error message for display
+ */
+export const sanitizeErrorMessage = (error) => {
+  if (!error) {
+  return '';
+  }
+  
+  const errorMessage = typeof error === 'string' ? error : error.message || String(error);
+  
+  // Remove any potential HTML/script tags
+  const cleanMessage = errorMessage.replace(/<[^>]*>/g, '');
+  
+  // Escape remaining special characters
+  return escapeHTML(cleanMessage);
+};
+
+/**
+ * Safely insert text content into DOM element
+ * Prevents XSS by using textContent instead of innerHTML
+ * @param {HTMLElement} element - Target DOM element
+ * @param {string} text - Text content to insert
+ */
+export const safeSetTextContent = (element, text) => {
+  if (!element || !text) {
+  return;
+  }
+  
+  // Use textContent which automatically escapes HTML
+  element.textContent = text;
+};
+
+/**
+ * Safely set HTML content with sanitization
+ * Only use when you absolutely need HTML content
+ * @param {HTMLElement} element - Target DOM element
+ * @param {string} html - HTML content to insert (will be sanitized)
+ */
+export const safeSetInnerHTML = (element, html) => {
+  if (!element || !html) {
+  return;
+  }
+  
+  // Always sanitize before setting innerHTML
+  element.innerHTML = sanitizeHTML(html);
+};

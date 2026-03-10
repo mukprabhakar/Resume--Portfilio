@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { trackEvent, trackSocial } from '../utils/analytics'
+import { sanitizeErrorMessage } from '../utils/security'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
