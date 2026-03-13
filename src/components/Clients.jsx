@@ -42,6 +42,28 @@ const Clients = () => {
       location: 'India',
       color: 'from-orange-500 via-red-500 to-rose-500',
       shadowColor: 'hover:shadow-orange-500/30'
+    },
+    {
+      id: 4,
+      name: 'Dry Fruit Delight',
+      url: 'https://www.dryfruitsdelight.com/',
+      logo: 'https://static.wixstatic.com/media/c6b2f0_332d9aa4fb51435eae15f3c52b54e2cb~mv2.png/v1/fill/w_414,h_392,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c6b2f0_332d9aa4fb51435eae15f3c52b54e2cb~mv2.png',
+      description: 'Premium e-commerce platform for dry fruits, nuts, seeds, and spices with nationwide delivery across India.',
+      industry: 'E-commerce & Food',
+      location: 'India',
+      color: 'from-amber-500 via-orange-500 to-red-500',
+      shadowColor: 'hover:shadow-amber-500/30'
+    },
+    {
+      id: 5,
+      name: 'Just Mewa',
+      url: 'https://justmewa.com/',
+      logo: 'https://justmewa.com/static/images/dry%20fruits%20logo.png',
+      description: 'Modern e-commerce platform specializing in organic, hand-picked dry fruits and nuts from around the world.',
+      industry: 'E-commerce & Food',
+      location: 'India',
+      color: 'from-emerald-500 via-green-500 to-teal-500',
+      shadowColor: 'hover:shadow-emerald-500/30'
     }
   ];
 
@@ -79,8 +101,8 @@ const Clients = () => {
         {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
           {[
-            { value: '3+', label: 'Happy Clients', icon: '🤝', delay: '0.1s', color: 'text-green-400', border: 'hover:border-green-500/50' },
-            { value: '3', label: 'Industries Served', icon: '🏢', delay: '0.2s', color: 'text-teal-400', border: 'hover:border-teal-500/50' },
+            { value: '5+', label: 'Happy Clients', icon: '🤝', delay: '0.1s', color: 'text-green-400', border: 'hover:border-green-500/50' },
+            { value: '4', label: 'Industries Served', icon: '🏢', delay: '0.2s', color: 'text-teal-400', border: 'hover:border-teal-500/50' },
             { value: '100%', label: 'Satisfaction Rate', icon: '⭐', delay: '0.3s', color: 'text-cyan-400', border: 'hover:border-cyan-500/50' }
           ].map((stat, index) => (
             <div

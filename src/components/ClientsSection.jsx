@@ -30,6 +30,24 @@ const ClientsSection = () => {
      description: 'Premium tour and travel services',
       industry: 'Travel & Tourism',
      color: 'from-orange-500 to-red-500'
+    },
+    {
+     id: 4,
+     name: 'Dry Fruit Delight',
+      url: 'https://www.dryfruitsdelight.com/',
+      logo: 'https://static.wixstatic.com/media/c6b2f0_332d9aa4fb51435eae15f3c52b54e2cb~mv2.png/v1/fill/w_414,h_392,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c6b2f0_332d9aa4fb51435eae15f3c52b54e2cb~mv2.png',
+     description: 'Premium e-commerce for dry fruits & nuts',
+      industry: 'E-commerce',
+     color: 'from-amber-500 to-orange-500'
+    },
+    {
+     id: 5,
+     name: 'Just Mewa',
+      url: 'https://justmewa.com/',
+      logo: 'https://justmewa.com/static/images/dry%20fruits%20logo.png',
+     description: 'Organic dry fruits e-commerce platform',
+      industry: 'E-commerce',
+     color: 'from-emerald-500 to-green-500'
     }
   ]
 

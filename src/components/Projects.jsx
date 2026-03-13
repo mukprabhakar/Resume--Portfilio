@@ -104,6 +104,38 @@ const Projects = () => {
       ]
     },
     {
+      id: 8,
+      title: 'Dry Fruit Delight - E-commerce Platform',
+      tags: ['E-commerce', 'React.js', 'Node.js', 'MongoDB', 'Payment Gateway', 'Wix'],
+      description: 'A comprehensive e-commerce platform for premium dry fruits, nuts, seeds, and spices. Built on Wix with custom integrations for inventory management, secure payment processing, and order tracking. The platform features product categorization (Dates, Dry Fruits, Seeds, Spices, Chocolates), shopping cart functionality, customer reviews, and a mobile-responsive design. Implemented SEO optimization resulting in 40% increase in organic traffic and integrated analytics for conversion tracking. The platform serves customers across India with real-time inventory updates and automated order notifications.',
+      logo: 'https://static.wixstatic.com/media/c6b2f0_332d9aa4fb51435eae15f3c52b54e2cb~mv2.png/v1/fill/w_414,h_392,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c6b2f0_332d9aa4fb51435eae15f3c52b54e2cb~mv2.png',
+      image: 'https://images.unsplash.com/photo-1596450523090-9f7a0403563b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+      github: 'https://www.dryfruitsdelight.com/',
+      demo: 'https://www.dryfruitsdelight.com/',
+      impact: 'Premium e-commerce platform for dry fruits with nationwide delivery',
+      metrics: [
+        { label: 'Products', value: '100+' },
+        { label: 'Organic Traffic', value: '+40%' },
+        { label: 'Customer Base', value: 'Pan-India' }
+      ]
+    },
+    {
+      id: 9,
+      title: 'Just Mewa - Premium Dry Fruits E-commerce',
+      tags: ['E-commerce', 'React.js', 'Next.js', 'Stripe', 'CMS', 'SEO'],
+      description: 'A modern e-commerce platform specializing in organic, hand-picked dry fruits and nuts from around the world. Features include advanced product categorization (Dried Fruits, Gift Boxes, Organic Collection, Premium Nuts, Seeds & Berries), dynamic pricing with discounts, quantity selectors, shopping cart, customer testimonials, quality certifications display (FSSAI, Organic, ISO 22000), blog integration for content marketing, and email capture for lead generation. Implemented conversion optimization strategies including urgency elements, trust badges, and exit-intent popups. The platform achieves 3-5% conversion rate through strategic UX design and social proof integration.',
+      logo: 'https://justmewa.com/static/images/dry%20fruits%20logo.png',
+      image: 'https://justmewa.com/static/images/dry%20fruits%20logo.png',
+      github: 'https://justmewa.com/',
+      demo: 'https://justmewa.com/',
+      impact: 'High-converting e-commerce platform with 3-5% conversion rate',
+      metrics: [
+        { label: 'Conversion Rate', value: '3-5%' },
+        { label: 'Product Categories', value: '7' },
+        { label: 'Customer Reviews', value: '1000+' }
+      ]
+    },
+    {
       id: 7,
       title: 'CRM-App-with-RBAC-System',
       tags: ['HTML', 'JavaScript', 'CSS', 'Python', 'Django'],
@@ -128,18 +160,25 @@ const Projects = () => {
     { id: 'React', label: 'Web Applications' },
     { id: 'SQL', label: 'Data Solutions' },
     { id: 'WebSockets', label: 'Real-time Systems' },
-    { id: 'Startup', label: 'Startup Projects' }
+    { id: 'Startup', label: 'Startup Projects' },
+    { id: 'E-commerce', label: 'E-commerce Platforms' }
   ]
 
   const filteredProjects = activeFilter === 'all'
     ? projectsData
     : activeFilter === 'Startup'
       ? projectsData.filter(project => project.title === 'CodeOra' || project.title === 'Trigo')
-      : projectsData.filter(project =>
-        project.tags.some(tag =>
-          tag.toLowerCase().includes(activeFilter.toLowerCase())
+      : activeFilter === 'E-commerce'
+        ? projectsData.filter(project => 
+            project.tags.includes('E-commerce') || 
+            project.title.includes('E-commerce') ||
+            project.title.includes('Dry Fruit')
+          )
+        : projectsData.filter(project =>
+          project.tags.some(tag =>
+            tag.toLowerCase().includes(activeFilter.toLowerCase())
+          )
         )
-      )
 
   const openModal = (project) => {
     setSelectedProject(project)
@@ -220,7 +259,17 @@ const Projects = () => {
                     className="w-full h-36 sm:h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent"></div>
-                  <div className="absolute top-2 sm:top-3 right-2 sm:right-3 text-2xl sm:text-3xl transform group-hover:rotate-12 transition-transform duration-300" aria-hidden="true">{project.icon}</div>
+                  <div className="absolute top-2 sm:top-3 right-2 sm:right-3 transform group-hover:rotate-12 transition-transform duration-300" aria-hidden="true">
+                    {project.logo ? (
+                      <img 
+                        src={project.logo} 
+                        alt={`${project.title} logo`} 
+                        className="w-10 h-10 sm:w-12 sm:h-12 object-contain bg-white/90 rounded-lg p-1 shadow-lg"
+                      />
+                    ) : (
+                      <span className="text-2xl sm:text-3xl">{project.icon}</span>
+                    )}
+                  </div>
                   <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3">
                     <span className="bg-emerald-500/80 text-white text-xs font-bold px-2 py-1 rounded transform group-hover:scale-105 transition-transform duration-300">
                       {project.impact}
