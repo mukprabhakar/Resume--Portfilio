@@ -10,112 +10,112 @@ const Gallery = () => {
       id: 1,
       title: 'TEDx IIMT Organization Team',
       description: 'Proud member of the TEDx IIMT University organization team, bringing inspiring talks to our community',
-      image: 'https://drive.google.com/uc?id=1IkAmTr4tz15j_mPIPj8HUhb54lF-OQg-',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018046/1762925094340_qxegbw.jpg',
       category: 'Events'
     },
     {
       id: 2,
       title: 'With ISRO Scientist Dr. Alok Taori',
       description: 'Meeting with ISRO scientist Dr. Alok Taori during research collaboration at NRSC Hyderabad',
-      image: 'https://drive.google.com/uc?id=1TVdyRdhLbTQVl6H6KghxKQBcuRoU6Vx9',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018218/1746639744569_aojopr.jpg',
       category: 'Research'
     },
     {
       id: 3,
-      title: 'ISRO Visit - NCST Center Hyderabad',
-      description: 'Educational visit to National Centre for Science and Technology, Hyderabad',
-      image: 'https://drive.google.com/uc?id=1oNR9jyOAhCvpR6ysLVJ1GpaDLwPt8Qd4',
+      title: 'ISRO Visit - NRSC Center Hyderabad',
+      description: 'Educational visit to NRSC Center, Hyderabad',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018218/1746639762506_lmlter.jpg',
       category: 'Education'
     },
     {
       id: 4,
       title: 'Award from Coding Ninjas Co-founder',
       description: 'Receiving recognition from Anshul Skula, Co-founder of Coding Ninjas, for excellence in technology',
-      image: 'https://drive.google.com/uc?id=1HWNTUf3jaYZER13TPMPp8yyIVeWTMhlp',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018215/1693138336430_bnzi06.jpg',
       category: 'Achievements'
     },
     {
       id: 5,
       title: 'With Entrepreneur Punit Mongoliya',
       description: 'Networking session with successful entrepreneur Punit Mongoliya',
-      image: 'https://drive.google.com/uc?id=1y6D4xTTj_QX6X7wbn5wIgmUCgjSVr0oO',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018217/1726985209533_bp0bah.jpg',
       category: 'Entrepreneurship'
     },
     {
       id: 6,
       title: 'Russian Embassy Visit - Delhi',
       description: 'Official visit to Russian Embassy in New Delhi for international collaboration',
-      image: 'https://drive.google.com/uc?id=1OoJDkNzkUjpuHFj2sL4iGG_6Jf72dw_E',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775017930/mukesh_russan_ambassi_mmnusg.jpg',
       category: 'Events'
     },
     {
       id: 7,
       title: 'Project Presentation at Hackathon',
       description: 'Explaining innovative project solution during competitive hackathon event',
-      image: 'https://drive.google.com/uc?id=1yqH1Sqms-Ze9wjJI1iDmzhlKYD_Lp9i1',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018219/1759082135749_ljckdi.jpg',
       category: 'Events'
     },
     {
       id: 8,
       title: 'With Piyush Sharma (Trick Man)',
       description: 'Meeting with Piyush Sharma, content creator, YouTuber and founder of Trick Man',
-      image: 'https://drive.google.com/uc?id=1ikn5W9WSwLpe-KozNbdGG6LWuB3bInmm',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018217/1742820041087_g8dtla.jpg',
       category: 'Networking'
     },
     {
       id: 9,
       title: 'Startup India 2023',
       description: 'Attending Startup India summit to explore emerging trends and innovations',
-      image: 'https://drive.google.com/uc?id=1RXK3r-S1min-vxvq6BHUhbjCshvxoXLb',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018222/84_jarzee.jpg',
       category: 'Entrepreneurship'
     },
     {
       id: 10,
       title: 'Startup India 2025',
       description: 'Participating in Startup India 2025, connecting with innovators and investors',
-      image: 'https://drive.google.com/uc?id=1a6K1aCIFwN7qBqJoI-mqDmHO5NaYtJyy',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018218/1758994269460_udck3b.jpg',
       category: 'Entrepreneurship'
     },
     {
       id: 11,
       title: 'Startup India 2025 Culture',
       description: 'Experiencing the vibrant culture and networking at Startup India 2025',
-      image: 'https://drive.google.com/uc?id=1XVQ_h-AZSORD5qPWOUmdAr2lgKVRjc_v',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018219/1758994271094_xkoak4.jpg',
       category: 'Entrepreneurship'
     },
     {
       id: 12,
       title: 'With Sarthak Jain',
       description: 'Meeting with Sarthak Jain, exchanging ideas on technology and innovation',
-      image: 'https://drive.google.com/uc?id=19yO7vAySDGzcBY7OAds_Es0Ey-6F00LU',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018122/1760043374156_vtcijf.jpg',
       category: 'Networking'
     },
     {
       id: 13,
       title: 'Animal Fair IIMT University',
       description: 'With Radha Rani at the Animal Fair organized at IIMT University',
-      image: 'https://drive.google.com/uc?id=1E9v3scnnIwqZC2492A0hl19Hfyg3d-jq',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018085/1761568264988_e2rp0p.jpg',
       category: 'Events'
     },
     {
       id: 14,
       title: 'With Harshvardhan Bajoria',
       description: 'Networking session with Harshvardhan Bajoria, discussing business strategies',
-      image: 'https://drive.google.com/uc?id=1y6ucaykVzBD0yIEr0422HcTSy4bfWEpw',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018218/1747246123354_vgwzmg.jpg',
       category: 'Networking'
     },
     {
       id: 15,
       title: 'AI Impact Summit Delhi',
       description: 'Attending AI Impact Summit in Delhi to explore latest advancements in artificial intelligence',
-      image: 'https://drive.google.com/uc?id=1vx6ufvwfNP_lhtaOA6OJthMODOj8OUVJ',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018220/81_jpgowa.jpg',
       category: 'Events'
     },
     {
       id: 16,
       title: 'Visit to Charminar',
       description: 'Exploring the historic Charminar monument in Hyderabad',
-      image: 'https://drive.google.com/uc?id=19UcaZ3BhOyinfoDuI65rF62Y-AzjvqED',
+      image: 'https://res.cloudinary.com/dddmyjevn/image/upload/v1775018220/82_ynuqcv.jpg',
       category: 'Personal'
     }
   ]
