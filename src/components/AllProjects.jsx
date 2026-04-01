@@ -2,41 +2,13 @@ import React, { useState } from 'react'
 import { trackEvent } from '../utils/analytics'
 import TiltCard from './TiltCard'
 
-const Projects = ({ projectsData }) => {
-  const [activeFilter, setActiveFilter] = useState('all')
+const AllProjects = ({ projectsData }) => {
   const [selectedProject, setSelectedProject] = useState(null)
-
-  const filterButtons = [
-    { id: 'all', label: 'All Work' },
-    { id: 'Java', label: 'Backend Solutions' },
-    { id: 'Spring', label: 'Enterprise Apps' },
-    { id: 'React', label: 'Web Applications' },
-    { id: 'SQL', label: 'Data Solutions' },
-    { id: 'WebSockets', label: 'Real-time Systems' },
-    { id: 'Startup', label: 'Startup Projects' },
-    { id: 'E-commerce', label: 'E-commerce Platforms' }
-  ]
-
-  const filteredProjects = activeFilter === 'all'
-    ? projectsData
-    : activeFilter === 'Startup'
-      ? projectsData.filter(project => project.title === 'CodeOra' || project.title === 'Trigo')
-      : activeFilter === 'E-commerce'
-        ? projectsData.filter(project => 
-            project.tags.includes('E-commerce') || 
-            project.title.includes('E-commerce') ||
-            project.title.includes('Dry Fruit')
-          )
-        : projectsData.filter(project =>
-          project.tags.some(tag =>
-            tag.toLowerCase().includes(activeFilter.toLowerCase())
-          )
-        )
 
   const openModal = (project) => {
     setSelectedProject(project)
     // Track project modal open
-    trackEvent('click', 'projects', `view_project_${project.title}`)
+    trackEvent('click', 'all_projects', `view_project_${project.title}`)
   }
 
   const closeModal = () => {
@@ -44,54 +16,33 @@ const Projects = ({ projectsData }) => {
   }
 
   return (
-    <section id="work" className="py-16 sm:py-20 bg-gradient-to-br from-zinc-900 to-zinc-800 relative overflow-hidden" aria-labelledby="work-heading">
-      {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-emerald-500/5 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+    <div className="min-h-screen pt-24 pb-16 bg-gradient-to-br from-zinc-900 to-zinc-800">
+      <div className="container mx-auto px-4 sm:px-6">
+        {/* Header */}
         <div className="text-center mb-12 sm:mb-16 animate-fade-in">
-          <h3 id="work-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent mb-3 sm:mb-4">Case Studies</h3>
-          <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto mb-4 sm:mb-6 rounded-full"></div>
-          <p className="mt-3 sm:mt-4 text-zinc-400 max-w-md sm:max-w-2xl mx-auto text-base sm:text-lg">
-            Real business solutions that delivered measurable ROI and transformed operations
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent mb-4 sm:mb-6">
+            All Projects
+          </h1>
+          <div className="w-20 sm:w-32 h-1.5 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto mb-4 sm:mb-6 rounded-full"></div>
+          <p className="mt-3 sm:mt-4 text-zinc-400 max-w-2xl mx-auto text-base sm:text-lg">
+            A comprehensive collection of my work, showcasing expertise across multiple technologies and domains
           </p>
         </div>
 
-        {/* Note about private repositories */}
-        <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 mb-8 text-center text-zinc-300 text-sm sm:text-base">
-          <p>
-<strong>Note:</strong> Many client projects are under NDA and several repositories are private. For detailed case studies and project insights, I&apos;d be happy to discuss during our discovery call.
-            Let&apos;s schedule a conversation to explore how I can help solve your specific business challenges.
-          </p>
+        {/* Project count badge */}
+        <div className="text-center mb-8">
+          <span className="inline-block bg-emerald-500/20 text-emerald-400 font-semibold px-4 py-2 rounded-full border border-emerald-500/30">
+            {projectsData.length} Projects Total
+          </span>
         </div>
 
-        <div className="flex justify-center mb-8 sm:mb-12 flex-wrap gap-2 animate-slide-in-left">
-          {filterButtons.map((button) => (
-            <button
-              key={button.id}
-              className={`px-3 sm:px-5 py-2 rounded-full m-1 transition-all hover:shadow-lg text-xs sm:text-sm font-medium transform hover:scale-105 ${activeFilter === button.id
-                ? 'bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg'
-                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                }`}
-              onClick={() => {
-                setActiveFilter(button.id)
-                // Track filter click
-                trackEvent('click', 'projects', `filter_${button.id}`)
-              }}
-              aria-pressed={activeFilter === button.id}
-            >
-              {button.label}
-            </button>
-          ))}
-        </div>
-
+        {/* Projects Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredProjects.slice(0, 6).map((project, index) => (
+          {projectsData.map((project, index) => (
             <TiltCard
               key={project.id}
               className="bg-zinc-800/50 p-4 sm:p-6 rounded-xl shadow-xl card-3d cursor-pointer border border-zinc-700 hover:border-emerald-400/50 glass-card group animate-scale-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              style={{ animationDelay: `${index * 0.05}s` }}
             >
               <div
                 onClick={() => openModal(project)}
@@ -161,8 +112,7 @@ const Projects = ({ projectsData }) => {
                       className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-700 flex items-center justify-center hover:bg-emerald-500 transition-colors transform hover:scale-110"
                       onClick={(e) => {
                         e.stopPropagation()
-                        // Track GitHub link click
-                        trackEvent('click', 'projects', `github_${project.title}`)
+                        trackEvent('click', 'all_projects', `github_${project.title}`)
                       }}
                       aria-label={`View ${project.title} on GitHub`}
                     >
@@ -177,8 +127,7 @@ const Projects = ({ projectsData }) => {
                       className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-700 flex items-center justify-center hover:bg-emerald-500 transition-colors transform hover:scale-110"
                       onClick={(e) => {
                         e.stopPropagation()
-                        // Track demo link click
-                        trackEvent('click', 'projects', `demo_${project.title}`)
+                        trackEvent('click', 'all_projects', `demo_${project.title}`)
                       }}
                       aria-label={`View live demo of ${project.title}`}
                     >
@@ -194,20 +143,18 @@ const Projects = ({ projectsData }) => {
           ))}
         </div>
 
-        {/* View All Projects Button */}
-        {filteredProjects.length > 6 && (
-          <div className="text-center mt-12 animate-fade-in">
-            <a
-              href="/all-projects"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white font-medium py-3 px-8 rounded-lg transition-all transform hover:scale-105 shadow-lg"
-            >
-              View All {projectsData.length} Projects
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-              </svg>
-            </a>
-          </div>
-        )}
+        {/* Back to home button */}
+        <div className="text-center mt-12">
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Back to Home
+          </a>
+        </div>
       </div>
 
       {/* Project Modal */}
@@ -235,7 +182,7 @@ const Projects = ({ projectsData }) => {
                   onClick={() => {
                     closeModal()
                     // Track modal close
-                    trackEvent('click', 'projects', `close_modal_${selectedProject.title}`)
+                    trackEvent('click', 'all_projects', `close_modal_${selectedProject.title}`)
                   }}
                   className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800/80 flex items-center justify-center text-zinc-300 hover:text-white hover:bg-zinc-700 transition-colors transform hover:rotate-90"
                   aria-label="Close project details"
@@ -286,7 +233,7 @@ const Projects = ({ projectsData }) => {
                   className="flex-1 min-w-[120px] bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors transform hover:scale-105"
                   onClick={() => {
                     // Track GitHub link click in modal
-                    trackEvent('click', 'projects', `modal_github_${selectedProject.title}`)
+                    trackEvent('click', 'all_projects', `modal_github_${selectedProject.title}`)
                   }}
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -301,7 +248,7 @@ const Projects = ({ projectsData }) => {
                   className="flex-1 min-w-[120px] bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all transform hover:scale-105"
                   onClick={() => {
                     // Track demo link click in modal
-                    trackEvent('click', 'projects', `modal_demo_${selectedProject.title}`)
+                    trackEvent('click', 'all_projects', `modal_demo_${selectedProject.title}`)
                   }}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -314,8 +261,8 @@ const Projects = ({ projectsData }) => {
           </div>
         </div>
       )}
-    </section>
+    </div>
   )
 }
 
-export default Projects
+export default AllProjects
