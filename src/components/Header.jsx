@@ -60,6 +60,7 @@ const Header = () => {
     { id: 'achievements', label: 'Achievements', type: 'internal' },
     { id: 'testimonials', label: 'Testimonials', type: 'internal' },
     { id: 'blog', label: 'Blog', type: 'internal' },
+    { id: 'gallery', label: 'Gallery', type: 'route' },
     { id: 'badges', label: 'Badges', type: 'route' },
     { id: 'github', label: 'GitHub', type: 'route' },
     { id: 'coding', label: 'Coding', type: 'route' },

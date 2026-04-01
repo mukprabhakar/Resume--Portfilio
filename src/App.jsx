@@ -8,6 +8,7 @@ import Services from './components/Services'
 import Skills from './components/Skills'
 import Projects from './components/Projects'
 import AllProjects from './components/AllProjects'
+import Gallery from './components/Gallery'
 import Experience from './components/Experience'
 import Achievements from './components/Achievements'
 import Testimonials from './components/Testimonials'
@@ -213,6 +214,7 @@ function App() {
               </>
             } />
             <Route path="/all-projects" element={<AllProjects projectsData={projectsData} />} />
+            <Route path="/gallery" element={<Gallery />} />
             <Route path="/clients" element={<Clients />} />
             <Route path="/badges" element={<CredlyBadges />} />
             <Route path="/github" element={<GitHubStats />} />
