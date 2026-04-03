@@ -9,6 +9,10 @@
       "rewrite": "/index.html"
     },
     {
+      "route": "/certificates",
+      "rewrite": "/index.html"
+    },
+    {
       "route": "/clients",
       "rewrite": "/index.html"
     },
@@ -39,5 +43,8 @@
       "rewrite": "/index.html",
       "statusCode": 200
     }
+  },
+  "platform": {
+    "apiRuntime": "node:18"
   }
 }
