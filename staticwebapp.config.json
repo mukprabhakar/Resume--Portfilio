@@ -9,10 +9,6 @@
       "rewrite": "/index.html"
     },
     {
-      "route": "/certificates",
-      "rewrite": "/index.html"
-    },
-    {
       "route": "/clients",
       "rewrite": "/index.html"
     },
