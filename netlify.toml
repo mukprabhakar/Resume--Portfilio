@@ -16,6 +16,17 @@
   to = "/index.html"
   status = 200
 
+# Set correct MIME types for JavaScript modules
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
+
+[[headers]]
+  for = "/*.mjs"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
+
 # Optional: Set security headers
 [[headers]]
   for = "/*"
