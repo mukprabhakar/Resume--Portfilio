@@ -23,8 +23,10 @@ import CustomCursor from './components/CustomCursor'
 import ScrollProgress from './components/ScrollProgress'
 import Clients from './components/Clients'
 import ClientsSection from './components/ClientsSection'
+import Loader from './components/Loader'
 
 function App() {
+  const [isAppLoading, setIsAppLoading] = useState(true);
   // Shared projects data - defined once and passed to both components
   const [projectsData] = useState([
     {
@@ -189,9 +191,13 @@ function App() {
     }
   ])
 
+  if (isAppLoading) {
+    return <Loader onLoadingComplete={() => setIsAppLoading(false)} />
+  }
+
   return (
     <Router>
-      <div className="antialiased bg-zinc-900 text-zinc-100 min-h-screen">
+      <div className="antialiased bg-zinc-900 text-zinc-100 min-h-screen animate-fade-in">
         <CustomCursor />
         <ScrollProgress />
         <Header />
