@@ -191,11 +191,11 @@ function App() {
 
   return (
     <Router>
-      <div className="antialiased">
+      <div className="antialiased bg-zinc-900 text-zinc-100 min-h-screen">
         <CustomCursor />
         <ScrollProgress />
         <Header />
-        <main className="pt-20">
+        <main>
           <Routes>
             <Route path="/" element={
               <>
