@@ -81,7 +81,9 @@ const Contact = () => {
       // 3. Replace 'your-form-id' with your actual Formspree Form ID
       // 4. Update your email in the Formspree dashboard
       
-      const formId = 'mldprgag' // Replace with your Formspree Form ID
+      const formId = 'mldprgag' // ⚠️ REPLACE WITH YOUR ACTUAL FORMSPREE FORM ID
+      
+      console.log('📤 Submitting to Formspree ID:', formId)
       
       // Prepare form data for Formspree
       const formDataToSend = new FormData()
@@ -98,7 +100,12 @@ const Contact = () => {
         }
       })
       
+      console.log('📥 Response status:', response.status)
+      
       if (response.ok) {
+        const result = await response.json()
+        console.log('✅ Success:', result)
+        
         // Success
         setSubmitStatus('success')
         setFormData({ name: '', email: '', message: '' })
@@ -113,14 +120,16 @@ const Contact = () => {
           formElement.classList.remove('animate-pulse')
         }, 1000)
       } else {
-        throw new Error('Form submission failed')
+        const errorData = await response.json().catch(() => ({}))
+        console.error('❌ Error:', response.status, errorData)
+        throw new Error(`Form submission failed: ${response.status}`)
       }
     } catch (error) {
-      console.error('Formspree Error:', error)
+      console.error('❌ Formspree Error:', error.message)
       setSubmitStatus('error')
       
       // Track form submission error
-      trackEvent('error', 'contact_form', 'form_submission_error')
+      trackEvent('error', 'contact_form', `form_submission_error`)
     } finally {
       setIsSubmitting(false)
     }
