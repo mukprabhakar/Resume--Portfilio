@@ -361,20 +361,12 @@ const Hero = () => {
               
               {/* Main profile container */}
               <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden border-4 border-zinc-800 shadow-2xl transform transition-transform group-hover:scale-105 animate-float">
-                {/* Profile image with fallback */}
-                {isImageLoaded ? (
-                  <img 
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
-                    alt="Mukesh Pal" 
-                    className="w-full h-full object-cover"
-                    onLoad={() => setIsImageLoaded(true)}
-                    onError={() => setIsImageLoaded(false)}
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 flex items-center justify-center">
-                    <div className="text-6xl sm:text-7xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">MP</div>
-                  </div>
-                )}
+                {/* Profile image */}
+                <img 
+                  src="https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775281267/mukeshp_ybprrz.png" 
+                  alt="Mukesh Pal" 
+                  className="w-full h-full object-cover"
+                />
                 
                 {/* Online status indicator */}
                 <div className="absolute bottom-4 right-4 w-6 h-6 bg-emerald-500 rounded-full border-4 border-zinc-900 animate-pulse"></div>
