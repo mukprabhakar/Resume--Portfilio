@@ -32,15 +32,37 @@ const Skills = () => {
     { name: 'Java', percent: 0, target: 90, category: 'Languages', icon: '☕', level: 'Expert' },
     { name: 'SQL', percent: 0, target: 85, category: 'Languages', icon: '🗄️', level: 'Advanced' },
     { name: 'JavaScript', percent: 0, target: 80, category: 'Languages', icon: '📜', level: 'Advanced' },
+    { name: 'Python', percent: 0, target: 75, category: 'Languages', icon: '🐍', level: 'Intermediate' },
+    { name: 'TypeScript', percent: 0, target: 70, category: 'Languages', icon: '📘', level: 'Intermediate' },
+    { name: 'Dart', percent: 0, target: 65, category: 'Languages', icon: '🎯', level: 'Intermediate' },
 
     // Web Technologies
     { name: 'HTML', percent: 0, target: 95, category: 'Web Technology', icon: '🌐', level: 'Expert' },
     { name: 'CSS', percent: 0, target: 90, category: 'Web Technology', icon: '🎨', level: 'Expert' },
     { name: 'React.js', percent: 0, target: 75, category: 'Web Technology', icon: '⚛️', level: 'Intermediate' },
     { name: 'Spring Boot', percent: 0, target: 85, category: 'Web Technology', icon: '🌱', level: 'Advanced' },
+    { name: 'Node.js', percent: 0, target: 75, category: 'Web Technology', icon: '🟢', level: 'Intermediate' },
+    { name: 'Express.js', percent: 0, target: 70, category: 'Web Technology', icon: '🚀', level: 'Intermediate' },
+    { name: 'Next.js', percent: 0, target: 65, category: 'Web Technology', icon: '▲', level: 'Intermediate' },
+    { name: 'Tailwind CSS', percent: 0, target: 85, category: 'Web Technology', icon: '🌊', level: 'Advanced' },
+    { name: 'Bootstrap', percent: 0, target: 80, category: 'Web Technology', icon: '🅱️', level: 'Advanced' },
+
+    // Mobile Development
+    { name: 'Flutter', percent: 0, target: 70, category: 'Mobile Development', icon: '💙', level: 'Intermediate' },
+    { name: 'React Native', percent: 0, target: 65, category: 'Mobile Development', icon: '📱', level: 'Intermediate' },
 
     // Databases
     { name: 'MySQL', percent: 0, target: 80, category: 'Databases', icon: '🐬', level: 'Advanced' },
+    { name: 'MongoDB', percent: 0, target: 75, category: 'Databases', icon: '🍃', level: 'Intermediate' },
+    { name: 'PostgreSQL', percent: 0, target: 70, category: 'Databases', icon: '🐘', level: 'Intermediate' },
+    { name: 'Firebase', percent: 0, target: 75, category: 'Databases', icon: '🔥', level: 'Intermediate' },
+
+    // Cloud & DevOps
+    { name: 'AWS', percent: 0, target: 70, category: 'Cloud & DevOps', icon: '☁️', level: 'Intermediate' },
+    { name: 'Docker', percent: 0, target: 65, category: 'Cloud & DevOps', icon: '🐳', level: 'Intermediate' },
+    { name: 'GitHub Actions', percent: 0, target: 70, category: 'Cloud & DevOps', icon: '⚙️', level: 'Intermediate' },
+    { name: 'Netlify', percent: 0, target: 80, category: 'Cloud & DevOps', icon: '🔷', level: 'Advanced' },
+    { name: 'Vercel', percent: 0, target: 75, category: 'Cloud & DevOps', icon: '△', level: 'Intermediate' },
 
     // Developer Tools
     { name: 'VS Code', percent: 0, target: 90, category: 'Developer Tools', icon: '💻', level: 'Expert' },
@@ -48,6 +70,8 @@ const Skills = () => {
     { name: 'Postman', percent: 0, target: 80, category: 'Developer Tools', icon: '📬', level: 'Advanced' },
     { name: 'Git', percent: 0, target: 85, category: 'Developer Tools', icon: '🐙', level: 'Advanced' },
     { name: 'n8n', percent: 0, target: 70, category: 'Developer Tools', icon: '🔄', level: 'Intermediate' },
+    { name: 'Figma', percent: 0, target: 70, category: 'Developer Tools', icon: '🎨', level: 'Intermediate' },
+    { name: 'Chrome DevTools', percent: 0, target: 85, category: 'Developer Tools', icon: '🔍', level: 'Advanced' },
 
     // Soft Skills
     { name: 'Problem-Solving', percent: 0, target: 90, category: 'Soft Skills', icon: '🧠', level: 'Expert' },
@@ -80,8 +104,16 @@ const Skills = () => {
       items: skills.filter(skill => skill.category === 'Web Technology').map(skill => skill.name)
     },
     {
+      title: 'Mobile Development',
+      items: skills.filter(skill => skill.category === 'Mobile Development').map(skill => skill.name)
+    },
+    {
       title: 'Databases',
       items: skills.filter(skill => skill.category === 'Databases').map(skill => skill.name)
+    },
+    {
+      title: 'Cloud & DevOps',
+      items: skills.filter(skill => skill.category === 'Cloud & DevOps').map(skill => skill.name)
     },
     {
       title: 'Developer Tools',

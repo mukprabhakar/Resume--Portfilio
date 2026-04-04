@@ -113,31 +113,51 @@ const Achievements = () => {
     }
   ]
 
-  const currentProjects = [
-    {
-      icon: '🚀',
-      heading: 'CodeOra',
-      description: 'An ed-tech platform where students can access AI-generated projects, adaptive quizzes, recruiter portal, and college/club dashboards in a single integrated environment.'
-    },
-    {
-      icon: '💊',
-      heading: 'Trigo',
-      description: 'A medical startup that helps users order medicine from local vendors with instant delivery, bridging the gap between patients and pharmacies.'
-    },
-    {
-      icon: '🚀',
-      heading: 'Smart Street Light System',
-      description: 'Developing intelligent street lighting solutions for Meerut Nagar Nigam to optimize energy consumption and enhance urban infrastructure with IoT-enabled controls.'
-    },
+  const completedProjects = [
     {
       icon: '🛸',
       heading: 'Swarm Drone Project',
-      description: 'Engineering swarm drone technology for the Indian Military under Garwal Battalion at Meerut Cantt, focusing on coordinated multi-drone operations and tactical applications.'
+      description: 'Engineered swarm drone technology for the Indian Military under Garwal Battalion at Meerut Cantt, focusing on coordinated multi-drone operations and tactical applications.',
+      status: 'completed'
     },
     {
       icon: '🌍',
       heading: 'ISRO Research Collaboration',
-      description: 'Conducting field research at ISRO NRSC Hyderabad on climate change monitoring, working directly with Scientist Dr. Alok Taori to develop satellite data analysis methodologies.'
+      description: 'Conducted field research at ISRO NRSC Hyderabad on climate change monitoring, working directly with Scientist Dr. Alok Taori to develop satellite data analysis methodologies.',
+      status: 'completed'
+    },
+    {
+      icon: '💡',
+      heading: 'Smart Street Light System',
+      description: 'Developed intelligent street lighting solutions for Meerut Nagar Nigam to optimize energy consumption and enhance urban infrastructure with IoT-enabled controls.',
+      status: 'completed'
+    },
+    {
+      icon: '💊',
+      heading: 'Trigo',
+      description: 'A medical startup that helps users order medicine from local vendors with instant delivery, bridging the gap between patients and pharmacies.',
+      status: 'completed'
+    }
+  ]
+
+  const currentProjects = [
+    {
+      icon: '🚀',
+      heading: 'NPF CRM',
+      description: 'Building a comprehensive Customer Relationship Management system to streamline client interactions, automate workflows, and enhance business productivity.',
+      status: 'in-progress'
+    },
+    {
+      icon: '⚙️',
+      heading: 'Custom ERP',
+      description: 'Developing an Enterprise Resource Planning solution tailored for specific business needs, integrating finance, HR, inventory, and operations management.',
+      status: 'in-progress'
+    },
+    {
+      icon: '🎯',
+      heading: 'Mission Person Find',
+      description: 'Creating an advanced search and tracking platform to help locate missing persons using AI-powered image recognition and data analytics.',
+      status: 'in-progress'
     }
   ]
 
@@ -201,17 +221,45 @@ const Achievements = () => {
           ))}
         </div>
 
-        {/* Full Width Current Projects Section */}
+        {/* Completed Projects Section */}
         <div className="glass-card p-4 sm:p-6 rounded-xl card-3d mt-8 sm:mt-12">
-          <h4 className="font-bold text-lg sm:text-xl mb-3 sm:mb-4 text-white">Current Projects</h4>
-          <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
-            {currentProjects.map((project, index) => (
-              <div key={index} className="p-3 sm:p-4 rounded-lg bg-zinc-800/50 border border-zinc-700 hover:border-emerald-400/30 transition-all">
+          <h4 className="font-bold text-lg sm:text-xl mb-3 sm:mb-4 text-white flex items-center gap-2">
+            <span className="text-emerald-400">✓</span>
+            Completed Projects
+          </h4>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {completedProjects.map((project, index) => (
+              <div key={index} className="p-3 sm:p-4 rounded-lg bg-zinc-800/50 border border-emerald-400/30 hover:border-emerald-400/50 transition-all hover:shadow-lg hover:shadow-emerald-400/10 transform hover:-translate-y-1">
                 <div className="flex items-center mb-2 sm:mb-3">
                   <span className="text-xl sm:text-2xl mr-2 sm:mr-3" aria-hidden="true">{project.icon}</span>
                   <h5 className="font-semibold text-zinc-100 text-sm sm:text-base">{project.heading}</h5>
                 </div>
                 <p className="text-xs sm:text-sm text-zinc-400">{project.description}</p>
+                <div className="mt-2 sm:mt-3">
+                  <span className="inline-block px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full font-medium">Completed</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Current Projects Section */}
+        <div className="glass-card p-4 sm:p-6 rounded-xl card-3d mt-6 sm:mt-8">
+          <h4 className="font-bold text-lg sm:text-xl mb-3 sm:mb-4 text-white flex items-center gap-2">
+            <span className="text-blue-400 animate-pulse">●</span>
+            Current Projects
+          </h4>
+          <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
+            {currentProjects.map((project, index) => (
+              <div key={index} className="p-3 sm:p-4 rounded-lg bg-zinc-800/50 border border-blue-400/30 hover:border-blue-400/50 transition-all hover:shadow-lg hover:shadow-blue-400/10 transform hover:-translate-y-1">
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <span className="text-xl sm:text-2xl mr-2 sm:mr-3" aria-hidden="true">{project.icon}</span>
+                  <h5 className="font-semibold text-zinc-100 text-sm sm:text-base">{project.heading}</h5>
+                </div>
+                <p className="text-xs sm:text-sm text-zinc-400">{project.description}</p>
+                <div className="mt-2 sm:mt-3">
+                  <span className="inline-block px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full font-medium animate-pulse">In Progress</span>
+                </div>
               </div>
             ))}
           </div>

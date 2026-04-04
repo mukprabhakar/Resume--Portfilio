@@ -103,7 +103,7 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-zinc-900/90 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-xl border-b border-zinc-800 transition-all duration-300" role="banner">
+    <header className="bg-zinc-900/95 backdrop-blur-lg sticky top-0 left-0 right-0 z-50 shadow-xl border-b border-zinc-800 transition-all duration-300" role="banner">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 py-2 sm:py-3 flex justify-between items-center">
         {/* Logo/Brand */}
         <Link
@@ -115,8 +115,12 @@ const Header = () => {
             setActiveSection('hero')
           }}
         >
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center transform transition-transform group-hover:rotate-6" aria-hidden="true">
-            <span className="text-white font-bold text-sm sm:text-lg">MP</span>
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center transform transition-transform group-hover:rotate-6 overflow-hidden" aria-hidden="true">
+            <img 
+              src="https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775281267/mukeshp_ybprrz.png" 
+              alt="Mukesh Pal" 
+              className="w-full h-full object-cover"
+            />
           </div>
           <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent hidden xs:block">Mukesh Pal</h1>
         </Link>
