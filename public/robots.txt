@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://mukprabhakar.in/sitemap.xml
+
+# Crawl-delay for polite crawling (optional)
+Crawl-delay: 1
+
+# Block access to sensitive paths (if any)
+# Disallow: /admin/
+# Disallow: /private/
