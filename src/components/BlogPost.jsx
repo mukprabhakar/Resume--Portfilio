@@ -42,7 +42,7 @@ const BlogPost = () => {
       updateOrCreateMeta('og:title', post.title, true)
       updateOrCreateMeta('og:description', post.excerpt, true)
       updateOrCreateMeta('og:type', 'article', true)
-      updateOrCreateMeta('og:url', `https://mukprabhakar.in/blog/${slug}`, true)
+      updateOrCreateMeta('og:url', `https://mukprabhakar.in/#/blog/${slug}`, true)
       if (post.image) {
         updateOrCreateMeta('og:image', post.image, true)
       }
@@ -61,7 +61,7 @@ const BlogPost = () => {
         canonical.rel = 'canonical'
         document.head.appendChild(canonical)
       }
-      canonical.href = `https://mukprabhakar.in/blog/${slug}`
+      canonical.href = `https://mukprabhakar.in/#/blog/${slug}`
       
       // Add schema.org structured data
       let schemaScript = document.getElementById('blog-schema')
@@ -95,7 +95,7 @@ const BlogPost = () => {
         },
         "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": `https://mukprabhakar.in/blog/${slug}`
+          "@id": `https://mukprabhakar.in/#/blog/${slug}`
         },
         "keywords": post.tags.join(', ')
       }

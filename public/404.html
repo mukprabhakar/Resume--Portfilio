@@ -4,14 +4,19 @@
   <meta charset="UTF-8">
   <title>Mukesh Pal - Full-Stack Developer Portfolio</title>
   <script>
-    // GitHub Pages SPA redirect handler
-    // This preserves the path when redirecting to index.html
+    // GitHub Pages SPA redirect handler with hash-based routing
+    // This preserves the path using hash routing for better SEO
     const path = window.location.pathname;
     const search = window.location.search;
-    const hash = window.location.hash;
     
-    // Redirect to index.html with the original path as a parameter
-    window.location.href = `/?redirect=${encodeURIComponent(path + search + hash)}`;
+    // Convert path to hash format for better Google crawling
+    // Example: /blog/visit-russian-house-delhi -> /#/blog/visit-russian-house-delhi
+    if (path !== '/' && path !== '/index.html') {
+      const cleanPath = path.replace(/^\/portfolio-react/, '');
+      window.location.href = `/#${cleanPath}${search}`;
+    } else {
+      window.location.href = `/${search}`;
+    }
   </script>
 </head>
 <body>
