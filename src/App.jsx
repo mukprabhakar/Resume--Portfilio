@@ -13,6 +13,8 @@ import Experience from './components/Experience'
 import Achievements from './components/Achievements'
 import Testimonials from './components/Testimonials'
 import Blog from './components/Blog'
+import BlogPosts from './components/BlogPosts'
+import BlogPost from './components/BlogPost'
 import Profile from './components/Profile'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
@@ -225,6 +227,8 @@ function App() {
             <Route path="/badges" element={<CredlyBadges />} />
             <Route path="/github" element={<GitHubStats />} />
             <Route path="/coding" element={<CodingChallenges />} />
+            <Route path="/blog" element={<BlogPosts />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
           </Routes>
         </main>
         <Footer />
