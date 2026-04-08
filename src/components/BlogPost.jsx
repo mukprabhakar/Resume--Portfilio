@@ -10,6 +10,100 @@ const BlogPost = () => {
   const [loading, setLoading] = useState(true)
   const [relatedPosts, setRelatedPosts] = useState([])
 
+  // SEO: Update document title and meta tags when post loads
+  useEffect(() => {
+    if (post) {
+      // Update page title
+      document.title = `${post.title} | Mukesh Pal - Full-Stack Developer Portfolio`
+      
+      // Update meta description
+      let metaDescription = document.querySelector('meta[name="description"]')
+      if (metaDescription) {
+        metaDescription.setAttribute('content', post.excerpt || post.title)
+      } else {
+        metaDescription = document.createElement('meta')
+        metaDescription.name = 'description'
+        metaDescription.content = post.excerpt || post.title
+        document.head.appendChild(metaDescription)
+      }
+      
+      // Update Open Graph tags
+      const updateOrCreateMeta = (name, content, isProperty = false) => {
+        const attribute = isProperty ? 'property' : 'name'
+        let meta = document.querySelector(`meta[${attribute}="${name}"]`)
+        if (!meta) {
+          meta = document.createElement('meta')
+          meta.setAttribute(attribute, name)
+          document.head.appendChild(meta)
+        }
+        meta.content = content
+      }
+      
+      updateOrCreateMeta('og:title', post.title, true)
+      updateOrCreateMeta('og:description', post.excerpt, true)
+      updateOrCreateMeta('og:type', 'article', true)
+      updateOrCreateMeta('og:url', `https://mukprabhakar.in/blog/${slug}`, true)
+      if (post.image) {
+        updateOrCreateMeta('og:image', post.image, true)
+      }
+      
+      updateOrCreateMeta('twitter:title', post.title)
+      updateOrCreateMeta('twitter:description', post.excerpt)
+      updateOrCreateMeta('twitter:card', 'summary_large_image')
+      if (post.image) {
+        updateOrCreateMeta('twitter:image', post.image)
+      }
+      
+      // Add canonical URL
+      let canonical = document.querySelector('link[rel="canonical"]')
+      if (!canonical) {
+        canonical = document.createElement('link')
+        canonical.rel = 'canonical'
+        document.head.appendChild(canonical)
+      }
+      canonical.href = `https://mukprabhakar.in/blog/${slug}`
+      
+      // Add schema.org structured data
+      let schemaScript = document.getElementById('blog-schema')
+      if (!schemaScript) {
+        schemaScript = document.createElement('script')
+        schemaScript.id = 'blog-schema'
+        schemaScript.type = 'application/ld+json'
+        document.head.appendChild(schemaScript)
+      }
+      
+      const schemaData = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "description": post.excerpt,
+        "image": post.image || 'https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775281267/mukeshp_ybprrz.png',
+        "datePublished": post.date,
+        "dateModified": post.date,
+        "author": {
+          "@type": "Person",
+          "name": "Mukesh Pal",
+          "url": "https://mukprabhakar.in"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Mukesh Pal Portfolio",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775281267/mukeshp_ybprrz.png"
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": `https://mukprabhakar.in/blog/${slug}`
+        },
+        "keywords": post.tags.join(', ')
+      }
+      
+      schemaScript.textContent = JSON.stringify(schemaData, null, 2)
+    }
+  }, [post, slug])
+
   useEffect(() => {
     loadPost()
     window.scrollTo(0, 0)
@@ -179,11 +273,17 @@ const BlogPost = () => {
 
       <div className="relative z-10">
         {/* Hero Section */}
-        <div className="w-full relative min-h-[60vh] flex items-end pb-16 pt-32">
+        <div className="w-full relative min-h-[60vh] flex items-end pb-16 pt-32 lg:pt-40">
           {post.image ? (
-            <div className="absolute inset-0 z-0">
-              <img src={post.image} alt={post.title} className="w-full h-full object-cover object-center" />
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent"></div>
+            <div className="absolute inset-0 z-0 overflow-hidden bg-zinc-950 flex items-center justify-center">
+              {/* Ambient blurred background behind */}
+              <div 
+                className="absolute inset-0 bg-cover bg-center blur-3xl opacity-30 scale-110" 
+                style={{ backgroundImage: `url(${post.image})` }}
+              ></div>
+              {/* Actual image shown completely uncropped */}
+              <img src={post.image} alt={post.title} className="w-full h-full object-contain relative z-10 p-4 md:p-8" />
+              <div className="absolute inset-0 z-20 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent pointer-events-none"></div>
             </div>
           ) : (
             <div className="absolute inset-0 z-0 bg-gradient-to-br from-emerald-900/40 to-blue-900/40">
@@ -191,32 +291,65 @@ const BlogPost = () => {
             </div>
           )}
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 w-[95vw] md:w-[90vw] max-w-[1400px] relative z-10">
+            {/* Breadcrumb Navigation for SEO */}
+            <nav aria-label="Breadcrumb" className="mb-6">
+              <ol className="flex items-center gap-2 text-sm text-zinc-400">
+                <li><Link to="/" className="hover:text-emerald-400 transition-colors">Home</Link></li>
+                <li><span className="mx-2">/</span></li>
+                <li><Link to="/blog" className="hover:text-emerald-400 transition-colors">Blog</Link></li>
+                <li><span className="mx-2">/</span></li>
+                <li><span className="text-emerald-400" aria-current="page">{post.title}</span></li>
+              </ol>
+            </nav>
+
             {/* Back Button */}
             <Link
               to="/blog"
               className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-medium mb-8 transition-colors backdrop-blur-sm bg-zinc-950/30 px-5 py-2.5 rounded-full border border-emerald-500/20 w-fit hover:bg-emerald-500/10"
+              aria-label="Back to all blog posts"
             >
               <span>← Back to Blog</span>
             </Link>
 
             {/* Post Header */}
             <header className="max-w-4xl">
+              {/* Author Info for SEO */}
+              <div className="flex items-center gap-4 mb-6">
+                <img 
+                  src="https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775281267/mukeshp_ybprrz.png" 
+                  alt="Mukesh Pal - Full-Stack Developer" 
+                  className="w-12 h-12 rounded-full border-2 border-emerald-500/50"
+                  loading="lazy"
+                />
+                <div>
+                  <p className="text-white font-semibold">Mukesh Pal</p>
+                  <p className="text-zinc-400 text-sm">Full-Stack Developer & CodeByte Co-Founder</p>
+                </div>
+              </div>
+
               {/* Category */}
               <span className="inline-block px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-sm rounded-full font-bold tracking-wider uppercase mb-6 backdrop-blur-md shadow-lg shadow-emerald-500/10">
                 {post.category}
               </span>
 
-              {/* Title */}
+              {/* Title - H1 for SEO */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-white leading-tight drop-shadow-2xl">
                 {post.title}
               </h1>
+
+              {/* Excerpt for SEO */}
+              {post.excerpt && (
+                <p className="text-xl text-zinc-300 mb-8 leading-relaxed font-light">
+                  {post.excerpt}
+                </p>
+              )}
 
               {/* Meta Info */}
               <div className="flex flex-wrap items-center gap-6 text-zinc-300 text-sm font-medium">
                 <div className="flex items-center gap-2 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800 backdrop-blur-md">
                   <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                  <span>{formatDate(post.date)}</span>
+                  <span>Published: {formatDate(post.date)}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800 backdrop-blur-md">
                   <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -224,13 +357,14 @@ const BlogPost = () => {
                 </div>
               </div>
 
-              {/* Tags */}
+              {/* Tags - Internal linking for SEO */}
               <div className="flex flex-wrap gap-3 mt-8">
                 {post.tags.map((tag) => (
                   <Link
                     key={tag}
                     to={`/blog?tag=${tag}`}
                     className="px-4 py-1.5 bg-zinc-900/80 backdrop-blur-md border border-zinc-700/50 text-zinc-300 rounded-full text-sm hover:border-emerald-500/50 hover:text-emerald-400 transition-all shadow-lg"
+                    title={`View all posts tagged with ${tag}`}
                   >
                     #{tag}
                   </Link>
@@ -241,7 +375,7 @@ const BlogPost = () => {
         </div>
 
         {/* Main Content Area */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl relative z-20 -mt-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 w-[95vw] md:w-[90vw] max-w-[1400px] relative z-20 -mt-12">
           {/* Post Content */}
           <div className="glass-card shadow-2xl p-6 sm:p-10 md:p-14 rounded-3xl border border-zinc-800/80 backdrop-blur-xl bg-zinc-950/80 mb-12 relative overflow-hidden">
             <div className="absolute top-0 left-1/4 w-1/2 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
@@ -271,6 +405,15 @@ const BlogPost = () => {
                       </code>
                     )
                   },
+                  img: ({ node, ...props }) => (
+                    <span className="block md:inline-block md:float-right md:w-[45%] md:ml-10 md:mb-6 md:mt-2 clear-right">
+                      <img 
+                        className="w-full object-contain rounded-2xl border border-zinc-800 shadow-2xl my-6 md:my-0" 
+                        {...props} 
+                        alt={props.alt || ''}
+                      />
+                    </span>
+                  ),
                   h1: ({ children }) => <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-16 mb-8 tracking-tight">{children}</h1>,
                   h2: ({ children }) => <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mt-14 mb-6 tracking-tight relative pb-4"><span className="absolute bottom-0 left-0 w-12 h-1 bg-emerald-500 rounded-full"></span>{children}</h2>,
                   h3: ({ children }) => <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold text-zinc-100 mt-10 mb-4 tracking-tight">{children}</h3>,

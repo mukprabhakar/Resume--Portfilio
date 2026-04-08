@@ -193,10 +193,15 @@ const BlogPosts = () => {
                 <div className="md:w-3/5 h-64 md:h-[450px] relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent md:hidden z-10"></div>
                   <div className="absolute inset-0 bg-zinc-900/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+                  {/* Ambient background matching image */}
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center blur-3xl opacity-40 transform scale-110 transition-opacity duration-700 group-hover:opacity-60" 
+                    style={{ backgroundImage: `url(${featuredPost.image})` }}
+                  ></div>
                   <img 
                     src={featuredPost.image} 
                     alt={featuredPost.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-contain relative z-10 p-4 transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute top-6 left-6 z-20">
                     <span className="backdrop-blur-md bg-white/10 border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-xl">
@@ -243,10 +248,15 @@ const BlogPosts = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="relative h-56 overflow-hidden bg-zinc-800">
+                {/* Ambient background matching image */}
+                <div 
+                  className="absolute inset-0 bg-cover bg-center blur-2xl opacity-30 transform scale-110 transition-opacity duration-700 group-hover:opacity-60" 
+                  style={{ backgroundImage: `url(${post.image})` }}
+                ></div>
                 <img 
                   src={post.image} 
                   alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+                  className="w-full h-full object-contain relative z-10 p-2 transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/20 to-transparent opacity-80"></div>
                 <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
