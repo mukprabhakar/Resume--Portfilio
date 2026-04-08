@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import matter from 'gray-matter'
 
 const BlogPost = () => {
   const { slug } = useParams()
@@ -29,8 +28,36 @@ const BlogPost = () => {
       console.log('📁 Available files:', Object.keys(postFiles))
       
       if (postFiles[filePath]) {
-        const content = await postFiles[filePath]()
-        const { data, content: markdownContent } = matter(content)
+        const rawContent = await postFiles[filePath]()
+        
+        // Manual frontmatter parsing (no gray-matter)
+        const frontmatterRegex = /^\s*---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/;
+        const match = rawContent.match(frontmatterRegex)
+        
+        let data = {}
+        let markdownContent = rawContent
+        
+        if (match) {
+          const frontmatterStr = match[1]
+          markdownContent = match[2]
+          
+          const extractField = (field) => {
+            const regex = new RegExp(`^${field}:\\s*(.*)$`, 'm');
+            const m = frontmatterStr.match(regex);
+            return m ? m[1].trim().replace(/^["']|["']$/g, '') : null;
+          };
+
+          const tagsMatch = frontmatterStr.match(/^tags:\s*\[(.*?)\]/m);
+          
+          data = {
+            title: extractField('title') || 'Untitled',
+            date: extractField('date') || '2024-01-01',
+            tags: tagsMatch ? tagsMatch[1].split(',').map(t => t.trim().replace(/^["']|["']$/g, '')) : [],
+            category: extractField('category') || 'General',
+            image: extractField('image') || '',
+            excerpt: extractField('excerpt') || ''
+          }
+        }
         
         const postData = {
           slug,
@@ -62,8 +89,27 @@ const BlogPost = () => {
       const allPosts = []
       
       for (const path in postFiles) {
-        const content = await postFiles[path]()
-        const { data, content: markdownContent } = matter(content)
+        const rawContent = await postFiles[path]()
+        const frontmatterRegex = /^\s*---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/;
+        const match = rawContent.match(frontmatterRegex)
+        
+        let data = {}
+        if (match) {
+          const frontmatterStr = match[1]
+          const extractField = (field) => {
+            const regex = new RegExp(`^${field}:\\s*(.*)$`, 'm');
+            const m = frontmatterStr.match(regex);
+            return m ? m[1].trim().replace(/^["']|["']$/g, '') : null;
+          };
+          const tagsMatch = frontmatterStr.match(/^tags:\s*\[(.*?)\]/m);
+          
+          data = {
+            title: extractField('title') || 'Untitled',
+            tags: tagsMatch ? tagsMatch[1].split(',').map(t => t.trim().replace(/^["']|["']$/g, '')) : [],
+            excerpt: extractField('excerpt') || ''
+          }
+        }
+        
         const postSlug = path.split('/').pop().replace('.md', '')
         
         if (postSlug !== currentPost.slug) {
