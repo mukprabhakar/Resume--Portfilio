@@ -70,9 +70,9 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       
-      // Check if we're in production and have a tracking ID
-      if (import.meta.env.VITE_GA_MEASUREMENT_ID) {
-        gtag('config', import.meta.env.VITE_GA_MEASUREMENT_ID);
+      // Use window variable instead of import.meta for production compatibility
+      if (window.GA_MEASUREMENT_ID) {
+        gtag('config', window.GA_MEASUREMENT_ID);
       } else {
         // Fallback for development or when env var is not set
         gtag('config', 'GA_MEASUREMENT_ID');
