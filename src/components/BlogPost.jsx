@@ -19,10 +19,14 @@ const BlogPost = () => {
   const loadPost = async () => {
     try {
       setLoading(true)
+      console.log('📝 Loading post:', slug)
       
       // Import the specific markdown file
-      const postFiles = import.meta.glob('../blog-posts/*.md', { as: 'raw' })
-      const filePath = `../blog-posts/${slug}.md`
+      const postFiles = import.meta.glob('/src/blog-posts/*.md', { as: 'raw' })
+      const filePath = `/src/blog-posts/${slug}.md`
+      
+      console.log('🔍 Looking for:', filePath)
+      console.log('📁 Available files:', Object.keys(postFiles))
       
       if (postFiles[filePath]) {
         const content = await postFiles[filePath]()
@@ -39,11 +43,14 @@ const BlogPost = () => {
           content: markdownContent
         }
         
+        console.log('✅ Post loaded:', postData.title)
         setPost(postData)
         loadRelatedPosts(postData)
+      } else {
+        console.error('❌ Post not found:', filePath)
       }
     } catch (error) {
-      console.error('Error loading blog post:', error)
+      console.error('❌ Error loading blog post:', error)
     } finally {
       setLoading(false)
     }
@@ -51,7 +58,7 @@ const BlogPost = () => {
 
   const loadRelatedPosts = async (currentPost) => {
     try {
-      const postFiles = import.meta.glob('../blog-posts/*.md', { as: 'raw' })
+      const postFiles = import.meta.glob('/src/blog-posts/*.md', { as: 'raw' })
       const allPosts = []
       
       for (const path in postFiles) {

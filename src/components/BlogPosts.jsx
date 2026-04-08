@@ -20,12 +20,16 @@ const BlogPosts = () => {
 
   const loadBlogPosts = async () => {
     try {
+      console.log('📝 Loading blog posts...')
       // Import all markdown files from blog-posts directory
-      const postFiles = import.meta.glob('../blog-posts/*.md', { as: 'raw' })
+      const postFiles = import.meta.glob('/src/blog-posts/*.md', { as: 'raw' })
+      
+      console.log('📁 Found files:', Object.keys(postFiles))
       
       const loadedPosts = []
       
       for (const path in postFiles) {
+        console.log('📄 Processing:', path)
         const content = await postFiles[path]()
         const { data, content: markdownContent } = matter(content)
         
@@ -47,6 +51,7 @@ const BlogPosts = () => {
       // Sort by date (newest first)
       loadedPosts.sort((a, b) => new Date(b.date) - new Date(a.date))
       
+      console.log('✅ Loaded posts:', loadedPosts.length)
       setPosts(loadedPosts)
       
       // Extract all unique tags
@@ -54,7 +59,7 @@ const BlogPosts = () => {
       setAllTags(tags)
       
     } catch (error) {
-      console.error('Error loading blog posts:', error)
+      console.error('❌ Error loading blog posts:', error)
     }
   }
 
