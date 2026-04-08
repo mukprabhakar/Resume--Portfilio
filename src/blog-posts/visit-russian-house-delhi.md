@@ -1,10 +1,10 @@
 ---
-title: "Visit to the Russian Embassy at Russian House Delhi"
+title: "Visit to the Russian Embassy at Russian House Delhi - Technology & Defense Experience"
 date: "2026-04-08"
-tags: ["Experience", "Culture", "Technology", "Defense", "Russia"]
+tags: ["Russian House Delhi", "Russian Embassy", "Technology Exhibition", "Defense Systems", "India-Russia Relations", "Military Technology", "Cultural Exchange", "Full-Stack Developer Experience", "Tech Innovation", "Mukesh Pal"]
 category: "Experience"
 image: "https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775017930/mukesh_russan_ambassi_mmnusg.jpg"
-excerpt: "A detailed account of my visit to the Russian House in Delhi, exploring incredible advancements in technology, cultural exchange, and valuable life lessons."
+excerpt: "My experience visiting Russian House Delhi - exploring advanced Russian technology, military defense systems, cultural exchange, and valuable insights from Dmitri. A must-visit for tech enthusiasts and students in India."
 ---
 
 # Visit to the Russian Embassy at Russian House Delhi
