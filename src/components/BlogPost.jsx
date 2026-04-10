@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
@@ -382,6 +383,7 @@ const BlogPost = () => {
             
             <div className="prose prose-lg md:prose-xl prose-invert max-w-none prose-img:rounded-2xl prose-img:border prose-img:border-zinc-800 prose-img:shadow-2xl prose-headings:text-white prose-p:text-zinc-300 prose-a:text-emerald-400 hover:prose-a:text-emerald-300">
               <ReactMarkdown
+                rehypePlugins={[rehypeRaw]}
                 components={{
                   // Code blocks with syntax highlighting
                   code({ node, inline, className, children, ...props }) {
