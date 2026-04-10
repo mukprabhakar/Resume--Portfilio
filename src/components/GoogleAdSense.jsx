@@ -13,7 +13,7 @@ const GoogleAdSense = ({ adSlot, adFormat = 'auto', adLayout = '', adLayoutKey =
   }, [])
 
   return (
-    <div className="my-8 text-center" style={style}>
+    <div className="my-8" style={style}>
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}

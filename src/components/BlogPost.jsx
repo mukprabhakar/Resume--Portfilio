@@ -382,9 +382,13 @@ const BlogPost = () => {
           <div className="glass-card shadow-2xl p-6 sm:p-10 md:p-14 rounded-3xl border border-zinc-800/80 backdrop-blur-xl bg-zinc-950/80 mb-12 relative overflow-hidden">
             <div className="absolute top-0 left-1/4 w-1/2 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
             
-            {/* Ad Placement 1: Top of content */}
+            {/* Ad Placement 1: Top of content - Fluid ad with layout key */}
             {import.meta.env.VITE_ADSENSE_PUBLISHER_ID && (
-              <GoogleAdSense adSlot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />
+              <GoogleAdSense 
+                adSlot={import.meta.env.VITE_ADSENSE_SLOT_TOP} 
+                adFormat="fluid"
+                adLayoutKey="-gw-3+1f-3d+2z"
+              />
             )}
 
             <div className="prose prose-lg md:prose-xl prose-invert max-w-none prose-img:rounded-2xl prose-img:border prose-img:border-zinc-800 prose-img:shadow-2xl prose-headings:text-white prose-p:text-zinc-300 prose-a:text-emerald-400 hover:prose-a:text-emerald-300">
@@ -441,11 +445,23 @@ const BlogPost = () => {
               </ReactMarkdown>
             </div>
 
-            {/* Ad Placement 2: Bottom of content */}
+            {/* Ad Placement 2: Bottom of content - In-article ad */}
             {import.meta.env.VITE_ADSENSE_PUBLISHER_ID && (
-              <GoogleAdSense adSlot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM} />
+              <GoogleAdSense 
+                adSlot={import.meta.env.VITE_ADSENSE_SLOT_MIDDLE} 
+                adFormat="fluid"
+                adLayout="in-article"
+              />
             )}
           </div>
+
+          {/* Ad Placement 3: After content - Autorelaxed ad */}
+          {import.meta.env.VITE_ADSENSE_PUBLISHER_ID && (
+            <GoogleAdSense 
+              adSlot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM} 
+              adFormat="autorelaxed"
+            />
+          )}
 
           {/* Share Section */}
           <div className="glass-card p-8 rounded-3xl border border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-6 mb-16 shadow-xl">
