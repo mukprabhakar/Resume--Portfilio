@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import GoogleAdSense from './GoogleAdSense'
 
 const BlogPost = () => {
   const { slug } = useParams()
@@ -381,6 +382,11 @@ const BlogPost = () => {
           <div className="glass-card shadow-2xl p-6 sm:p-10 md:p-14 rounded-3xl border border-zinc-800/80 backdrop-blur-xl bg-zinc-950/80 mb-12 relative overflow-hidden">
             <div className="absolute top-0 left-1/4 w-1/2 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
             
+            {/* Ad Placement 1: Top of content */}
+            {import.meta.env.VITE_ADSENSE_PUBLISHER_ID && (
+              <GoogleAdSense adSlot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />
+            )}
+
             <div className="prose prose-lg md:prose-xl prose-invert max-w-none prose-img:rounded-2xl prose-img:border prose-img:border-zinc-800 prose-img:shadow-2xl prose-headings:text-white prose-p:text-zinc-300 prose-a:text-emerald-400 hover:prose-a:text-emerald-300">
               <ReactMarkdown
                 rehypePlugins={[rehypeRaw]}
@@ -434,6 +440,11 @@ const BlogPost = () => {
                 {post.content}
               </ReactMarkdown>
             </div>
+
+            {/* Ad Placement 2: Bottom of content */}
+            {import.meta.env.VITE_ADSENSE_PUBLISHER_ID && (
+              <GoogleAdSense adSlot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM} />
+            )}
           </div>
 
           {/* Share Section */}
