@@ -1,25 +1,24 @@
 const e=`---
-title: 'Comparative Analysis: DeepSeek, ChatGPT, Grok, Claude & Google Gemini'
+title: 'Comparative Analysis: DeepSeek, ChatGPT, Grok, & Google Gemini'
 slug: 'llm-comparative-analysis-2025'
 date: '2025-03-13'
 category: 'Artificial Intelligence'
 tags: ['LLM', 'AI', 'DeepSeek', 'ChatGPT', 'Grok', 'Claude', 'Gemini', 'Machine Learning', 'NLP']
 featured: true
 image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
-excerpt: 'A comprehensive deep-dive comparison of the top 5 LLMs in 2025: architecture, performance benchmarks, real-world applications, and future predictions.'
+excerpt: 'A comprehensive deep-dive comparison of the top 4 LLMs in 2025: architecture, performance benchmarks, real-world applications, and future predictions.'
 ---
 
-# Comparative Analysis: DeepSeek, ChatGPT, Grok, Claude & Google Gemini
+# Comparative Analysis: DeepSeek, ChatGPT, Grok, & Google Gemini
 
 ## Features, Techniques, Performance, and Future Prospects
 
-**Author:** Mukesh Pal  
-**Published:** March 13, 2025  
-**Read Time:** 15 min read
+**Author:** Mukesh Pal   
+
 
 ---
 
-> **Abstract:** This comprehensive analysis examines five leading Large Language Models (LLMs) - DeepSeek, ChatGPT, Grok, Claude, and Google Gemini - comparing their architectural designs, training methodologies, performance benchmarks, and real-world applications. We explore how each model's unique approach shapes its strengths, limitations, and optimal use cases.
+> **Abstract:** This comprehensive analysis examines five leading Large Language Models (LLMs) - DeepSeek, ChatGPT, Grok, and Google Gemini - comparing their architectural designs, training methodologies, performance benchmarks, and real-world applications. We explore how each model's unique approach shapes its strengths, limitations, and optimal use cases.
 
 ---
 
@@ -431,13 +430,13 @@ The comprehensive historical overview of pre-trained models, from static word em
   </tbody>
 </table>
 
-![][image1]
+![Fig. 3. Transformer model architecture](https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775847306/fig_3_satkhf.jpg)
 
-Fig. 3\\. Transformer model architecture, featuring masked multi-head attention, positional encoding, and feed-forward layers, which underpin models like DeepSeek, ChatGPT, Grok, and Gemini
+Fig. 3. Transformer model architecture, featuring masked multi-head attention, positional encoding, and feed-forward layers, which underpin models like DeepSeek, ChatGPT, Grok, and Gemini
 
-![][image2]
+![Fig. 4. Architecture of DeepSeek](https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775847318/fig_4_loxn35.jpg)
 
-Fig. 4\\. Architecture of DeepSeek
+Fig. 4. Architecture of DeepSeek
 
 ## **6\\. Dataset Composition and Its Influence on Model Specialization**
 
@@ -654,39 +653,49 @@ To evaluate the performance of the models, a single-query setup was employed, en
 
 Fig. 5 quantifies the overall quality of artificial analysis by aggregating performance across multiple benchmarks. It considers key evaluation metrics such as response accuracy, knowledge depth, and logical coherence. The index is normalized to provide a differential analysis of various models, highlighting their strengths in AI-driven analytical tasks.
 
-Fig. 5\\. Artificial Analysis Quality Index
+![Fig. 5. Artificial Analysis Quality Index](https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775847329/fig_5_cfvlhs.jpg)
+
+Fig. 5. Artificial Analysis Quality Index
 
 #### **2\\) Reasoning & Knowledge (MMLU)**
 
-This metric, depicted in Fig. 6, evaluates a model’s ability to process and analyze information across diverse knowledge domains. Utilizing the Massive Multitask Language Understanding (MMLU) benchmark, it assesses factual recall, contextual analysis, and complex question answering capabilities. Higher scores indicate superior general knowledge analytical abilities and inference accuracy.
+This metric, depicted in Fig. 6, evaluates a model's ability to process and analyze information across diverse knowledge domains. Utilizing the Massive Multitask Language Understanding (MMLU) benchmark, it assesses factual recall, contextual analysis, and complex question answering capabilities. Higher scores indicate superior general knowledge analytical abilities and inference accuracy.
 
-Fig. 6\\. Reasoning & Knowledge (MMLU)
+![Fig. 6. Reasoning & Knowledge (MMLU)](https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775847338/fig_6_jtzcol.jpg)
+
+Fig. 6. Reasoning & Knowledge (MMLU)
 
 #### **3\\) Scientific Reasoning (GPQA Diamond)**
 
-GPQA Diamond, illustrated in Fig. 7, measures AI models’ ability to engage in scientific analysis, highlighting domain-specific comprehension in physics, mathematics, and engineering principles. This benchmark includes multi-step analytical tasks that require both symbolic logic and real-world scientific understanding. Performance on this benchmark reflects a model’s effectiveness in structured scientific problem-solving.
+GPQA Diamond, illustrated in Fig. 7, measures AI models' ability to engage in scientific analysis, highlighting domain-specific comprehension in physics, mathematics, and engineering principles. This benchmark includes multi-step analytical tasks that require both symbolic logic and real-world scientific understanding. Performance on this benchmark reflects a model's effectiveness in structured scientific problem-solving.
 
-![][image3]
+![Fig. 7. Scientific Reasoning & Knowledge (GPQA Diamond)](https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775847347/fig_7_zbvda3.jpg)
 
-Fig. 7\\. Scientific Reasoning & Knowledge (GPQA Diamond)
+Fig. 7. Scientific Reasoning & Knowledge (GPQA Diamond)
 
 #### **4\\) Quantitative Reasoning (MATH-500)**
 
-This benchmark, presented in Fig. 8, assesses the numerical and quantitative analytical capabilities of AI models, focusing on their ability to solve mathematical problems across algebra, calculus, and combinatorics. The evaluation is conducted on the MATH-500 dataset, measuring symbolic manipulation, equation solving, and logical deduction. The results indicate the model’s efficiency in handling structured numerical data.
+This benchmark, presented in Fig. 8, assesses the numerical and quantitative analytical capabilities of AI models, focusing on their ability to solve mathematical problems across algebra, calculus, and combinatorics. The evaluation is conducted on the MATH-500 dataset, measuring symbolic manipulation, equation solving, and logical deduction. The results indicate the model's efficiency in handling structured numerical data.
 
-Fig. 8\\. Quantitative Reasoning (MATH-500)
+![Fig. 8. Quantitative Reasoning (MATH-500)](https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775847355/fig_8_wcsd4g.jpg)
+
+Fig. 8. Quantitative Reasoning (MATH-500)
 
 #### **5\\) Coding Evaluation (HumanEval)**
 
-This metric evaluates AI models’ programming efficiency through the HumanEval benchmark, which consists of functionally correct code generation tasks. The benchmark tests logical analysis, syntax correctness, and functional efficiency in coding tasks. A higher score in this evaluation, as shown in Fig. 9, suggests strong algorithmic thinking and problem-solving skills.
+This metric evaluates AI models' programming efficiency through the HumanEval benchmark, which consists of functionally correct code generation tasks. The benchmark tests logical analysis, syntax correctness, and functional efficiency in coding tasks. A higher score in this evaluation, as shown in Fig. 9, suggests strong algorithmic thinking and problem-solving skills.
 
-Fig. 9\\. Coding (HumanEval)
+![Fig. 9. Coding (HumanEval)](https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775847363/fig_9_fotqtt.jpg)
+
+Fig. 9. Coding (HumanEval)
 
 #### **6\\) Artificial Analysis (Multilingual)**
 
 This index, presented as a bar graph in Fig. 10, measures the effectiveness of AI models in multilingual natural language processing. It considers linguistic diversity, syntactic structure, and semantic coherence across multiple languages. The evaluation is based on token generation efficiency, latency, and blended cost efficiency, providing insights into the adaptability of models in multilingual contexts.
 
-Fig. 10\\. Artificial Analysis Multilingual Index
+![Fig. 10. Artificial Analysis Multilingual Index](https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775847370/fig_10_jiiydf.jpg)
+
+Fig. 10. Artificial Analysis Multilingual Index
 
 The following detailed tables accompany the descriptive paragraphs above. Table IX compares the general performance of each model variant on 10 industry-standard exams: MMLU (Overall), AP Humanities Exam, SAT Math, LSAT Logical Reasoning, USMLE Step 1, GRE Verbal, GRE Quantitative, GMAT, TOEFL, and ACT Composite. The testing procedures and score normalizations adhere to established academic evaluation methods. Table X focuses exclusively on analytical benchmarks, comparing the performance of models on 10 widely used tests: MMLU–Reasoning Subset, HellaSwag, CommonsenseQA, StrategyQA, ARC-Challenge, ReClor, OpenBookQA, LogiQA, PIQA, and Winogrande. In addition to ChatGPT variants and Gemini’s 2.0 Experimental Reasoning model, DeepSeek R1, QwenLM 2.5 Max, and Claude 3.5 Sonnet are included. The design and administration of these benchmarks have been detailed in recent studies.
 
