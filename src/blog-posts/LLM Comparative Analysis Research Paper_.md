@@ -93,12 +93,13 @@ Grok's explicit design to incorporate "humor and user alignment" and its emphasi
   font-size: 0.9em;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   min-width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
   border-radius: 10px;
   overflow: hidden;
+  background-color: #18181b;
 }
 .comparison-table thead tr {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
   color: #ffffff;
   text-align: left;
   font-weight: bold;
@@ -106,25 +107,26 @@ Grok's explicit design to incorporate "humor and user alignment" and its emphasi
 .comparison-table th,
 .comparison-table td {
   padding: 12px 15px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #3f3f46;
+  color: #e4e4e7;
 }
 .comparison-table tbody tr {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #27272a;
 }
 .comparison-table tbody tr:nth-of-type(even) {
-  background-color: #f8f9fa;
+  background-color: #27272a;
 }
 .comparison-table tbody tr:last-of-type {
-  border-bottom: 3px solid #667eea;
+  border-bottom: 3px solid #10b981;
 }
 .comparison-table tbody tr:hover {
-  background-color: #f0f4ff;
+  background-color: #1f2937;
   transition: background-color 0.3s ease;
 }
 .comparison-table td:first-child {
   font-weight: 600;
-  color: #333;
-  background-color: #f1f3f5;
+  color: #10b981;
+  background-color: #27272a;
 }
 </style>
 
