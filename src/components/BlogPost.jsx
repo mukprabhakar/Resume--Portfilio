@@ -439,6 +439,38 @@ const BlogPost = () => {
                       <div className="relative z-10">{children}</div>
                     </blockquote>
                   ),
+                  table: ({ children }) => (
+                    <div className="my-8 overflow-x-auto rounded-xl border border-zinc-800 shadow-2xl">
+                      <table className="w-full text-left border-collapse">
+                        {children}
+                      </table>
+                    </div>
+                  ),
+                  thead: ({ children }) => (
+                    <thead className="bg-gradient-to-r from-emerald-500/20 to-blue-500/20 border-b border-zinc-700">
+                      {children}
+                    </thead>
+                  ),
+                  tbody: ({ children }) => (
+                    <tbody className="divide-y divide-zinc-800 bg-zinc-900/50">
+                      {children}
+                    </tbody>
+                  ),
+                  tr: ({ children }) => (
+                    <tr className="hover:bg-zinc-800/50 transition-colors">
+                      {children}
+                    </tr>
+                  ),
+                  th: ({ children }) => (
+                    <th className="px-6 py-4 text-white font-bold text-sm uppercase tracking-wider border-r border-zinc-700 last:border-r-0">
+                      {children}
+                    </th>
+                  ),
+                  td: ({ children }) => (
+                    <td className="px-6 py-4 text-zinc-300 text-sm border-r border-zinc-800 last:border-r-0">
+                      {children}
+                    </td>
+                  ),
                 }}
               >
                 {post.content}
