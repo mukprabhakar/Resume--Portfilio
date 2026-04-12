@@ -158,31 +158,74 @@ const BlogPosts = () => {
           </div>
         </div>
 
-        {/* Tags Filter */}
-        <div className="flex flex-wrap gap-3 mb-16 justify-center max-w-4xl mx-auto">
-          <button
-            onClick={() => setSelectedTag(null)}
-            className={`px-6 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-300 transform active:scale-95 ${
-              !selectedTag
-                ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.3)]'
-                : 'bg-zinc-800/50 text-zinc-400 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white hover:border-zinc-600'
-            }`}
-          >
-            All Insights
-          </button>
-          {allTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 transform active:scale-95 ${
-                selectedTag === tag
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] border-none'
-                  : 'bg-zinc-800/30 text-zinc-400 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white hover:border-zinc-600'
-              }`}
+        {/* Tags Filter - Horizontal Scrollable */}
+        <div className="mb-16 relative max-w-4xl mx-auto">
+          <div className="flex items-center gap-2">
+            {/* Left Arrow */}
+            <button 
+              onClick={() => {
+                const container = document.getElementById('tags-container')
+                container.scrollBy({ left: -200, behavior: 'smooth' })
+              }}
+              className="hidden sm:flex flex-shrink-0 w-10 h-10 rounded-full bg-zinc-800/50 border border-zinc-700/50 items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all"
+              aria-label="Scroll tags left"
             >
-              {tag}
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
-          ))}
+
+            {/* Tags Container */}
+            <div 
+              id="tags-container"
+              className="flex-1 overflow-x-auto scrollbar-hide scroll-smooth"
+              style={{ 
+                scrollbarWidth: 'none', 
+                msOverflowStyle: 'none',
+                WebkitOverflowScrolling: 'touch'
+              }}
+            >
+              <div className="flex gap-3 pb-2 min-w-max">
+                <button
+                  onClick={() => setSelectedTag(null)}
+                  className={`px-6 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-300 transform active:scale-95 flex-shrink-0 ${
+                    !selectedTag
+                      ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.3)]'
+                      : 'bg-zinc-800/50 text-zinc-400 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white hover:border-zinc-600'
+                  }`}
+                >
+                  All Insights
+                </button>
+                {allTags.map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
+                    className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 transform active:scale-95 flex-shrink-0 ${
+                      selectedTag === tag
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] border-none'
+                        : 'bg-zinc-800/30 text-zinc-400 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white hover:border-zinc-600'
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Arrow */}
+            <button 
+              onClick={() => {
+                const container = document.getElementById('tags-container')
+                container.scrollBy({ left: 200, behavior: 'smooth' })
+              }}
+              className="hidden sm:flex flex-shrink-0 w-10 h-10 rounded-full bg-zinc-800/50 border border-zinc-700/50 items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all"
+              aria-label="Scroll tags right"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Featured Post */}
