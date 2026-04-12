@@ -136,6 +136,77 @@ const Gallery = () => {
     setSelectedImage(null)
   }
 
+  // Download image function
+  const downloadImage = async (imageUrl, imageTitle) => {
+    try {
+      trackEvent('click', 'gallery', `download_${imageTitle}`)
+      
+      // Fetch the image as a blob
+      const response = await fetch(imageUrl)
+      const blob = await response.blob()
+      
+      // Create a temporary URL
+      const blobUrl = window.URL.createObjectURL(blob)
+      
+      // Create temporary link element
+      const link = document.createElement('a')
+      link.href = blobUrl
+      link.download = `${imageTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.jpg`
+      
+      // Append to body, click and remove
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      
+      // Clean up the URL
+      window.URL.revokeObjectURL(blobUrl)
+    } catch (error) {
+      console.error('Error downloading image:', error)
+      // Fallback: open in new tab
+      window.open(imageUrl, '_blank')
+    }
+  }
+
+  // Share image function
+  const shareImage = async (image) => {
+    try {
+      trackEvent('click', 'gallery', `share_${image.title}`)
+      
+      // Check if Web Share API is supported
+      if (navigator.share) {
+        // Fetch image as blob for sharing
+        const response = await fetch(image.image)
+        const blob = await response.blob()
+        const file = new File([blob], `${image.title}.jpg`, { type: 'image/jpeg' })
+        
+        await navigator.share({
+          title: image.title,
+          text: image.description,
+          files: [file]
+        })
+      } else {
+        // Fallback: Copy image URL to clipboard
+        await navigator.clipboard.writeText(image.image)
+        
+        // Show success message
+        alert('Image URL copied to clipboard! You can now share it.')
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        console.error('Error sharing image:', error)
+        // Fallback: Copy URL to clipboard
+        try {
+          await navigator.clipboard.writeText(image.image)
+          alert('Image URL copied to clipboard!')
+        } catch (clipboardError) {
+          console.error('Error copying to clipboard:', clipboardError)
+          // Last resort: Open image in new tab
+          window.open(image.image, '_blank')
+        }
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen pt-24 pb-16 bg-[#09090b] text-zinc-100 relative overflow-hidden">
       {/* Background decorations */}
@@ -367,11 +438,18 @@ const Gallery = () => {
 
                {/* Action Buttons */}
                <div className="mt-8 flex gap-4">
-                  <button className="flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold transition-all transform hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(16,185,129,0.3)] flex items-center justify-center gap-3">
+                  <button 
+                    onClick={() => downloadImage(selectedImage.image, selectedImage.title)}
+                    className="flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold transition-all transform hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(16,185,129,0.3)] flex items-center justify-center gap-3"
+                  >
                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                      Save Image
                   </button>
-                  <button className="w-[60px] flex items-center justify-center rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-white transition-all transform hover:-translate-y-1 hover:shadow-lg border border-zinc-700" aria-label="Share">
+                  <button 
+                    onClick={() => shareImage(selectedImage)}
+                    className="w-[60px] flex items-center justify-center rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-white transition-all transform hover:-translate-y-1 hover:shadow-lg border border-zinc-700" 
+                    aria-label="Share"
+                  >
                      <svg className="w-5 h-5 text-zinc-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
                   </button>
                </div>
