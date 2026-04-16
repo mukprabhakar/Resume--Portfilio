@@ -83,32 +83,4 @@
     <priority>0.8</priority>
   </url>
   
-  <url>
-    <loc>https://mukprabhakar.in/blog/postgresql-performance-tuning-production-2025</loc>
-    <lastmod>2026-03-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://mukprabhakar.in/blog/microservices-architecture-patterns-2025</loc>
-    <lastmod>2026-03-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://mukprabhakar.in/blog/nextjs-15-app-router-complete-guide-2025</loc>
-    <lastmod>2026-03-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://mukprabhakar.in/blog/websocket-real-time-applications-socketio-2025</loc>
-    <lastmod>2026-03-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
 </urlset>
