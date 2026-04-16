@@ -26,6 +26,7 @@ import ScrollProgress from './components/ScrollProgress'
 import Clients from './components/Clients'
 import ClientsSection from './components/ClientsSection'
 import Loader from './components/Loader'
+import SEOEnhancement from './components/SEOEnhancement'
 
 function App() {
   const [isAppLoading, setIsAppLoading] = useState(true);
