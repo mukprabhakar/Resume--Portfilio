@@ -5,7 +5,7 @@ date: '2026-03-13'
 category: 'Freelancing'
 tags: ['Client Management', 'Freelancing', 'Project Management', 'Scope Creep', 'Business', 'Communication', 'Contracts', 'Professional Development', 'Client Relations', 'Productivity']
 featured: true
-image: 'https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1776011462/1773590327812_ku0rtb.jpg'
+image: 'https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1776400593/f73d1bc6-9f5d-44fe-bc0d-347b58a8532d_cppivn.png'
 excerpt: 'Master how to handle clients who keep changing project requirements with 11 powerful strategies. Protect your timelines, budgets, and relationships while staying in control.'
 ---
 
