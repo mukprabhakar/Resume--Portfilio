@@ -92,8 +92,15 @@ const Hero = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current
+    if (!canvas) return
     const ctx = canvas.getContext('2d')
-    
+
+    // Respect users who prefer reduced motion: skip the animation entirely.
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return
+
+    let rafId
+
     // Set canvas size
     const resizeCanvas = () => {
       canvas.width = canvas.offsetWidth
@@ -103,9 +110,9 @@ const Hero = () => {
     resizeCanvas()
     window.addEventListener('resize', resizeCanvas)
     
-    // Particle system
+    // Particle system — scale count down on smaller/low-power screens for perf.
     const particles = []
-    const particleCount = 150
+    const particleCount = window.innerWidth < 768 ? 50 : 150
     
     class Particle {
       constructor() {
@@ -176,13 +183,14 @@ const Hero = () => {
         particles[i].draw()
       }
       
-      requestAnimationFrame(animate)
+      rafId = requestAnimationFrame(animate)
     }
     
     animate()
     
     return () => {
       window.removeEventListener('resize', resizeCanvas)
+      cancelAnimationFrame(rafId)
     }
   }, [])
 
@@ -310,6 +318,10 @@ const Hero = () => {
                   <img 
                     src="https://iimtu.edu.in/images/logo.png" 
                    alt="IIMT University" 
+                   width="56"
+                   height="56"
+                   loading="lazy"
+                   decoding="async"
                    className="w-14 h-14 object-contain group-hover:scale-110 transition-transform duration-300"
                   />
                 </a>
@@ -324,6 +336,10 @@ const Hero = () => {
                   <img 
                     src="https://oyecollege.com/assets/images/logo2.png" 
                    alt="Oye College" 
+                   width="56"
+                   height="56"
+                   loading="lazy"
+                   decoding="async"
                    className="w-14 h-14 object-contain group-hover:scale-110 transition-transform duration-300"
                   />
                 </a>
@@ -338,6 +354,10 @@ const Hero = () => {
                   <img 
                     src="https://rbstourandtravels.in/assets/rbs_logo-Fp0bdru1.png" 
                    alt="RBS Tours and Travels" 
+                   width="56"
+                   height="56"
+                   loading="lazy"
+                   decoding="async"
                    className="w-14 h-14 object-contain group-hover:scale-110 transition-transform duration-300"
                   />
                 </a>
@@ -373,7 +393,12 @@ const Hero = () => {
                 {/* Profile image */}
                 <img 
                   src="https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775281267/mukeshp_ybprrz.png" 
-                  alt="Mukesh Pal" 
+                  alt="Mukesh Pal – Full-Stack Developer" 
+                  width="320"
+                  height="320"
+                  fetchpriority="high"
+                  decoding="async"
+                  onLoad={() => setIsImageLoaded(true)}
                   className="w-full h-full object-cover"
                 />
                 

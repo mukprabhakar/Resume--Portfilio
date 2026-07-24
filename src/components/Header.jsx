@@ -27,26 +27,33 @@ const Header = () => {
 
   // Handle scroll to update active section
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = ['hero', 'about', 'services', 'skills', 'work', 'experience', 'achievements', 'testimonials', 'blog', 'profile', 'contact']
-      const scrollPosition = window.scrollY + 100
+    const sections = ['hero', 'about', 'services', 'skills', 'work', 'experience', 'achievements', 'testimonials', 'blog', 'profile', 'contact']
+    let ticking = false
 
+    const updateActiveSection = () => {
+      const scrollPosition = window.scrollY + 100
       for (const section of sections) {
         const element = document.getElementById(section)
         if (element) {
           const offsetTop = element.offsetTop
           const height = element.offsetHeight
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + height) {
-            setActiveSection(section)
-            // Track section view
-            trackEvent('view', 'section', section)
+            setActiveSection((prev) => (prev !== section ? section : prev))
             break
           }
         }
       }
+      ticking = false
     }
 
-    window.addEventListener('scroll', handleScroll)
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true
+        window.requestAnimationFrame(updateActiveSection)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -69,9 +76,7 @@ const Header = () => {
   ]
 
   const scrollToSection = (sectionId) => {
-    console.log('Attempting to scroll to section:', sectionId);
     const element = document.getElementById(sectionId)
-    console.log('Element found:', element);
     if (element) {
       window.scrollTo({
         top: element.offsetTop - 80,
@@ -79,9 +84,6 @@ const Header = () => {
       })
       // Track navigation to section
       trackEvent('click', 'navigation', `scroll_to_${sectionId}`)
-      console.log('Successfully scrolled to:', sectionId);
-    } else {
-      console.error('Element not found for section:', sectionId);
     }
   }
 
@@ -120,6 +122,9 @@ const Header = () => {
             <img 
               src="https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775281267/mukeshp_ybprrz.png" 
               alt="Mukesh Pal" 
+              width="40"
+              height="40"
+              decoding="async"
               className="w-full h-full object-cover"
             />
           </div>

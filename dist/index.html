@@ -27,6 +27,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://res.cloudinary.com">
     <link rel="preconnect" href="https://pagead2.googlesyndication.com">
+
+    <!-- Performance: Preload the LCP hero/profile image -->
+    <link rel="preload" as="image" fetchpriority="high"
+      href="https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775281267/mukeshp_ybprrz.png" />
     
     <!-- Primary SEO Meta Tags - Optimized per Audit Report -->
     <title>Mukesh Pal – Full-Stack Developer (React & Spring Boot) | Portfolio</title>
@@ -178,32 +182,42 @@
     }
     </script>
     
-    <!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <!-- Google Analytics (GA4) - only loaded when a real Measurement ID is set.
+         Set window.GA_MEASUREMENT_ID (e.g. "G-XXXXXXX") before this runs to enable.
+         Guarded so no broken request/console error fires when unconfigured. -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      
-      // Use window variable instead of import.meta for production compatibility
-      if (window.GA_MEASUREMENT_ID) {
-        gtag('config', window.GA_MEASUREMENT_ID, {
+      (function () {
+        var id = window.GA_MEASUREMENT_ID;
+        if (!id || id === 'GA_MEASUREMENT_ID') return;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', id, {
           'send_page_view': true,
-          'custom_map': {'dimension1': 'page_type'}
+          'custom_map': { 'dimension1': 'page_type' }
         });
-      } else {
-        // Fallback for development or when env var is not set
-        gtag('config', 'GA_MEASUREMENT_ID');
-      }
+      })();
     </script>
     <!-- End Google Analytics -->
     
-    <!-- Google Fonts (Preloaded for performance) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/index-Cm2B0pmI.js"></script>
+    <!-- Google Fonts (non-render-blocking: load async, apply on load) -->
+    <link rel="preload" as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" />
+    <link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" />
+    <noscript>
+      <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" />
+    </noscript>
+    <script type="module" crossorigin src="/assets/index-BAZq8ZuH.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/react-vendor-Cx7ISFKb.js">
     <link rel="modulepreload" crossorigin href="/assets/markdown-vendor-CMobvOQ1.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-CBbjJ2Ex.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-BnKFGQ4R.css">
   </head>
   <body>
     <div id="root"></div>

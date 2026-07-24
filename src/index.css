@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Accessibility: visible focus ring for keyboard users (WCAG 2.4.7) */
+:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Prevent images/media from overflowing their containers on small screens */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+/* Never let horizontal overflow break the mobile layout */
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* Ensure comfortable minimum tap targets on touch devices (Lighthouse a11y) */
+@media (pointer: coarse) {
+  a,
+  button,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Respect prefers-reduced-motion: turn off non-essential animation globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Custom animations */
 @keyframes fadeIn {
   from {
