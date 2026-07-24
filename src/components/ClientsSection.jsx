@@ -48,6 +48,15 @@ const ClientsSection = () => {
      description: 'Organic dry fruits e-commerce platform',
       industry: 'E-commerce',
      color: 'from-emerald-500 to-green-500'
+    },
+    {
+     id: 6,
+     name: 'CCS University Meerut',
+      url: 'https://www.ccsuniversity.ac.in/',
+      logo: 'https://www.ccsuniversity.ac.in/assets/images/CCSU-Logo.jpg',
+     description: 'Prominent public state university offering higher education',
+      industry: 'Education',
+     color: 'from-sky-500 to-indigo-500'
     }
   ]
 

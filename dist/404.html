@@ -4,19 +4,22 @@
   <meta charset="UTF-8">
   <title>Mukesh Pal - Full-Stack Developer Portfolio</title>
   <script>
-    // GitHub Pages SPA redirect handler with hash-based routing
-    // This preserves the path using hash routing for better SEO
-    const path = window.location.pathname;
-    const search = window.location.search;
-    
-    // Convert path to hash format for better Google crawling
-    // Example: /blog/visit-russian-house-delhi -> /#/blog/visit-russian-house-delhi
-    if (path !== '/' && path !== '/index.html') {
-      const cleanPath = path.replace(/^\/portfolio-react/, '');
-      window.location.href = `/#${cleanPath}${search}`;
-    } else {
-      window.location.href = `/${search}`;
-    }
+    // Single Page App redirect for GitHub Pages (BrowserRouter / clean URLs).
+    // When GitHub Pages serves this 404 for a deep link (e.g. /blog/my-post),
+    // we encode the path into a query string and redirect to the app root.
+    // index.html then decodes it and restores the real URL via history API.
+    // Technique: https://github.com/rafgraph/spa-github-pages
+    // pathSegmentsToKeep = 0 because the site is served from the domain root.
+    var pathSegmentsToKeep = 0;
+
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.hash
+    );
   </script>
 </head>
 <body>

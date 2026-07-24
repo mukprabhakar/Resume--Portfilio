@@ -64,6 +64,17 @@ const Clients = () => {
       location: 'India',
       color: 'from-emerald-500 via-green-500 to-teal-500',
       shadowColor: 'hover:shadow-emerald-500/30'
+    },
+    {
+      id: 6,
+      name: 'CCS University Meerut',
+      url: 'https://www.ccsuniversity.ac.in/',
+      logo: 'https://www.ccsuniversity.ac.in/assets/images/CCSU-Logo.jpg',
+      description: 'Chaudhary Charan Singh University (formerly Meerut University) is a prominent public state university offering higher education across various disciplines with cutting-edge academic programs.',
+      industry: 'Education',
+      location: 'Meerut, India',
+      color: 'from-sky-500 via-blue-500 to-indigo-500',
+      shadowColor: 'hover:shadow-sky-500/30'
     }
   ];
 
@@ -101,7 +112,7 @@ const Clients = () => {
         {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
           {[
-            { value: '5+', label: 'Happy Clients', icon: '🤝', delay: '0.1s', color: 'text-green-400', border: 'hover:border-green-500/50' },
+            { value: '6+', label: 'Happy Clients', icon: '🤝', delay: '0.1s', color: 'text-green-400', border: 'hover:border-green-500/50' },
             { value: '4', label: 'Industries Served', icon: '🏢', delay: '0.2s', color: 'text-teal-400', border: 'hover:border-teal-500/50' },
             { value: '100%', label: 'Satisfaction Rate', icon: '⭐', delay: '0.3s', color: 'text-cyan-400', border: 'hover:border-cyan-500/50' }
           ].map((stat, index) => (

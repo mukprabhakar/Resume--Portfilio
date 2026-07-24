@@ -1,155 +1,137 @@
 /**
- * Security utilities for sanitizing user input and external data
- * to prevent XSS (Cross-Site Scripting) attacks
+ * Security & Environment Configuration
+ * Handles API keys, rate limiting, and security headers
  */
 
-import DOMPurify from 'dompurify';
-
-/**
- * Sanitize HTML content to prevent XSS attacks
- * @param {string} html - The HTML string to sanitize
- * @returns {string} - Sanitized HTML string
- */
+// Sanitize HTML to prevent XSS
 export const sanitizeHTML = (html) => {
-  if (!html || typeof html !== 'string') {
-   return '';
-  }
- return DOMPurify.sanitize(html);
-};
+  if (typeof html !== 'string') return ''
+  return html
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+}
 
-/**
- * Sanitize text content (escape special characters)
- * @param {string} text - The text to sanitize
- * @returns {string} - Sanitized text
- */
-export const sanitizeText = (text) => {
-  if (!text || typeof text !== 'string') {
-   return '';
-  }
-  
-  // Create a temporary element to escape HTML
-  const temp = document.createElement('div');
-  temp.textContent = text;
- return temp.innerHTML;
-};
-
-/**
- * Sanitize URL to prevent injection attacks
- * @param {string} url - The URL to sanitize
- * @returns {string} - Sanitized URL or empty string if invalid
- */
+// Sanitize URL
 export const sanitizeURL = (url) => {
-  if (!url || typeof url !== 'string') {
-   return '';
+  if (typeof url !== 'string') return ''
+  const sanitized = url.trim()
+  // Only allow http, https, and relative URLs
+  if (sanitized.startsWith('javascript:') || sanitized.startsWith('data:')) {
+    return ''
   }
-  
-  try {
-    // Only allow http, https, and mailto protocols
-   const parsedUrl = new URL(url);
-    if (!['http:', 'https:', 'mailto:'].includes(parsedUrl.protocol)) {
-     return '';
-    }
-   return url;
-  } catch {
-    // If URL parsing fails, return empty string
-   return '';
-  }
-};
+  return sanitized
+}
 
-/**
- * Sanitize object with nested properties
- * @param {Object} obj - The object to sanitize
- * @param {Array<string>} fieldsToSanitize - Array of field names to sanitize
- * @returns {Object} - New sanitized object
- */
-export const sanitizeObject = (obj, fieldsToSanitize) => {
-  if (!obj || typeof obj !== 'object') {
-   return obj;
-  }
+// Sanitize object recursively
+export const sanitizeObject = (obj) => {
+  if (typeof obj !== 'object' || obj === null) return obj
   
-  const sanitized = { ...obj };
-  
-  for (const field of fieldsToSanitize) {
-    if (typeof sanitized[field] === 'string') {
-      sanitized[field] = sanitizeHTML(sanitized[field]);
-    } else if (typeof sanitized[field] === 'object' && sanitized[field] !== null) {
-      sanitized[field] = sanitizeObject(sanitized[field], Object.keys(sanitized[field]));
+  const sanitized = {}
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === 'string') {
+      sanitized[key] = sanitizeHTML(value)
+    } else if (typeof value === 'object' && value !== null) {
+      sanitized[key] = sanitizeObject(value)
+    } else {
+      sanitized[key] = value
     }
   }
-  
- return sanitized;
-};
+  return sanitized
+}
 
-/**
- * Escape HTML entities to prevent XSS
- * @param {string} text - Text to escape
- * @returns {string} - Escaped text safe for DOM insertion
- */
-export const escapeHTML = (text) => {
-  if (!text || typeof text !== 'string') {
-  return '';
-  }
-  
-  const escapeMap = {
-   '&': '&amp;',
-   '<': '&lt;',
-   '>': '&gt;',
-   '"': '&quot;',
-   "'": '&#039;',
-   '/': '&#x2F;',
-   '`': '&#x60;',
-   '=': '&#x3D;'
-  };
-  
-  return text.replace(/[&<>"'`=/]/g, char => escapeMap[char]);
-};
-
-/**
- * Validate and sanitize error messages before display
- * Prevents exception text from being reinterpreted as HTML
- * @param {string|Error} error - Error message or Error object
- * @returns {string} - Safe error message for display
- */
+// Sanitize error messages
 export const sanitizeErrorMessage = (error) => {
-  if (!error) {
-  return '';
+  if (typeof error === 'string') {
+    return sanitizeHTML(error)
   }
-  
-  const errorMessage = typeof error === 'string' ? error : error.message || String(error);
-  
-  // Remove any potential HTML/script tags
-  const cleanMessage = errorMessage.replace(/<[^>]*>/g, '');
-  
-  // Escape remaining special characters
-  return escapeHTML(cleanMessage);
-};
+  if (error instanceof Error) {
+    return sanitizeHTML(error.message)
+  }
+  return 'An unexpected error occurred'
+}
 
-/**
- * Safely insert text content into DOM element
- * Prevents XSS by using textContent instead of innerHTML
- * @param {HTMLElement} element - Target DOM element
- * @param {string} text - Text content to insert
- */
-export const safeSetTextContent = (element, text) => {
-  if (!element || !text) {
-  return;
-  }
-  
-  // Use textContent which automatically escapes HTML
-  element.textContent = text;
-};
+// Environment variables validation
+export const validateEnv = () => {
+  const required = [
+    'VITE_EMAILJS_SERVICE_ID',
+    'VITE_EMAILJS_TEMPLATE_ID', 
+    'VITE_EMAILJS_PUBLIC_KEY'
+  ]
 
-/**
- * Safely set HTML content with sanitization
- * Only use when you absolutely need HTML content
- * @param {HTMLElement} element - Target DOM element
- * @param {string} html - HTML content to insert (will be sanitized)
- */
-export const safeSetInnerHTML = (element, html) => {
-  if (!element || !html) {
-  return;
+  const missing = required.filter(key => !import.meta.env[key])
+  
+  if (missing.length > 0) {
+    console.warn('Missing environment variables:', missing)
+    return false
   }
   
-  // Always sanitize before setting innerHTML
-  element.innerHTML = sanitizeHTML(html);
-};
+  return true
+}
+
+// Rate limiting for contact form
+export const createRateLimiter = (maxAttempts = 3, windowMs = 3600000) => {
+  const attempts = new Map()
+  
+  return {
+    checkLimit: (identifier) => {
+      const now = Date.now()
+      const userAttempts = attempts.get(identifier) || []
+      
+      // Remove old attempts outside the window
+      const recentAttempts = userAttempts.filter(time => now - time < windowMs)
+      
+      if (recentAttempts.length >= maxAttempts) {
+        return {
+          allowed: false,
+          remaining: 0,
+          resetTime: recentAttempts[0] + windowMs
+        }
+      }
+      
+      recentAttempts.push(now)
+      attempts.set(identifier, recentAttempts)
+      
+      return {
+        allowed: true,
+        remaining: maxAttempts - recentAttempts.length,
+        resetTime: now + windowMs
+      }
+    }
+  }
+}
+
+// Sanitize form input
+export const sanitizeInput = (input) => {
+  if (typeof input !== 'string') return ''
+  
+  return input
+    .replace(/[<>]/g, '') // Remove < and >
+    .trim()
+    .substring(0, 1000) // Limit length
+}
+
+// Validate email
+export const validateEmail = (email) => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return re.test(email)
+}
+
+// Security headers configuration (for server-side)
+export const securityHeaders = {
+  'Content-Security-Policy': [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: https: blob:",
+    "connect-src 'self' https://api.emailjs.com https://www.google-analytics.com",
+    "frame-src 'self' https://www.google.com"
+  ].join('; '),
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
+}

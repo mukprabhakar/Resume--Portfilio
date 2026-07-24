@@ -4,6 +4,23 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SPA redirect decoder for GitHub Pages (works with 404.html).
+         Restores the original clean URL that 404.html encoded into ?/path
+         before the React app mounts. Technique: rafgraph/spa-github-pages -->
+    <script>
+      (function () {
+        var l = window.location;
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function (s) {
+            return s.replace(/~and~/g, '&');
+          }).join('?');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      })();
+    </script>
     
     <!-- Performance: Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +31,7 @@
     <!-- Primary SEO Meta Tags - Optimized per Audit Report -->
     <title>Mukesh Pal – Full-Stack Developer (React & Spring Boot) | Portfolio</title>
     <meta name="description" content="Mukesh Pal – Freelance Full-Stack Developer in Meerut, India. Expert in React.js, Java Spring Boot, and cloud technologies. Building scalable web applications that drive results. View projects & hire." />
-    <meta name="keywords" content="Mukesh Pal, Full-Stack Developer India, React Developer Meerut, Spring Boot Freelancer, Java Developer, Web Developer Portfolio, Software Engineer, CodeByte CTO, React.js Projects, Spring Boot Projects, mukprabhakar" />
+    <meta name="keywords" content="Mukesh Pal, Full-Stack Developer India, React Developer Meerut, Spring Boot Freelancer, Java Developer, Web Developer Portfolio, Software Engineer, CodeByte CTO, React.js Projects, Spring Boot Projects, mukprabhakar, Mukesh Bhaiya, IIMT wale Bhaiya, IIMT wale Mukesh, Mukesh IIMT, Mukesh, Developer, Incubation, Incubation wale, Incubation wale Bhaiya, IIMT Incubation, IIMT Incubation Center, Bhaiya, Mukesh Pal IIMT, IIMT Developer, Mukesh Pal Developer" />
     <meta name="author" content="Mukesh Pal" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
@@ -63,10 +80,21 @@
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Mukesh Pal",
+      "alternateName": [
+        "Mukesh",
+        "Mukesh Bhaiya",
+        "Bhaiya",
+        "IIMT wale Bhaiya",
+        "IIMT wale Mukesh",
+        "Mukesh IIMT",
+        "Mukesh Pal IIMT",
+        "Incubation wale Bhaiya",
+        "Mukprabhakar"
+      ],
       "url": "https://mukprabhakar.in/",
       "image": "https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775281267/mukeshp_ybprrz.png",
       "jobTitle": "Full-Stack Developer & Co-Founder",
-      "description": "Freelance Full-Stack Developer specializing in React.js, Java Spring Boot, and cloud technologies. Co-Founder & CTO at CodeByte. Based in Meerut, India.",
+      "description": "Freelance Full-Stack Developer specializing in React.js, Java Spring Boot, and cloud technologies. Co-Founder & CTO at CodeByte. Popularly known as Mukesh Bhaiya and the IIMT wale Bhaiya at the IIMT University incubation center. Based in Meerut, India.",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Meerut",
@@ -118,7 +146,7 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Mukesh Pal Portfolio",
-      "alternateName": ["Mukesh Pal", "Mukprabhakar", "Mukesh Pal Developer", "Mukesh Pal Full-Stack Developer"],
+      "alternateName": ["Mukesh Pal", "Mukprabhakar", "Mukesh Pal Developer", "Mukesh Pal Full-Stack Developer", "Mukesh Bhaiya", "IIMT wale Bhaiya", "IIMT wale Mukesh", "Mukesh IIMT", "Incubation wale Bhaiya", "IIMT Incubation Center"],
       "url": "https://mukprabhakar.in/",
       "description": "Professional portfolio of Mukesh Pal - Full-Stack Developer & Co-Founder at CodeByte specializing in React.js and Java Spring Boot",
       "potentialAction": {
@@ -172,8 +200,10 @@
     
     <!-- Google Fonts (Preloaded for performance) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/index-dwpy2qaD.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-ZuFyYytF.css">
+    <script type="module" crossorigin src="/assets/index-Cm2B0pmI.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/react-vendor-Cx7ISFKb.js">
+    <link rel="modulepreload" crossorigin href="/assets/markdown-vendor-CMobvOQ1.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-CBbjJ2Ex.css">
   </head>
   <body>
     <div id="root"></div>

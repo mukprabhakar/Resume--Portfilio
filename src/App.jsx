@@ -1,32 +1,45 @@
-import React, { useState } from 'react'
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'
+import React, { useState, lazy, Suspense } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './index.css'
 import Header from './components/Header'
-import Hero from './components/Hero'
-import About from './components/About'
-import Services from './components/Services'
-import Skills from './components/Skills'
-import Projects from './components/Projects'
-import AllProjects from './components/AllProjects'
-import Gallery from './components/Gallery'
-import Experience from './components/Experience'
-import Achievements from './components/Achievements'
-import Testimonials from './components/Testimonials'
-import Blog from './components/Blog'
-import BlogPosts from './components/BlogPosts'
-import BlogPost from './components/BlogPost'
-import Profile from './components/Profile'
-import Contact from './components/Contact'
 import Footer from './components/Footer'
-import CredlyBadges from './components/CredlyBadges'
-import GitHubStats from './components/GitHubStats'
-import CodingChallenges from './components/CodingChallenges'
 import CustomCursor from './components/CustomCursor'
 import ScrollProgress from './components/ScrollProgress'
-import Clients from './components/Clients'
-import ClientsSection from './components/ClientsSection'
-import Loader from './components/Loader'
 import SEOEnhancement from './components/SEOEnhancement'
+import Loader from './components/Loader'
+
+// Lazy load route components for performance optimization
+const Hero = lazy(() => import('./components/Hero'))
+const About = lazy(() => import('./components/About'))
+const Services = lazy(() => import('./components/Services'))
+const Skills = lazy(() => import('./components/Skills'))
+const Projects = lazy(() => import('./components/Projects'))
+const AllProjects = lazy(() => import('./components/AllProjects'))
+const Gallery = lazy(() => import('./components/Gallery'))
+const Experience = lazy(() => import('./components/Experience'))
+const Achievements = lazy(() => import('./components/Achievements'))
+const Testimonials = lazy(() => import('./components/Testimonials'))
+const Blog = lazy(() => import('./components/Blog'))
+const BlogPosts = lazy(() => import('./components/BlogPosts'))
+const BlogPost = lazy(() => import('./components/BlogPost'))
+const Profile = lazy(() => import('./components/Profile'))
+const Contact = lazy(() => import('./components/Contact'))
+const CredlyBadges = lazy(() => import('./components/CredlyBadges'))
+const GitHubStats = lazy(() => import('./components/GitHubStats'))
+const CodingChallenges = lazy(() => import('./components/CodingChallenges'))
+const Clients = lazy(() => import('./components/Clients'))
+const ClientsSection = lazy(() => import('./components/ClientsSection'))
+const Products = lazy(() => import('./components/Products'))
+
+// Loading fallback component for lazy-loaded routes
+const RouteLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-[#0a0a0c]" role="status" aria-label="Loading content">
+    <div className="text-center">
+      <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+      <p className="mt-4 text-zinc-400">Loading...</p>
+    </div>
+  </div>
+)
 
 function App() {
   const [isAppLoading, setIsAppLoading] = useState(true);
@@ -204,33 +217,41 @@ function App() {
         <CustomCursor />
         <ScrollProgress />
         <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={
-              <>
-                <Hero />
-                <About />
-                <Services />
-                <ClientsSection />
-                <Skills />
-                <Projects projectsData={projectsData} />
-                <Experience />
-                <Achievements />
-                <Testimonials />
-                <Blog />
-                <Profile />
-                <Contact />
-              </>
-            } />
-            <Route path="/all-projects" element={<AllProjects projectsData={projectsData} />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/clients" element={<Clients />} />
-            <Route path="/badges" element={<CredlyBadges />} />
-            <Route path="/github" element={<GitHubStats />} />
-            <Route path="/coding" element={<CodingChallenges />} />
-            <Route path="/blog" element={<BlogPosts />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-          </Routes>
+        <main role="main" id="main-content">
+          <Suspense fallback={<RouteLoader />}>
+            <Routes>
+              <Route path="/" element={
+                <>
+                  <SEOEnhancement 
+                    title="Mukesh Pal - Hire Full-Stack Developer India | React & Spring Boot Expert"
+                    description="Freelance full-stack developer in Meerut, India. Expert in React.js, Java Spring Boot, MERN stack. 20+ projects delivered. Hire for custom web development."
+                    type="website"
+                  />
+                  <Hero />
+                  <About />
+                  <Services />
+                  <ClientsSection />
+                  <Skills />
+                  <Projects projectsData={projectsData} />
+                  <Experience />
+                  <Achievements />
+                  <Testimonials />
+                  <Blog />
+                  <Profile />
+                  <Contact />
+                </>
+              } />
+              <Route path="/all-projects" element={<AllProjects projectsData={projectsData} />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/clients" element={<Clients />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/badges" element={<CredlyBadges />} />
+              <Route path="/github" element={<GitHubStats />} />
+              <Route path="/coding" element={<CodingChallenges />} />
+              <Route path="/blog" element={<BlogPosts />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+            </Routes>
+          </Suspense>
         </main>
         <Footer />
       </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { fetchWordPressPosts } from '../services/wordpressService'
 
 const BlogPosts = () => {
   const [posts, setPosts] = useState([])
@@ -70,13 +71,19 @@ const BlogPosts = () => {
         })
       }
       
-      // Sort by date (newest first)
-      loadedPosts.sort((a, b) => new Date(b.date) - new Date(a.date))
+      // Also pull published posts from WordPress (if VITE_WORDPRESS_URL is set).
+      // These are merged in so any post you publish on WordPress shows up here
+      // automatically. Fails silently (returns []) if not configured/unreachable.
+      const wordpressPosts = await fetchWordPressPosts()
+      const combinedPosts = [...loadedPosts, ...wordpressPosts]
       
-      setPosts(loadedPosts)
+      // Sort by date (newest first)
+      combinedPosts.sort((a, b) => new Date(b.date) - new Date(a.date))
+      
+      setPosts(combinedPosts)
       
       // Extract all unique tags
-      const tags = [...new Set(loadedPosts.flatMap(post => post.tags))]
+      const tags = [...new Set(combinedPosts.flatMap(post => post.tags))]
       setAllTags(tags)
       
     } catch (error) {
@@ -117,6 +124,19 @@ const BlogPosts = () => {
 
   const featuredPost = (!searchQuery && !selectedTag && filteredPosts.length > 0) ? filteredPosts[0] : null;
   const gridPosts = featuredPost ? filteredPosts.slice(1) : filteredPosts;
+
+  // Local markdown posts route internally; WordPress posts open the original
+  // article on the WordPress site in a new tab.
+  const PostLink = ({ post, className, children, ...rest }) =>
+    post.external ? (
+      <a href={post.url} target="_blank" rel="noopener noreferrer" className={className} {...rest}>
+        {children}
+      </a>
+    ) : (
+      <Link to={`/blog/${post.slug}`} className={className} {...rest}>
+        {children}
+      </Link>
+    );
 
   return (
     <section className="min-h-screen py-24 bg-[#0a0a0c] relative overflow-hidden text-zinc-100 font-sans">
@@ -231,7 +251,7 @@ const BlogPosts = () => {
         {/* Featured Post */}
         {featuredPost && (
           <div className="mb-16 hover:-translate-y-1 transition-transform duration-500">
-            <Link to={`/blog/${featuredPost.slug}`} className="group block relative rounded-3xl overflow-hidden bg-zinc-900 border border-zinc-800 shadow-2xl">
+            <PostLink post={featuredPost} className="group block relative rounded-3xl overflow-hidden bg-zinc-900 border border-zinc-800 shadow-2xl">
               <div className="flex flex-col md:flex-row">
                 <div className="md:w-3/5 h-64 md:h-[450px] relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent md:hidden z-10"></div>
@@ -277,16 +297,16 @@ const BlogPosts = () => {
                   </div>
                 </div>
               </div>
-            </Link>
+            </PostLink>
           </div>
         )}
 
         {/* Regular Posts Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {gridPosts.map((post, index) => (
-            <Link
+            <PostLink
               key={post.slug}
-              to={`/blog/${post.slug}`}
+              post={post}
               className="group flex flex-col bg-zinc-900/60 backdrop-blur-sm border border-zinc-800/80 rounded-2xl overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] hover:shadow-emerald-500/5 hover:border-emerald-500/30 transition-all duration-500 transform hover:-translate-y-2"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
@@ -347,7 +367,7 @@ const BlogPosts = () => {
                   <svg className="w-4 h-4 ml-1.5 transform group-hover:translate-x-1.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </div>
               </div>
-            </Link>
+            </PostLink>
           ))}
         </div>
 

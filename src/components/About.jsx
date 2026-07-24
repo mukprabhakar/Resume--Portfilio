@@ -104,6 +104,12 @@ const About = () => {
                     I believe in transparent communication, collaborative development, and building long-term partnerships with clients
                     who are serious about leveraging technology to grow their business.
                   </p>
+                  <p className="text-zinc-300 mt-4 leading-relaxed">
+                    Around IIMT University, Meerut, many students know me as <strong className="text-emerald-400">Mukesh Bhaiya</strong> or
+                    the <strong className="text-emerald-400">IIMT wale Bhaiya</strong> — a mentor at the campus incubation center who guides
+                    aspiring developers and startup founders. Whether you call me Mukesh, Mukesh Pal, or bhaiya, I&apos;m always happy to help
+                    fellow students turn their ideas into real products.
+                  </p>
                 </div>
 
                 <div>

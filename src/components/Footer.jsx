@@ -52,6 +52,7 @@ const Footer = () => {
     { name: 'Achievements', href: '#achievements', type: 'internal' },
     { name: 'Testimonials', href: '#testimonials', type: 'internal' },
     { name: 'Blog', href: '#blog', type: 'internal' },
+    { name: 'Products', href: '/products', type: 'route' },
     { name: 'Badges', href: '/badges', type: 'route' },
     { name: 'GitHub', href: '/github', type: 'route' },
     { name: 'Coding', href: '/coding', type: 'route' },

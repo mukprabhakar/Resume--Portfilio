@@ -11,6 +11,33 @@ if (redirectPath) {
   window.history.replaceState(null, '', redirectPath)
 }
 
+// Register Service Worker for caching and offline support
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('[SW] Registered with scope:', registration.scope)
+        
+        // Check for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // New update available
+              console.log('[SW] New version available!')
+              if (confirm('New version available! Reload to update?')) {
+                window.location.reload()
+              }
+            }
+          })
+        })
+      })
+      .catch((error) => {
+        console.log('[SW] Registration failed:', error)
+      })
+  })
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />

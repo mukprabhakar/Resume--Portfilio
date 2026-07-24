@@ -230,39 +230,48 @@ const Hero = () => {
             </div>
             
             <p className="text-lg sm:text-xl text-zinc-400 mb-6 sm:mb-8 max-w-2xl animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-              I build <span className="text-emerald-400 font-medium">high-performing digital products</span> that solve real business problems and deliver measurable ROI for startups and growing businesses.
+              <span className="text-emerald-400 font-semibold">Freelance full-stack developer</span> in Meerut, India specializing in <span className="text-emerald-400 font-medium">React.js</span>, <span className="text-emerald-400 font-medium">Java Spring Boot</span>, and <span className="text-emerald-400 font-medium">MERN stack</span> development. I build high-performing digital products that solve real business problems and deliver measurable ROI for startups and growing businesses.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
               <a 
-                href="#work" 
+                href="#contact" 
                 className="relative bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-full hover:shadow-2xl transition-all transform hover:scale-105 hover:shadow-emerald-400/30 group font-mono text-base sm:text-lg overflow-hidden z-10"
                 onClick={() => {
-                  // Track case studies button click
-                  trackEvent('click', 'hero', 'view_case_studies_button')
+                  trackEvent('click', 'hero', 'hire_developer_cta')
                 }}
+                aria-label="Hire Mukesh Pal as freelance software developer"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="absolute inset-0 flex items-center justify-center">
                   <span className="absolute w-0 h-0 bg-white/20 rounded-full transition-all duration-500 group-hover:w-64 group-hover:h-64"></span>
                 </span>
-                <span className="relative z-10">View Case Studies</span>
+                <span className="relative z-10">🚀 Hire Me for Your Project</span>
               </a>
               
               <a 
-                href="#contact" 
+                href="#work" 
                 className="relative border-2 border-emerald-400 text-emerald-400 font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-full hover:bg-emerald-400/10 transition-all transform hover:scale-105 group font-mono text-base sm:text-lg overflow-hidden z-10"
                 onClick={() => {
-                  // Track discovery call button click
-                  trackEvent('click', 'hero', 'book_discovery_call_button')
+                  trackEvent('click', 'hero', 'view_projects_button')
                 }}
+                aria-label="View Mukesh Pal's software development projects"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="absolute inset-0 flex items-center justify-center">
                   <span className="absolute w-0 h-0 bg-emerald-400/10 rounded-full transition-all duration-500 group-hover:w-64 group-hover:h-64"></span>
                 </span>
-                <span className="relative z-10">Book Discovery Call</span>
+                <span className="relative z-10">View My Work</span>
               </a>
+            </div>
+            
+            {/* Urgency & Availability Banner */}
+            <div className="mt-6 p-4 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 rounded-lg animate-fade-in-up" style={{ animationDelay: '0.9s' }}>
+              <p className="text-sm text-zinc-300">
+                <span className="text-emerald-400 font-semibold">🎯 Limited Availability:</span>{' '}
+                Currently accepting <span className="text-emerald-400 font-bold">2 new projects</span> for Q1 2026. 
+                <span className="text-zinc-400"> Book your free consultation today!</span>
+              </p>
             </div>
             
             {/* Enhanced social proof elements with animated counters */}
