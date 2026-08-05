@@ -2,11 +2,22 @@ import React, { useEffect } from 'react'
 
 const GoogleAdSense = ({ adSlot, adFormat = 'auto', adLayout = '', adLayoutKey = '', style = {} }) => {
   useEffect(() => {
-    // Push ad to AdSense queue
+    // Dynamically load AdSense client script only when Ad components are rendered
+    const scriptId = 'adsense-script'
+    let script = document.getElementById(scriptId)
+    if (!script) {
+      script = document.createElement('script')
+      script.id = scriptId
+      script.async = true;
+      const pubId = import.meta.env.VITE_ADSENSE_PUBLISHER_ID || 'ca-pub-2173205610919684'
+      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}`
+      script.crossOrigin = 'anonymous'
+      document.head.appendChild(script)
+    }
+
+    // Push ad unit configuration to the queue
     try {
-      if (window.adsbygoogle) {
-        window.adsbygoogle.push({})
-      }
+      (window.adsbygoogle = window.adsbygoogle || []).push({})
     } catch (e) {
       console.error('AdSense error:', e)
     }
