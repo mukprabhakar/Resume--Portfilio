@@ -7,6 +7,7 @@ import CustomCursor from './components/CustomCursor'
 import ScrollProgress from './components/ScrollProgress'
 import SEOEnhancement from './components/SEOEnhancement'
 import Loader from './components/Loader'
+import CookieConsent from './components/CookieConsent'
 
 // Lazy load route components for performance optimization
 const Hero = lazy(() => import('./components/Hero'))
@@ -254,6 +255,7 @@ function App() {
           </Suspense>
         </main>
         <Footer />
+        <CookieConsent />
       </div>
     </Router>
   )
