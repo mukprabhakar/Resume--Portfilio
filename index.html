@@ -182,28 +182,15 @@
     }
     </script>
     
-    <!-- Google Analytics (GA4) - only loaded when a real Measurement ID is set.
-         Set window.GA_MEASUREMENT_ID (e.g. "G-XXXXXXX") before this runs to enable.
-         Guarded so no broken request/console error fires when unconfigured. -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH2ZMCY7XD"></script>
     <script>
-      (function () {
-        var id = window.GA_MEASUREMENT_ID;
-        if (!id || id === 'GA_MEASUREMENT_ID') return;
-        var s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
-        document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ dataLayer.push(arguments); }
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', id, {
-          'send_page_view': true,
-          'custom_map': { 'dimension1': 'page_type' }
-        });
-      })();
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-QH2ZMCY7XD');
     </script>
-    <!-- End Google Analytics -->
     
     <!-- Google Fonts (non-render-blocking: load async, apply on load) -->
     <link rel="preload" as="style"
