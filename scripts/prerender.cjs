@@ -370,4 +370,50 @@ if (fs.existsSync(distDir)) {
   writeHtmlFile(path.join(distDir, 'all-projects/index.html'), allProjectsHtml);
 }
 
+// 4. Generate LeetCode POTD Page (public/leetcode-potd/index.html & dist/leetcode-potd/index.html)
+const leetcodePotdHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeetCode POTD | Mukesh Pal - Daily Coding Challenges & Explanations</title>
+  <meta name="description" content="Daily coding challenge questions from LeetCode solved with full conceptual explanations, complexity analysis, and verified Java / JavaScript solutions." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mukprabhakar.in/leetcode-potd" />
+  
+  <!-- SPA redirect decoder for GitHub Pages -->
+  <script>window.location.href = '/?/leetcode-potd';</script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem; border-bottom: 1px solid #27272a;">
+    <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 0.5rem;">LeetCode POTD</h1>
+    <p style="color: #a1a1aa; margin-top: 0;">Daily Coding Challenges & Verified Solutions</p>
+    <p><a href="/">← Back to Portfolio Home</a></p>
+  </header>
+
+  <main style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <section>
+      <h2>Problem 3734: Lexicographically Smallest Palindromic Permutation Greater Than Target</h2>
+      <p>Solved using Greedy Algorithm and Palindromic letter-budget checks in O(n) time and O(n) space.</p>
+    </section>
+  </main>
+</body>
+</html>`;
+
+writeHtmlFile(path.join(publicDir, 'leetcode-potd/index.html'), leetcodePotdHtml);
+if (fs.existsSync(distDir)) {
+  writeHtmlFile(path.join(distDir, 'leetcode-potd/index.html'), leetcodePotdHtml);
+}
+
 console.log('✓ Prerendering completed successfully.');

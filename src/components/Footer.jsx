@@ -56,6 +56,7 @@ const Footer = () => {
     { name: 'Badges', href: '/badges', type: 'route' },
     { name: 'GitHub', href: '/github', type: 'route' },
     { name: 'Coding', href: '/coding', type: 'route' },
+    { name: 'LeetCode POTD', href: '/leetcode-potd', type: 'route' },
     { name: 'Contact', href: '#contact', type: 'internal' }
   ]
 

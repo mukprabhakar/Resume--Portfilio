@@ -31,6 +31,7 @@ const CodingChallenges = lazy(() => import('./components/CodingChallenges'))
 const Clients = lazy(() => import('./components/Clients'))
 const ClientsSection = lazy(() => import('./components/ClientsSection'))
 const Products = lazy(() => import('./components/Products'))
+const LeetCodePOTD = lazy(() => import('./components/LeetCodePOTD'))
 
 // Loading fallback component for lazy-loaded routes
 const RouteLoader = () => (
@@ -251,6 +252,7 @@ function App() {
               <Route path="/coding" element={<CodingChallenges />} />
               <Route path="/blog" element={<BlogPosts />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/leetcode-potd" element={<LeetCodePOTD />} />
             </Routes>
           </Suspense>
         </main>
