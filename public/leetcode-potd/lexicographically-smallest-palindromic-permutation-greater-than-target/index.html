@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3734. Lexicographically Smallest Palindromic Permutation Greater Than Target Solution | Mukesh Pal LeetCode POTD</title>
+  <meta name="description" content="Solve the Hard challenge of building the smallest lexicographical palindrome permutation greater than target." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mukprabhakar.in/leetcode-potd/lexicographically-smallest-palindromic-permutation-greater-than-target" />
+  
+  <!-- SPA redirect decoder for GitHub Pages -->
+  <script>window.location.href = '/?/leetcode-potd/lexicographically-smallest-palindromic-permutation-greater-than-target';</script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem; border-bottom: 1px solid #27272a;">
+    <p><a href="/leetcode-potd">← Back to LeetCode POTD</a> | <a href="/">Portfolio Home</a></p>
+  </header>
+
+  <article style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.2;">3734. Lexicographically Smallest Palindromic Permutation Greater Than Target</h1>
+      <p style="color: #a1a1aa; font-size: 0.95rem; margin-top: 0;">
+        Difficulty: <strong>Hard</strong> | Published on <strong>August 28, 2026</strong>
+      </p>
+    </header>
+
+    <div style="font-size: 1.1rem; line-height: 1.8; color: #d4d4d8;">
+      <h1 style="color: #10b981; margin-top: 2.5rem;">3734. Lexicographically Smallest Palindromic Permutation Greater Than Target</h1>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's build this up from zero. This is a <strong>Hard</strong> problem, so we'll go slow and steady.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">1. Problem in Very Simple Language</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You are given two words, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>, both made of only lowercase letters, and both the same length.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You are allowed to <strong>rearrange the letters of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code></strong> in any order you like (this is called a "permutation" — just a fancy word for "a rearrangement using the exact same letters, same amount of each").</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Among all the rearrangements of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> that are <strong>palindromes</strong> (words that read the same forwards and backwards, like "level" or "baab"), you must find the one that:
+<ul style="line-height: 1.7; color: #d4d4d8; padding-left: 1.5rem;"><li>is <strong>strictly greater</strong> than <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code> when compared like dictionary words, and</li>
+<li>is the <strong>smallest</strong> one that satisfies that condition.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">If no rearrangement of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> is even a palindrome, or none of the palindromic rearrangements beats <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>, you return an empty string <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">""</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>What's given:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> (letters you're allowed to use), <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code> (the word you must beat).
+<strong>What to find:</strong> the smallest palindrome word, built only from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code>'s letters, that is bigger than <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>.
+<strong>What to return:</strong> that word, or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">""</code> if impossible.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">2. Real-Life Analogy</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine you have a bag of Scrabble tiles — say two <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">B</code>s and two <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">A</code>s. You're told: "Arrange all these tiles in a row so the row reads the same from left to right and right to left (a palindrome), and make sure your row, read as a word, comes <strong>after</strong> the word <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">ABBA</code> in the dictionary — but choose the arrangement that is the closest possible word after it, not some huge jump."</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You can't just grab any arrangement — it must (a) use every tile exactly once, (b) be a palindrome, and (c) be the <em>smallest</em> dictionary word that still beats the target word.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">3. Important Programming Concepts I Need First</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">String</h3>
+<strong>Concept:</strong> A string is just a sequence of characters, like a row of tiles, each with a position number starting at 0.
+<strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baba"</code> has <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> at position 0, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> at position 1, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> at position 2, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> at position 3.
+<strong>Why we need it:</strong> Both <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code> are strings, and our answer is a string too.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Array (specifically, a frequency array)</h3>
+<strong>Concept:</strong> An array is a numbered list of boxes. A "frequency array" of size 26 has one box per letter of the alphabet, and each box holds a count.
+<strong>Example:</strong> For <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s = "baba"</code>, box for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> = 2, box for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> = 2, everything else = 0.
+<strong>Why we need it:</strong> We need to know exactly how many of each letter we have available, since we must use every letter of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> exactly once.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Loop</h3>
+<strong>Concept:</strong> A loop repeats an action for each item in a list, without you writing the same line 300 times by hand.
+<strong>Example:</strong> "For every letter in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code>, add 1 to that letter's counting box."
+<strong>Why we need it:</strong> We scan through strings and arrays constantly (counting letters, comparing positions, etc.).
+<h3 style="color: #ffffff; margin-top: 1.5rem;">If/else</h3>
+<strong>Concept:</strong> A way of telling the program "do this if a condition is true, otherwise do that."
+<strong>Example:</strong> "If the current letter is bigger than the target's letter, we found our answer."
+<strong>Why we need it:</strong> The entire trick of "find the smallest letter bigger than target's letter" is one big if/else decision repeated many times.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Palindrome</h3>
+<strong>Concept:</strong> A word that reads identically forwards and backwards. Position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> from the start must equal position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> from the end.
+<strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baab"</code> — first letter <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> = last letter <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code>; second letter <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> = second-to-last letter <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code>.
+<strong>Why we need it:</strong> Our answer must be a palindrome, which cuts our freedom in half — we only get to <em>choose</em> the first half of the letters; the second half is forced to mirror it.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">HashMap / frequency counting (same idea as the frequency array above, just conceptually)</h3>
+<strong>Concept:</strong> A way to quickly look up "how many of X do I have left?"
+<strong>Why we need it:</strong> As we build our answer letter by letter, we constantly need to ask "do I still have a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">c</code> left to use?"
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Greedy Algorithm</h3>
+<strong>Concept:</strong> A greedy algorithm makes the best-looking choice at each step, one step at a time, hoping (and in this case, proving) it leads to the overall best answer.
+<strong>Example:</strong> To find the smallest number bigger than 47 using digits {1,7,9}, you try to keep the first digit as "4-like" as possible, only bumping a digit up when forced to.
+<strong>Why we need it:</strong> We build our palindrome by matching <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code> as long as possible, then bumping the very next letter up just enough — that's a greedy strategy.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Comparing strings ("lexicographic" order)</h3>
+<strong>Concept:</strong> Comparing two strings works like comparing words in a dictionary: look at the first position where they differ; whichever has the smaller letter there is the smaller string.
+<strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baab"</code> vs <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"abba"</code> — first letters <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> vs <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> — since <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b > a</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baab" > "abba"</code>.
+<strong>Why we need it:</strong> The entire goal ("smallest palindrome greater than target") is defined using this comparison rule.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Time Complexity (Big-O)</h3>
+<strong>Concept:</strong> A way of describing "roughly how much work does my program do as the input grows," ignoring small constant details.
+<strong>Why we need it:</strong> With <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> up to 300, we need to make sure our solution isn't doing something silly like checking every possible arrangement (which would be astronomically slow).
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">4. Understand the Input</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Take Example 1:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-">s      = &quot;baba&quot;
+target = &quot;abba&quot;</code></pre>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s = "baba"</code> tells us: we have exactly these 4 letters to use, in some order: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b, a, b, a</code> → that's <strong>two <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code>s and two <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code>s</strong>. We are <em>not</em> stuck with the order <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b,a,b,a</code> — we can rearrange freely.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target = "abba"</code> is the word we must beat. It happens to already be a palindrome itself, but that's not required of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code> — it's just the "line in the sand" we must cross.</li>
+<li>We are looking for: a rearrangement of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{b, b, a, a}</code> that (1) is a palindrome, and (2) is the smallest one that is strictly bigger than <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"abba"</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">7</code>-style "important numbers" don't apply here (that was the Two Sum example from your template) — instead, the important thing is the <strong>counts</strong>: 2 <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code>s and 2 <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code>s. Since both counts are even, a palindrome is possible (every letter needs a "partner" on the other side, except possibly one letter in the very middle if the word length is odd).</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">5. Understand the Output</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baab"</code>
+<li>All palindromic rearrangements of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baba"</code>, sorted like a dictionary, are: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"abba"</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baab"</code>. (Only two exist, because once you decide the first half of a palindrome, the second half is forced.)</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"abba"</code> is <em>not</em> strictly greater than <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target = "abba"</code> — it's equal, and we need strictly greater.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baab"</code> <strong>is</strong> strictly greater than <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"abba"</code> (compare first letters: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b > a</code>).</li>
+<li>Since <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baab"</code> is the only remaining candidate and it works, it's the answer.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">6. Solve the Example Manually</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's solve Example 1 by hand, the way a human would, without writing any code.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">We have letters <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a, a, b, b}</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target = "abba"</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Since the answer must be a 4-letter palindrome, only the <strong>first 2 letters</strong> are really "ours to choose" — the last 2 letters are forced to mirror the first 2.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Step | What I try for first half | Full palindrome | Compare to target "abba" | Result |
+|---|---|---|---|---|
+| 1 | "aa" (smallest possible) | "aaaa" — wait, we don't have 4 <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code>s, only 2. Not a valid rearrangement using our letters (need to use exactly 2 a's and 2 b's) | — | invalid, skip |
+| 2 | "ab" | "ab" + reverse("ab") = "abba" | equal to target, not strictly greater | fails |
+| 3 | "ba" | "ba" + reverse("ba") = "baab" | "baab" > "abba"? First letters: b > a → yes | <strong>This works!</strong> |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Since we tried the two possible first halves in increasing order (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"ab"</code> then <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"ba"</code>) and picked the first one that produces something strictly bigger than target, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baab"</code> is our answer.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">7. Think Like a Programmer</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's turn that manual process into logic.
+<li><strong>What do I know?</strong> I know exactly which letters I'm allowed to use (their counts), and I know the target string I must beat.</li>
+<li><strong>What do I need to find?</strong> The smallest palindrome, built from those letters, greater than target.</li>
+<li><strong>What can I try?</strong> Since the answer is a palindrome, I only need to decide the <strong>first half</strong> of it — the rest is automatic (mirrored). If the length is odd, there's one middle letter too, but that middle letter is <em>not free</em> — only one letter in the whole alphabet is allowed to appear an odd number of times, and it MUST be that one, sitting exactly in the middle. No choice there.</li>
+<li><strong>What happens if I try every possibility?</strong> I could generate every arrangement of the first half, build the palindrome, and compare to target — but with up to 150 letters in that first half, the number of arrangements is unimaginably huge. Too slow.</li>
+<li><strong>Can I make it faster?</strong> Yes — just like finding "the smallest number bigger than 472 using certain digits," I don't need to <em>generate</em> every option. I can be smart: try to match <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code> letter-by-letter for as long as possible, then at the very last moment I'm forced to change something, put the smallest legal letter that's <em>bigger</em> than target's letter there, and fill everything after that with the smallest possible letters.</li>
+<li><strong>What information should I remember?</strong> How many of each letter I still have left to place, as I place letters one at a time.</li>
+<li><strong>What pattern do I notice?</strong> The longer I can match <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code> exactly before being forced to increase a letter, the smaller (closer to target) my final answer will be. So I want to match as long as possible, then bump the <em>last possible</em> position, not an early one.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">8. Start With the Brute Force Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Brute force idea:</strong> Generate every distinct permutation of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code>, keep only the ones that are palindromes, sort them, and pick the smallest one that's bigger than <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why it works:</strong> It's literally trying everything, so it can't miss the answer.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why it's correct:</strong> By definition, checking every single arrangement guarantees we find the true smallest valid one.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Time complexity:</strong> Generating all permutations of a string of length <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> takes about <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n!)</code> (n factorial) time — for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 300</code>, this number has hundreds of digits. Completely impossible to run.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Space complexity:</strong> Also astronomical, since we'd try to store or generate all these permutations.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">We won't even write this code for real — it's only useful as a mental starting point, since actually running it would never finish. But conceptually:</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">// PSEUDOCODE ONLY - never actually runs for large n
+List&lt;String&gt; allPalindromicPermutations = new ArrayList&lt;&gt;();
+for (String perm : allPermutationsOf(s)) {
+    if (isPalindrome(perm)) {
+        allPalindromicPermutations.add(perm);
+    }
+}
+Collections.sort(allPalindromicPermutations);
+for (String candidate : allPalindromicPermutations) {
+    if (candidate.compareTo(target) &gt; 0) {
+        return candidate;
+    }
+}
+return &quot;&quot;;</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">9. Explain the Brute Force Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allPermutationsOf(s)</code> — imagine a function that produces every possible reordering of the letters in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code>. For <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baba"</code> that would include <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baba"</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"abab"</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"abba"</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baab"</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"aabb"</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"bbaa"</code>, etc.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">isPalindrome(perm)</code> — checks whether a string reads the same forwards and backwards, by comparing position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> with position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">length-1-i</code> for every <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Collections.sort(...)</code> — puts the palindromic permutations in dictionary order, smallest first.</li>
+<li>The final <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for</code> loop — walks through the sorted list and returns the very first one that beats <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>, since that's guaranteed to be the smallest one that does.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">10. Why Is the Brute Force Solution Not Ideal?</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> has 300 letters. The number of ways to arrange 300 items is a number so large it has around 600+ digits — more than the number of atoms in the observable universe, many times over. No computer, now or in the future, could generate even a tiny fraction of that list. We need a method that <strong>builds the answer directly</strong>, without ever listing "all the other options."</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">11. Find the Better Approach</h2>
+<blockquote style="border-left: 4px solid #10b981; padding-left: 1rem; color: #a1a1aa; font-style: italic; margin: 1.5rem 0;">"Can we avoid doing unnecessary work?"</blockquote>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Yes. Two key realizations shrink the problem enormously:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong>We never need to consider the second half of the palindrome as a free choice.</strong> It's 100% determined by the first half (mirrored). So instead of deciding <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> letters, we only decide about <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n/2</code> letters.
+2. <strong>We don't need to generate every arrangement of that first half either.</strong> We can build it directly, matching <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code> as long as possible, the same way you'd figure out "what's the next number after 4729 using only these digits" without listing every number.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Brute Force:
+Try every full-length arrangement
+        ↓
+Way too many (n!)
+        ↓
+Realize: second half is forced (mirror of first half)
+        ↓
+Now only need to decide first half (n/2 letters)
+        ↓
+Realize: don&#039;t need to try every arrangement of THAT either —
+build it directly like &quot;next bigger number&quot; problems
+        ↓
+Fast solution: roughly one pass through the string</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">12. Key Insight</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Before the insight</h3>
+We were thinking about the whole <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code>-letter string as something we need to search through many possible full arrangements of.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The problem</h3>
+A palindrome's second half isn't independent — it's a mirror of the first half — but naive brute force ignored that free lunch and searched the whole space anyway.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The insight</h3>
+<strong>Once you fix the first half of a palindrome, the whole string is fixed.</strong> So the entire problem shrinks to: <em>find the smallest valid first-half string such that, once mirrored into a full palindrome, it beats <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>.</em> And finding "the smallest string beating a target, letter-budget-limited" is a classic pattern: <strong>match the target as long as possible, then at the first position where you're forced to deviate, place the smallest available letter that's bigger than target's letter there, and fill everything after with the smallest leftover letters.</strong>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">There's one more twist: if the string length is odd, exactly one letter is allowed to appear an odd number of times in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> — and that letter is <em>forced</em> to sit in the very middle. You never get to choose it.</p>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">After the insight</h3>
+Instead of touching all <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> letters freely, we only ever make decisions about the first <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n/2</code> (rounded down) letters. We scan left to right, trying to match <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>, and the moment we can't match anymore (or matching all the way turns out to not be enough), we bump the letter at that position up to the smallest legal option greater than target's letter, then fill the rest smallest-first. This takes roughly one pass through the string — extremely fast.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">13. Dry Run the Optimized Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's dry-run <strong>Example 1</strong> again, but now the "smart" way, tracking our leftover letter budget.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s = "baba"</code> → counts: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a:2, b:2</code>. Length <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n=4</code> is even, so <strong>half = 2</strong>, no middle letter. Since we only place each letter once in the first half but it represents 2 copies in the full word, our "half budget" is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a:1, b:1</code> (half of each count).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target = "abba"</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Step | Position | Target letter | Budget before | Try to match target exactly? | What happens |
+|---|---|---|---|---|---|
+| 1 | 0 | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:1, b:1}</code> | Yes, we have an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> | Use it. Budget → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:0, b:1}</code> |
+| 2 | 1 | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:0, b:1}</code> | Yes, we have a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> | Use it. Budget → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:0, b:0}</code> |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">We matched the entire first half (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"ab"</code>) exactly to target's first half. Now, since we matched everything, we must check the <strong>mirrored tail</strong>: reverse of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"ab"</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"ba"</code>, compare to target's actual tail (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target[2..3] = "ba"</code>). They're <strong>equal</strong>, not strictly greater — so simply copying target's first half fails to beat it.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Since exact matching failed, we back up one position and try to bump it:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Step | Position | Give back letter | Budget now | Look for a letter > target letter | Result |
+|---|---|---|---|---|---|
+| 3 | 1 (give back <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> used at step 2) | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:0, b:1}</code> | Need something > <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> — nothing (no <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">c</code>, etc. available) | Fails at position 1 |
+| 4 | 0 (give back <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> used at step 1) | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:1, b:1}</code> | Need something > <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> — we have <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code>! | Use <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> here |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">We place <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> at position 0. Budget left: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:1, b:0}</code>. We fill the rest of the first half (just 1 more slot) with the smallest leftover letter: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code>. First half = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"ba"</code>. Mirror it: full palindrome = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"ba" + "ab" = "baab"</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">This matches our manual answer from Section 6! 🎉</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">14. Optimized Code</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">class Solution {
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">public String lexPalindromicPermutation(String s, String target) {
+        int n = s.length();</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Count characters in s
+        int[] count = new int[26];
+        for (char ch : s.toCharArray()) {
+            count[ch - &#039;a&#039;]++;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// A palindrome can have at most one odd-frequency character
+        int oddCount = 0;
+        char middle = 0;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (int i = 0; i &lt; 26; i++) {
+            if ((count[i] &amp; 1) == 1) {
+                oddCount++;
+                middle = (char) (&#039;a&#039; + i);
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (oddCount &gt; 1) {
+            return &quot;&quot;;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Number of characters in the left half
+        int halfLen = n / 2;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Characters available for the left half
+        int[] halfCount = new int[26];
+        for (int i = 0; i &lt; 26; i++) {
+            halfCount[i] = count[i] / 2;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">char[] prefix = new char[halfLen];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">/<em>
+<li>Build the left half from left to right.</li>
+<li></em> At every position, try characters from &#039;a&#039; to &#039;z&#039;.</li>
+<li>We choose the smallest character for which there exists</li>
+<li>some completion that can produce a palindrome &gt; target.</li>
+         <em>/
+        for (int pos = 0; pos &lt; halfLen; pos++) {</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">boolean found = false;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (int c = 0; c &lt; 26; c++) {</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (halfCount[c] == 0) {
+                    continue;
+                }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Try placing this character
+                halfCount[c]--;
+                prefix[pos] = (char) (&#039;a&#039; + c);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">/</em>
+<li>Check whether this prefix can be completed</li>
+<li>to a palindrome strictly greater than target.</li>
+<li><em> To maximize the palindrome for this prefix,</li>
+<li>put all remaining characters in descending order</li>
+<li>in the rest of the left half.</li>
+                 </em>/
+                if (canMakeGreater(prefix, pos + 1,
+                                   halfCount, middle, target)) {</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">found = true;
+                    break;
+                }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// This character cannot lead to an answer.
+                halfCount[c]++;
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (!found) {
+                return &quot;&quot;;
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// We have constructed the optimal left half.
+        StringBuilder ans = new StringBuilder(n);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (char ch : prefix) {
+            ans.append(ch);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Middle character only exists for odd n
+        if ((n &amp; 1) == 1) {
+            ans.append(middle);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Mirror the left half
+        for (int i = halfLen - 1; i &gt;= 0; i--) {
+            ans.append(prefix[i]);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">String result = ans.toString();</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return result.compareTo(target) &gt; 0 ? result : &quot;&quot;;
+    }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">/<em>
+<li>Returns true if there is at least one completion of the</li>
+<li>current prefix that produces a palindrome &gt; target.</li>
+<li></em> We construct the LARGEST possible completion from the</li>
+<li>remaining characters.</li>
+<li><em> If even the largest completion is not &gt; target,</li>
+<li>no smaller completion can work either.</li>
+     </em>/
+    private boolean canMakeGreater(
+            char[] prefix,
+            int prefixLength,
+            int[] halfCount,
+            char middle,
+            String target) {</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int halfLen = prefix.length;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">StringBuilder left = new StringBuilder(halfLen);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Already fixed prefix
+        for (int i = 0; i &lt; prefixLength; i++) {
+            left.append(prefix[i]);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Put remaining characters in descending order
+        for (int c = 25; c &gt;= 0; c--) {
+            for (int k = 0; k &lt; halfCount[c]; k++) {
+                left.append((char) (&#039;a&#039; + c));
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Construct the largest palindrome for this prefix
+        StringBuilder palindrome = new StringBuilder();</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">palindrome.append(left);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Middle character
+        if ((target.length() &amp; 1) == 1) {
+            palindrome.append(middle);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Reverse left half
+        for (int i = left.length() - 1; i &gt;= 0; i--) {
+            palindrome.append(left.charAt(i));
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return palindrome.toString().compareTo(target) &gt; 0;
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">class Solution {
+    lexPalindromicPermutation(s, target) {
+        const n = s.length;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Count characters in s
+        const count = new Array(26).fill(0);
+        for (let i = 0; i &lt; s.length; i++) {
+            count[s.charCodeAt(i) - 97]++;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// A palindrome can have at most one odd-frequency character
+        let oddCount = 0;
+        let middle = &#039;&#039;;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (let i = 0; i &lt; 26; i++) {
+            if ((count[i] &amp; 1) === 1) {
+                oddCount++;
+                middle = String.fromCharCode(97 + i);
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (oddCount &gt; 1) {
+            return &quot;&quot;;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Number of characters in the left half
+        const halfLen = Math.floor(n / 2);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Characters available for the left half
+        const halfCount = new Array(26).fill(0);
+        for (let i = 0; i &lt; 26; i++) {
+            halfCount[i] = Math.floor(count[i] / 2);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const prefix = new Array(halfLen).fill(&#039;&#039;);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">/<em>
+<li>Build the left half from left to right.</li>
+<li></em> At every position, try characters from &#039;a&#039; to &#039;z&#039;.</li>
+<li>We choose the smallest character for which there exists</li>
+<li>some completion that can produce a palindrome &gt; target.</li>
+         <em>/
+        for (let pos = 0; pos &lt; halfLen; pos++) {
+            let found = false;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (let c = 0; c &lt; 26; c++) {
+                if (halfCount[c] === 0) {
+                    continue;
+                }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Try placing this character
+                halfCount[c]--;
+                prefix[pos] = String.fromCharCode(97 + c);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">/</em>
+<li>Check whether this prefix can be completed</li>
+<li>to a palindrome strictly greater than target.</li>
+<li><em> To maximize the palindrome for this prefix,</li>
+<li>put all remaining characters in descending order</li>
+<li>in the rest of the left half.</li>
+                 </em>/
+                if (this.canMakeGreater(prefix, pos + 1,
+                                   halfCount, middle, target)) {
+                    found = true;
+                    break;
+                }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// This character cannot lead to an answer.
+                halfCount[c]++;
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (!found) {
+                return &quot;&quot;;
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// We have constructed the optimal left half.
+        const leftSide = prefix.join(&#039;&#039;);
+        const rightSide = prefix.slice().reverse().join(&#039;&#039;);
+        const result = leftSide + middle + rightSide;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return result &gt; target ? result : &quot;&quot;;
+    }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">/<em>
+<li>Returns true if there is at least one completion of the</li>
+<li>current prefix that produces a palindrome &gt; target.</li>
+<li></em> We construct the LARGEST possible completion from the</li>
+<li>remaining characters.</li>
+<li><em> If even the largest completion is not &gt; target,</li>
+<li>no smaller completion can work either.</li>
+     </em>/
+    canMakeGreater(
+            prefix,
+            prefixLength,
+            halfCount,
+            middle,
+            target) {</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const halfLen = prefix.length;
+        let left = &#039;&#039;;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Already fixed prefix
+        for (let i = 0; i &lt; prefixLength; i++) {
+            left += prefix[i];
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Put remaining characters in descending order
+        for (let c = 25; c &gt;= 0; c--) {
+            for (let k = 0; k &lt; halfCount[c]; k++) {
+                left += String.fromCharCode(97 + c);
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Construct the largest palindrome for this prefix
+        const right = left.split(&#039;&#039;).reverse().join(&#039;&#039;);
+        const palindrome = left + middle + right;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return palindrome &gt; target;
+    }
+}</code></pre>
+---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">15. Explain Optimized Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int[] count = new int[26];</code> — one box per letter, all start at 0. We'll count how many <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code>s, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code>s, ... <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> has.</li>
+<li>The <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for</code> loop right after — walks through every letter of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> once, incrementing its box. After this, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">count['a'-'a']</code> tells you exactly how many <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code>s exist in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount</code> / <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCharIndex</code> — we scan all 26 boxes; if a letter's count is odd, a palindrome needs it to sit alone in the middle. There can be <strong>at most one</strong> such letter, or a palindrome is impossible.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mid = n % 2</code> — 1 if the target length is odd (there's a middle seat), 0 if even (no middle seat).</li>
+<li>The two <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if</code> checks right after — this is the "is a palindrome even possible" gate. If length is even but some letter has an odd count, impossible. If length is odd but there isn't <em>exactly</em> one odd-count letter, impossible.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">half = n / 2</code> — how many letters we get to freely decide (the first half).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">halfBudget[i] = count[i] / 2</code> — since each letter in the first half is mirrored once in the second half, we only get <em>half</em> as many "free placements" as the full count.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">centerChar</code> — the forced middle letter, if any. Notice: this is <strong>not a choice</strong> — there can only be one candidate.</li>
+<li>The <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while (matchedLength < half)</code> loop — this is us trying to copy <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>'s first half exactly, one letter at a time, spending from our budget as we go, stopping the instant we run out of the needed letter.</li>
+<li>The <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (matchedLength == half)</code> block — if we successfully copied the <em>entire</em> first half, our string so far exactly equals <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>'s first half. Now we must check: does the <em>forced</em> rest of the string (center letter + mirrored tail) already make our full string bigger than <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>? We check the center first (if it exists), then the tail. If yes, we return immediately — this is the smallest possible answer, since we matched <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code> as long as humanly possible.</li>
+<li>If that check fails (equal or smaller), we don't give up — we go back and try increasing some earlier letter instead.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">budget[tgt[half - 1] - 'a']++;</code> — this "gives back" the last letter we tentatively used, since we're now allowed to try something <em>different</em> there instead of matching target exactly.</li>
+<li>The main <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while (position >= 0)</code> loop — this is the heart of the "bump the letter" logic. At each position, we look through our remaining budget for the <strong>smallest letter bigger than target's letter at that position</strong> (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for (int c = targetLetter + 1; c < 26; c++)</code>).</li>
+<li>If we find one (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">chosenLetter != -1</code>), we use it, then fill everything after with the <strong>smallest leftover letters</strong> (since nothing more needs comparing — we've already guaranteed we're bigger than target). Then we mirror to build the full palindrome and return.</li>
+<li>If we don't find one, we "give back" the letter target had at the previous position (so we can try bumping <em>there</em> instead) and move one position to the left — this is exactly like carrying in addition, but for letters.</li>
+<li>If we run out of positions entirely, no valid palindrome beats <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>, so we return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">""</code>.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">16. Test With Multiple Examples</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 1 — Normal Case</h3>
+Input: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s="baba", target="abba"</code> → dry-ran above → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"baab"</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 2 — Different Case (exact prefix match, but tail is equal, and no bump possible)</h3>
+Input: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s="baba", target="bbaa"</code>.
+Budget: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:1, b:1}</code>. Matching target's first letter <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code>: budget has <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code>, use it, budget → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:1, b:0}</code>. Second letter <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code>: budget has no <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> left — matching stops at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">matchedLength=1</code>.
+We try to bump position 1 (target letter <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code>): need something <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">> b</code> in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:1}</code> — nothing. Give back target[0]=<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> → budget <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{a:1, b:1}</code>. Try to bump position 0 (target letter <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code>): need <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">> b</code> — nothing (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> is not bigger). No position works → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">""</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 3 — Edge Case (palindrome impossible at all)</h3>
+Input: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s="abc", target="abb"</code>. Counts: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a:1, b:1, c:1</code> — <strong>three</strong> odd counts. Since length 3 is odd, we need <em>exactly</em> one odd count, not three → impossible → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">""</code> ✔️
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">17. Edge Cases</h2>
+<li><strong>Palindrome is impossible from the start</strong> (wrong number of odd-count letters) → return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">""</code> immediately, no need to even look at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>.</li>
+<li><strong>Every rearrangement is smaller than or equal to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code></strong> → our search runs out of positions to bump → return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">""</code>.</li>
+<li><strong>The only valid palindrome exactly equals <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code></strong> → since we need <em>strictly</em> greater, this doesn't count, and we must look for something else (or fail).</li>
+<li><strong><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>'s letters can't even be matched at position 0</strong> (e.g., target starts with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">z</code> but our budget has no letter ≥ that) → the "bump" search starts right at position 0 and likely fails fast.</li>
+<li><strong>All letters identical</strong> (e.g., <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s = "aaaa"</code>) → only one palindrome exists (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"aaaa"</code>); either it beats target or it doesn't.</li>
+<li><strong>Odd length, only one letter total</strong> (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n=1</code>) → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">half=0</code>, the entire string is just the center letter — no real search needed, just compare directly.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">18. Time Complexity</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>What is time complexity?</strong> It's a way of estimating how the <em>amount of work</em> grows as the input grows, without worrying about exact seconds — like saying "doubling my grocery list roughly doubles my shopping time," rather than measuring it with a stopwatch.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Brute Force:
+O(n!)   — completely impossible for n=300
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Optimized:
+O(n)    — roughly one pass through the string (times a small constant of 26 for the alphabet)</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why:</strong> We compute letter counts in one pass (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>). We try to match target's first half in one pass (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n/2)</code>). In the worst case, our "bump" search walks backward through the first half once (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n/2)</code>), and at each position checks up to 26 letters (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(26)</code>), which is a constant, not something that grows with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code>. Building the final answer string is another single pass. All together, this is proportional to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code>, not to some huge exploding number — like sorting your grocery list once instead of trying every possible order of it.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">19. Space Complexity</h2>
+<li>We use a few fixed-size arrays of length 26 (letter counts, half-budget, etc.) — this doesn't grow with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> at all, it's always 26 boxes.</li>
+<li>We build the answer string, which is length <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code>.</li></ul>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">So extra memory used is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> (mostly just for building and returning the answer itself), plus a small constant <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(26)</code> for our counting arrays.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">20. Common Mistakes Beginners Make</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "I should just sort the letters and check if that's a palindrome."
+✅ Sorting only gives you <em>one</em> arrangement — usually not even a palindrome, and definitely not necessarily the smallest one greater than target. You need to specifically construct a palindrome by mirroring a chosen first half.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "The middle letter (for odd length) is something I get to pick to help beat target."
+✅ The middle letter is completely forced — there's only ever at most one letter with an odd count, and it <em>must</em> be the center. You never get to choose it.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "I should compare my constructed string to target only up to the half-way point, since after that it's just a mirror anyway."
+✅ You must compare the <em>entire</em> string, because even though the second half is a mirror, it can still be the exact part that decides whether your string is bigger or smaller than target (see how the tail check mattered in Example 2's dry run).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "Once I find any position where I can place a bigger letter, that's the answer."
+✅ You must search from the <strong>rightmost possible position backward</strong>, because bumping a letter as late as possible keeps your answer as close (and thus as small) as possible while still being greater than target.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">21. How to Recognize This Pattern in Other Problems</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">If you see phrasing like this, think "match-as-long-as-possible, then bump the smallest legal amount":</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">&quot;Smallest / next permutation greater than X&quot;
+&quot;Rearrange to get the closest larger value&quot;
+&quot;Using a limited set of digits/letters, construct the next bigger number/word&quot;
+&quot;Palindrome permutation&quot; (combine with: only half the string is a free choice)
+&quot;Strictly greater than a given target&quot;</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">22. Interview Thinking</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">1. Understand the input   → two equal-length strings, one is a letter budget, one is a target to beat
+2. Understand the output  → smallest palindrome from that budget, strictly greater than target
+3. Try brute force        → generate all permutations, filter palindromes, sort, scan (way too slow)
+4. Find what makes it slow→ we&#039;re re-deriving the second half of the palindrome for free every time
+5. Identify repeated work → the second half is ALWAYS just the mirror of the first half
+6. What can be stored?    → a running &quot;letter budget&quot; for the first half only
+7. Optimize               → match target as long as possible, then bump the rightmost possible letter
+8. Check edge cases       → impossible palindrome, exact-equal candidate, no bump possible anywhere
+9. Analyze complexity     → O(n) time, O(n) space</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Applied here: this is exactly the path we walked — brute force → realize the mirror trick → realize it's a "match then bump" construction problem → handle the tricky "exact match, check the tail" case → land on an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> solution.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">23. Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Before we wrap up, try answering these in your head (or on paper):</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. If <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s = "aabb"</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target = "abab"</code>, what's the half-budget (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> counts for the first half)?
+2. At position 0, target's letter is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code>. Do we try to match it first, or immediately look for something bigger?
+3. Suppose we match the <em>entire</em> first half exactly to target, and the mirrored tail comes out <strong>smaller</strong> than target's real tail. What should we do next?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><br></p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">Answer to Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Full counts: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a:2, b:2</code>. Half-budget: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a:1, b:1</code>.
+2. We always <strong>try to match first</strong> — matching keeps our answer as close to (and thus as small as) possible while beating target; we only "bump" when matching is no longer possible or doesn't work out.
+3. If the mirrored tail turns out smaller (or equal), the exact-match candidate fails to beat target, so we go back and search backward from the last matched position, looking for the rightmost spot where we can legally place a letter bigger than target's letter there.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">24. Final Revision</h2>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🧠 Problem in One Sentence</h2>
+Build the smallest palindrome, using exactly the letters of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code>, that is strictly bigger than <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🔑 Main Idea</h2>
+A palindrome's second half is just a mirror of its first half, so we only ever need to construct the first half — and we build that first half by matching <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code> as long as possible, then bumping the letter at the latest possible position up to the smallest legal larger option.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⚙️ Algorithm</h2>
+1. Count letters of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code>; check a palindrome is even possible (at most one odd-count letter).
+2. Compute the "half budget" (each count divided by 2) and the forced center letter, if any.
+3. Try to match <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target</code>'s first half exactly using the budget.
+4. If fully matched, check the forced center + mirrored tail — if that already beats target, return it (smallest possible answer).
+5. Otherwise, search backward for the rightmost position where a bigger letter can be placed; place it, fill the rest with the smallest leftover letters, mirror, and return.
+6. If nothing works anywhere, return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">""</code>.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⏱️ Complexity</h2>
+Time: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>
+Space: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> (for the answer string; counting arrays are a constant O(26))
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🎯 Pattern to Remember</h2>
+"Match-then-bump" construction, combined with "a palindrome is only half-free."
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">25. Beginner Quiz</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong>(Understanding)</strong> In your own words, why can't we just pick any palindrome permutation of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s</code> — what two conditions must our answer satisfy?
+2. <strong>(Basic concept)</strong> If <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s = "ccdd"</code>, what would the "half-budget" array contain (just for letters <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">c</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">d</code>)?
+3. <strong>(Logic)</strong> Why do we search for the position to "bump" starting from the <strong>end</strong> of the matched prefix and moving backward, rather than starting from position 0 and moving forward?
+4. <strong>(Dry run)</strong> For <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">s = "aabb"</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">target = "abba"</code>, walk through: what's the half-budget, does the first half match target exactly, and if not, what's the final answer?
+5. <strong>(Complexity/pattern)</strong> Why is this solution <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> instead of something like <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n log n)</code> or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n^2)</code>, and what "signal words" in a problem statement should make you think of this match-then-bump technique in the future?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Take your time — send me your answers whenever you're ready, and I'll walk through them with you!</p>
+    </div>
+  </article>
+
+  <footer style="max-width: 800px; margin: 4rem auto 0; padding: 2rem 1rem; border-top: 1px solid #27272a; text-align: center; color: #71717a; font-size: 0.9rem;">
+    <p>&copy; 2026 Mukesh Pal. All rights reserved. Full-Stack Developer & Co-Founder at CodeByte.</p>
+  </footer>
+</body>
+</html>

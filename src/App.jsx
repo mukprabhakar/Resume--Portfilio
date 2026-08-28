@@ -253,6 +253,7 @@ function App() {
               <Route path="/blog" element={<BlogPosts />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/leetcode-potd" element={<LeetCodePOTD />} />
+              <Route path="/leetcode-potd/:slug" element={<LeetCodePOTD />} />
             </Routes>
           </Suspense>
         </main>

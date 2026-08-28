@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
@@ -52,6 +52,9 @@ const CodeEditor = ({ code, language }) => {
 };
 
 const LeetCodePOTD = () => {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
@@ -105,10 +108,10 @@ const LeetCodePOTD = () => {
           };
         }
         
-        const slug = path.split('/').pop().replace('.md', '');
+        const fileSlug = path.split('/').pop().replace('.md', '');
         
         loaded.push({
-          slug,
+          slug: fileSlug,
           ...data,
           content: markdownContent
         });
@@ -122,6 +125,123 @@ const LeetCodePOTD = () => {
       setLoading(false);
     }
   };
+
+  // Sync route slug with selected challenge state
+  useEffect(() => {
+    if (challenges.length > 0) {
+      if (slug) {
+        const found = challenges.find(c => c.slug === slug);
+        if (found) {
+          setSelectedChallenge(found);
+          const codeData = extractCodeBlocks(found.content);
+          if (codeData.javascript && !codeData.java) {
+            setActiveCodeLang('javascript');
+          } else {
+            setActiveCodeLang('java');
+          }
+        } else {
+          setSelectedChallenge(null);
+        }
+      } else {
+        setSelectedChallenge(null);
+      }
+    }
+  }, [slug, challenges]);
+
+  // SEO & Schema Markup updates
+  useEffect(() => {
+    if (selectedChallenge) {
+      const pageTitle = `${selectedChallenge.title} Solution | Mukesh Pal LeetCode POTD`;
+      const pageDesc = selectedChallenge.excerpt || `Detailed time/space complexity explanation and clean code solution for LeetCode ${selectedChallenge.title} in Java and JS.`;
+      
+      document.title = pageTitle;
+      
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', pageDesc);
+      }
+
+      // JSON-LD structured data generation for SEO, AEO, and GEO optimization
+      let schemaScript = document.getElementById('leetcode-potd-schema');
+      if (!schemaScript) {
+        schemaScript = document.createElement('script');
+        schemaScript.id = 'leetcode-potd-schema';
+        schemaScript.type = 'application/ld+json';
+        document.head.appendChild(schemaScript);
+      }
+
+      const codeData = extractCodeBlocks(selectedChallenge.content);
+
+      const schemaData = {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "TechArticle",
+            "@id": `https://mukprabhakar.in/leetcode-potd/${selectedChallenge.slug}#article`,
+            "headline": selectedChallenge.title,
+            "description": pageDesc,
+            "datePublished": selectedChallenge.date,
+            "dateModified": selectedChallenge.date,
+            "mainEntityOfPage": `https://mukprabhakar.in/leetcode-potd/${selectedChallenge.slug}`,
+            "author": {
+              "@type": "Person",
+              "name": "Mukesh Pal",
+              "url": "https://mukprabhakar.in"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Mukesh Pal Portfolio",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://res.cloudinary.com/dddmyjevn/image/upload/q_auto/f_auto/v1775281267/mukeshp_ybprrz.png"
+              }
+            },
+            "keywords": `leetcode solution, ${selectedChallenge.tags.join(', ')}, ${selectedChallenge.title}`
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "@id": `https://mukprabhakar.in/leetcode-potd/${selectedChallenge.slug}#code`,
+            "programmingLanguage": "JavaScript",
+            "codeSample": codeData.javascript || "",
+            "name": `${selectedChallenge.title} JavaScript Solution`,
+            "description": `Optimal O(n) JavaScript class implementation for LeetCode ${selectedChallenge.title}`,
+            "author": {
+              "@type": "Person",
+              "name": "Mukesh Pal"
+            }
+          }
+        ]
+      };
+
+      if (codeData.java) {
+        schemaData["@graph"].push({
+          "@type": "SoftwareSourceCode",
+          "@id": `https://mukprabhakar.in/leetcode-potd/${selectedChallenge.slug}#code-java`,
+          "programmingLanguage": "Java",
+          "codeSample": codeData.java,
+          "name": `${selectedChallenge.title} Java Solution`,
+          "description": `Optimal Java class implementation for LeetCode ${selectedChallenge.title}`,
+          "author": {
+            "@type": "Person",
+            "name": "Mukesh Pal"
+          }
+        });
+      }
+
+      schemaScript.textContent = JSON.stringify(schemaData, null, 2);
+    } else {
+      document.title = "LeetCode POTD Solutions | Mukesh Pal - Daily Coding Challenges";
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', "Explore daily coding challenges and solutions from LeetCode. Conceptual breakdowns, Java and JavaScript implementations, and complexity analysis.");
+      }
+      
+      let schemaScript = document.getElementById('leetcode-potd-schema');
+      if (schemaScript) {
+        schemaScript.remove();
+      }
+    }
+  }, [selectedChallenge]);
 
   const getSectionGroup = (headingTitle) => {
     const t = headingTitle.toLowerCase();
@@ -198,18 +318,13 @@ const LeetCodePOTD = () => {
   });
 
   const handleChallengeSelect = (challenge) => {
-    setSelectedChallenge(challenge);
-    setActiveDetailTab('description');
-    
-    const codeData = extractCodeBlocks(challenge.content);
-    if (codeData.javascript && !codeData.java) {
-      setActiveCodeLang('javascript');
-    } else {
-      setActiveCodeLang('java');
-    }
-    
-    window.scrollTo(0, 0);
+    navigate(`/leetcode-potd/${challenge.slug}`);
     trackEvent('click', 'leetcode_potd', `select_${challenge.slug}`);
+  };
+
+  const handleBackToList = () => {
+    navigate('/leetcode-potd');
+    trackEvent('click', 'leetcode_potd', 'back_to_list');
   };
 
   // Group parsing for the selected challenge
@@ -309,8 +424,8 @@ const LeetCodePOTD = () => {
   return (
     <div className="relative min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 bg-black text-white selection:bg-white selection:text-black font-mono">
       <SEOEnhancement
-        title="LeetCode POTD Solutions | Mukesh Pal - Daily Coding Challenges"
-        description="Explore daily coding challenges and solutions from LeetCode. Conceptual breakdowns, Java and JavaScript implementations, and complexity analysis."
+        title={selectedChallenge ? `${selectedChallenge.title} Solution | Mukesh Pal LeetCode POTD` : "LeetCode POTD Solutions | Mukesh Pal - Daily Coding Challenges"}
+        description={selectedChallenge ? selectedChallenge.excerpt : "Explore daily coding challenges and solutions from LeetCode. Conceptual breakdowns, Java and JavaScript implementations, and complexity analysis."}
         type="website"
       />
 
@@ -336,7 +451,7 @@ const LeetCodePOTD = () => {
         {/* Back Button / Navigation */}
         {selectedChallenge && (
           <button 
-            onClick={() => setSelectedChallenge(null)}
+            onClick={handleBackToList}
             className="inline-flex items-center text-xs uppercase tracking-wider font-bold mb-8 border border-zinc-800 hover:border-white px-4 py-2 rounded transition bg-zinc-955"
           >
             ← Back to challenges list
@@ -417,7 +532,7 @@ const LeetCodePOTD = () => {
                 ))
               ) : (
                 <div className="text-center py-16 border border-dashed border-zinc-900 rounded-lg">
-                  <p className="text-zinc-655 uppercase text-xs">No LeetCode POTD questions found</p>
+                  <p className="text-zinc-650 uppercase text-xs">No LeetCode POTD questions found</p>
                 </div>
               )}
             </div>
