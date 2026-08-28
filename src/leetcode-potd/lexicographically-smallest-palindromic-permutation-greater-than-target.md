@@ -271,142 +271,290 @@ This matches our manual answer from Section 6! 🎉
 ## 14. Optimized Code
 
 ```java
-import java.util.*;
-
 class Solution {
-    public String smallestPalindromicPermutation(String s, String target) {
+
+    public String lexPalindromicPermutation(String s, String target) {
         int n = s.length();
 
-        // Step 1: count how many of each letter s has
+        // Count characters in s
         int[] count = new int[26];
         for (char ch : s.toCharArray()) {
             count[ch - 'a']++;
         }
 
-        // Step 2: check if a palindrome is even possible
+        // A palindrome can have at most one odd-frequency character
         int oddCount = 0;
-        int oddCharIndex = -1;
+        char middle = 0;
+
         for (int i = 0; i < 26; i++) {
-            if (count[i] % 2 == 1) {
+            if ((count[i] & 1) == 1) {
                 oddCount++;
-                oddCharIndex = i;
+                middle = (char) ('a' + i);
             }
         }
 
-        int mid = n % 2; // 1 if odd length, 0 if even length
-        if (mid == 0 && oddCount != 0) return "";
-        if (mid == 1 && oddCount != 1) return "";
+        if (oddCount > 1) {
+            return "";
+        }
 
-        int half = n / 2;
+        // Number of characters in the left half
+        int halfLen = n / 2;
 
-        // Step 3: build the "half budget" - how many of each letter
-        // are available to place in the FIRST half of the palindrome
-        int[] halfBudget = new int[26];
+        // Characters available for the left half
+        int[] halfCount = new int[26];
         for (int i = 0; i < 26; i++) {
-            halfBudget[i] = count[i] / 2;
-        }
-        char centerChar = (mid == 1) ? (char) ('a' + oddCharIndex) : '?';
-
-        char[] tgt = target.toCharArray();
-
-        // Step 4: try to match target's first half exactly, letter by letter
-        int[] avail = halfBudget.clone();
-        int matchedLength = 0;
-        while (matchedLength < half) {
-            int letter = tgt[matchedLength] - 'a';
-            if (avail[letter] > 0) {
-                avail[letter]--;
-                matchedLength++;
-            } else {
-                break;
-            }
+            halfCount[i] = count[i] / 2;
         }
 
-        // Step 5: if we matched the WHOLE first half exactly, check the middle
-        // and the mirrored tail to see if we already beat target
-        if (matchedLength == half) {
-            if (mid == 1) {
-                if (centerChar > tgt[half]) {
-                    return target.substring(0, half) + centerChar
-                            + reverseSubstring(tgt, 0, half);
-                } else if (centerChar == tgt[half]) {
-                    String mirroredTail = reverseSubstring(tgt, 0, half);
-                    String actualTail = target.substring(half + 1);
-                    if (mirroredTail.compareTo(actualTail) > 0) {
-                        return target.substring(0, half) + centerChar + mirroredTail;
-                    }
+        char[] prefix = new char[halfLen];
+
+        /*
+         * Build the left half from left to right.
+         *
+         * At every position, try characters from 'a' to 'z'.
+         * We choose the smallest character for which there exists
+         * some completion that can produce a palindrome > target.
+         */
+        for (int pos = 0; pos < halfLen; pos++) {
+
+            boolean found = false;
+
+            for (int c = 0; c < 26; c++) {
+
+                if (halfCount[c] == 0) {
+                    continue;
                 }
-                // else: falls through to the "bump a letter" search below
-            } else {
-                String mirroredTail = reverseSubstring(tgt, 0, half);
-                String actualTail = target.substring(half);
-                if (mirroredTail.compareTo(actualTail) > 0) {
-                    return target.substring(0, half) + mirroredTail;
-                }
-                // else: falls through to the "bump a letter" search below
-            }
-        }
 
-        // Step 6: search for the rightmost position where we can place
-        // a letter GREATER than target's letter there
-        int[] budget;
-        int position;
-        if (matchedLength == half) {
-            budget = avail.clone();
-            budget[tgt[half - 1] - 'a']++; // give back the last matched letter
-            position = half - 1;
-        } else {
-            budget = avail.clone();
-            position = matchedLength;
-        }
+                // Try placing this character
+                halfCount[c]--;
+                prefix[pos] = (char) ('a' + c);
 
-        while (position >= 0) {
-            int targetLetter = tgt[position] - 'a';
-            int chosenLetter = -1;
-            for (int c = targetLetter + 1; c < 26; c++) {
-                if (budget[c] > 0) {
-                    chosenLetter = c;
+                /*
+                 * Check whether this prefix can be completed
+                 * to a palindrome strictly greater than target.
+                 *
+                 * To maximize the palindrome for this prefix,
+                 * put all remaining characters in descending order
+                 * in the rest of the left half.
+                 */
+                if (canMakeGreater(prefix, pos + 1,
+                                   halfCount, middle, target)) {
+
+                    found = true;
                     break;
                 }
+
+                // This character cannot lead to an answer.
+                halfCount[c]++;
             }
 
-            if (chosenLetter != -1) {
-                budget[chosenLetter]--;
-                StringBuilder firstHalf = new StringBuilder();
-                firstHalf.append(target, 0, position);          // matches target so far
-                firstHalf.append((char) ('a' + chosenLetter));  // the bumped-up letter
-
-                // fill the rest with smallest leftover letters, in order a..z
-                for (int c = 0; c < 26; c++) {
-                    for (int k = 0; k < budget[c]; k++) {
-                        firstHalf.append((char) ('a' + c));
-                    }
-                }
-
-                String Q = firstHalf.toString();
-                StringBuilder answer = new StringBuilder();
-                answer.append(Q);
-                if (mid == 1) answer.append(centerChar);
-                answer.append(new StringBuilder(Q).reverse());
-                return answer.toString();
+            if (!found) {
+                return "";
             }
-
-            if (position == 0) break;
-            budget[tgt[position - 1] - 'a']++; // give back a previously matched letter
-            position--;
         }
 
-        return "";
+        // We have constructed the optimal left half.
+        StringBuilder ans = new StringBuilder(n);
+
+        for (char ch : prefix) {
+            ans.append(ch);
+        }
+
+        // Middle character only exists for odd n
+        if ((n & 1) == 1) {
+            ans.append(middle);
+        }
+
+        // Mirror the left half
+        for (int i = halfLen - 1; i >= 0; i--) {
+            ans.append(prefix[i]);
+        }
+
+        String result = ans.toString();
+
+        return result.compareTo(target) > 0 ? result : "";
     }
 
-    private String reverseSubstring(char[] arr, int from, int to) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = to - 1; i >= from; i--) sb.append(arr[i]);
-        return sb.toString();
+    /*
+     * Returns true if there is at least one completion of the
+     * current prefix that produces a palindrome > target.
+     *
+     * We construct the LARGEST possible completion from the
+     * remaining characters.
+     *
+     * If even the largest completion is not > target,
+     * no smaller completion can work either.
+     */
+    private boolean canMakeGreater(
+            char[] prefix,
+            int prefixLength,
+            int[] halfCount,
+            char middle,
+            String target) {
+
+        int halfLen = prefix.length;
+
+        StringBuilder left = new StringBuilder(halfLen);
+
+        // Already fixed prefix
+        for (int i = 0; i < prefixLength; i++) {
+            left.append(prefix[i]);
+        }
+
+        // Put remaining characters in descending order
+        for (int c = 25; c >= 0; c--) {
+            for (int k = 0; k < halfCount[c]; k++) {
+                left.append((char) ('a' + c));
+            }
+        }
+
+        // Construct the largest palindrome for this prefix
+        StringBuilder palindrome = new StringBuilder();
+
+        palindrome.append(left);
+
+        // Middle character
+        if ((target.length() & 1) == 1) {
+            palindrome.append(middle);
+        }
+
+        // Reverse left half
+        for (int i = left.length() - 1; i >= 0; i--) {
+            palindrome.append(left.charAt(i));
+        }
+
+        return palindrome.toString().compareTo(target) > 0;
     }
 }
 ```
 
+```javascript
+class Solution {
+    lexPalindromicPermutation(s, target) {
+        const n = s.length;
+
+        // Count characters in s
+        const count = new Array(26).fill(0);
+        for (let i = 0; i < s.length; i++) {
+            count[s.charCodeAt(i) - 97]++;
+        }
+
+        // A palindrome can have at most one odd-frequency character
+        let oddCount = 0;
+        let middle = '';
+
+        for (let i = 0; i < 26; i++) {
+            if ((count[i] & 1) === 1) {
+                oddCount++;
+                middle = String.fromCharCode(97 + i);
+            }
+        }
+
+        if (oddCount > 1) {
+            return "";
+        }
+
+        // Number of characters in the left half
+        const halfLen = Math.floor(n / 2);
+
+        // Characters available for the left half
+        const halfCount = new Array(26).fill(0);
+        for (let i = 0; i < 26; i++) {
+            halfCount[i] = Math.floor(count[i] / 2);
+        }
+
+        const prefix = new Array(halfLen).fill('');
+
+        /*
+         * Build the left half from left to right.
+         *
+         * At every position, try characters from 'a' to 'z'.
+         * We choose the smallest character for which there exists
+         * some completion that can produce a palindrome > target.
+         */
+        for (let pos = 0; pos < halfLen; pos++) {
+            let found = false;
+
+            for (let c = 0; c < 26; c++) {
+                if (halfCount[c] === 0) {
+                    continue;
+                }
+
+                // Try placing this character
+                halfCount[c]--;
+                prefix[pos] = String.fromCharCode(97 + c);
+
+                /*
+                 * Check whether this prefix can be completed
+                 * to a palindrome strictly greater than target.
+                 *
+                 * To maximize the palindrome for this prefix,
+                 * put all remaining characters in descending order
+                 * in the rest of the left half.
+                 */
+                if (this.canMakeGreater(prefix, pos + 1,
+                                   halfCount, middle, target)) {
+                    found = true;
+                    break;
+                }
+
+                // This character cannot lead to an answer.
+                halfCount[c]++;
+            }
+
+            if (!found) {
+                return "";
+            }
+        }
+
+        // We have constructed the optimal left half.
+        const leftSide = prefix.join('');
+        const rightSide = prefix.slice().reverse().join('');
+        const result = leftSide + middle + rightSide;
+
+        return result > target ? result : "";
+    }
+
+    /*
+     * Returns true if there is at least one completion of the
+     * current prefix that produces a palindrome > target.
+     *
+     * We construct the LARGEST possible completion from the
+     * remaining characters.
+     *
+     * If even the largest completion is not > target,
+     * no smaller completion can work either.
+     */
+    canMakeGreater(
+            prefix,
+            prefixLength,
+            halfCount,
+            middle,
+            target) {
+
+        const halfLen = prefix.length;
+        let left = '';
+
+        // Already fixed prefix
+        for (let i = 0; i < prefixLength; i++) {
+            left += prefix[i];
+        }
+
+        // Put remaining characters in descending order
+        for (let c = 25; c >= 0; c--) {
+            for (let k = 0; k < halfCount[c]; k++) {
+                left += String.fromCharCode(97 + c);
+            }
+        }
+
+        // Construct the largest palindrome for this prefix
+        const right = left.split('').reverse().join('');
+        const palindrome = left + middle + right;
+
+        return palindrome > target;
+    }
+}
+```
 ---
 
 ## 15. Explain Optimized Code Line by Line

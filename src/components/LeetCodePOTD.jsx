@@ -18,10 +18,36 @@ const CopyButton = ({ text }) => {
   return (
     <button
       onClick={handleCopy}
-      className="text-[10px] uppercase font-mono tracking-wider text-zinc-400 hover:text-white transition border border-zinc-800 hover:border-zinc-650 px-2 py-1 rounded bg-zinc-950"
+      className="text-[10px] uppercase font-mono tracking-wider text-zinc-400 hover:text-white transition border border-zinc-900 hover:border-zinc-700 px-2.5 py-1 rounded bg-zinc-950"
     >
-      {copied ? 'Copied!' : 'Copy'}
+      {copied ? 'Copied!' : 'Copy Code'}
     </button>
+  );
+};
+
+const CodeEditor = ({ code, language }) => {
+  const lines = code.split('\n');
+  return (
+    <div className="relative border border-zinc-900 rounded-lg overflow-hidden bg-black font-mono text-xs leading-relaxed my-6">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-900 bg-zinc-950 text-zinc-400">
+        <span className="text-[10px] uppercase font-bold tracking-widest">{language} Solution</span>
+        <CopyButton text={code} />
+      </div>
+      <div className="flex overflow-x-auto p-4 max-h-[500px]">
+        {/* Line numbers column */}
+        <div className="text-zinc-650 pr-4 border-r border-zinc-900 text-right select-none min-w-[2.5rem]">
+          {lines.map((_, i) => (
+            <div key={i}>{i + 1}</div>
+          ))}
+        </div>
+        {/* Code lines column */}
+        <pre className="pl-4 text-zinc-300 select-text flex-1">
+          {lines.map((line, i) => (
+            <div key={i}>{line || ' '}</div>
+          ))}
+        </pre>
+      </div>
+    </div>
   );
 };
 
@@ -31,6 +57,11 @@ const LeetCodePOTD = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [selectedChallenge, setSelectedChallenge] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Detail page tabs
+  const [activeDetailTab, setActiveDetailTab] = useState('description');
+  // Solutions code language toggle
+  const [activeCodeLang, setActiveCodeLang] = useState('java');
 
   useEffect(() => {
     loadPOTDChallenges();
@@ -92,6 +123,72 @@ const LeetCodePOTD = () => {
     }
   };
 
+  const getSectionGroup = (headingTitle) => {
+    const t = headingTitle.toLowerCase();
+    if (t.includes('1.') || t.includes('2.') || t.includes('3.') || t.includes('4.') || t.includes('5.') || t.includes('simple language') || t.includes('analogy') || t.includes('concepts') || t.includes('input') || t.includes('output')) {
+      return 'description';
+    }
+    if (t.includes('brute force')) {
+      return 'brute_force';
+    }
+    if (t.includes('manually') || t.includes('programmer') || t.includes('dry run')) {
+      return 'walkthrough';
+    }
+    if (t.includes('better approach') || t.includes('insight') || t.includes('complexity') || t.includes('revision')) {
+      return 'optimized';
+    }
+    if (t.includes('code') || t.includes('line by line') || t.includes('examples') || t.includes('edge cases')) {
+      return 'code';
+    }
+    if (t.includes('mistakes') || t.includes('recognize') || t.includes('interview') || t.includes('challenge') || t.includes('quiz')) {
+      return 'quiz';
+    }
+    return 'description';
+  };
+
+  const parseMarkdownIntoGroups = (content) => {
+    const groups = {
+      description: [],
+      brute_force: [],
+      walkthrough: [],
+      optimized: [],
+      code: [],
+      quiz: [],
+      intro: ''
+    };
+
+    const parts = content.split(/\n(?=##\s)/);
+    groups.intro = parts[0] || '';
+
+    parts.slice(1).forEach(part => {
+      const lines = part.trim().split('\n');
+      const firstLine = lines[0] || '';
+      if (firstLine.startsWith('## ')) {
+        const headingTitle = firstLine.replace('## ', '').trim();
+        const headingContent = lines.slice(1).join('\n');
+        const groupKey = getSectionGroup(headingTitle);
+        if (groups[groupKey]) {
+          groups[groupKey].push({ title: headingTitle, content: headingContent });
+        }
+      }
+    });
+
+    return groups;
+  };
+
+  const extractCodeBlocks = (markdownText) => {
+    const javaRegex = /```java\r?\n([\s\S]*?)```/;
+    const jsRegex = /```javascript\r?\n([\s\S]*?)```/;
+    
+    const javaMatch = markdownText.match(javaRegex);
+    const jsMatch = markdownText.match(jsRegex);
+    
+    return {
+      java: javaMatch ? javaMatch[1].trim() : '',
+      javascript: jsMatch ? jsMatch[1].trim() : ''
+    };
+  };
+
   const filteredChallenges = challenges.filter(c => {
     const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           c.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -102,8 +199,111 @@ const LeetCodePOTD = () => {
 
   const handleChallengeSelect = (challenge) => {
     setSelectedChallenge(challenge);
+    setActiveDetailTab('description');
+    
+    const codeData = extractCodeBlocks(challenge.content);
+    if (codeData.javascript && !codeData.java) {
+      setActiveCodeLang('javascript');
+    } else {
+      setActiveCodeLang('java');
+    }
+    
     window.scrollTo(0, 0);
     trackEvent('click', 'leetcode_potd', `select_${challenge.slug}`);
+  };
+
+  // Group parsing for the selected challenge
+  const parsedGroups = selectedChallenge ? parseMarkdownIntoGroups(selectedChallenge.content) : null;
+  
+  // Extract solution code for mock IDE editor
+  const extractedCode = selectedChallenge ? extractCodeBlocks(selectedChallenge.content) : null;
+
+  // Shared markdown element styles to keep B&W clean layout
+  const markdownComponents = {
+    h2: ({ children }) => (
+      <h2 className="text-white text-base uppercase font-bold tracking-wider mt-10 mb-4 border-b border-zinc-900 pb-2 font-mono">
+        {children}
+      </h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="text-zinc-400 text-xs uppercase font-bold tracking-widest mt-8 mb-3 font-mono">
+        {children}
+      </h3>
+    ),
+    p: ({ children }) => (
+      <p className="text-zinc-300 text-sm leading-relaxed mb-5 font-mono font-light">
+        {children}
+      </p>
+    ),
+    ul: ({ children }) => (
+      <ul className="list-disc pl-6 space-y-3 my-4 text-zinc-300 text-sm font-mono font-light">
+        {children}
+      </ul>
+    ),
+    ol: ({ children }) => (
+      <ol className="list-decimal pl-6 space-y-3 my-4 text-zinc-300 text-sm font-mono font-light">
+        {children}
+      </ol>
+    ),
+    li: ({ children }) => (
+      <li className="leading-relaxed">
+        {children}
+      </li>
+    ),
+    table: ({ children }) => (
+      <div className="my-6 overflow-x-auto border border-zinc-900 rounded-lg">
+        <table className="w-full text-left border-collapse font-mono text-xs">
+          {children}
+        </table>
+      </div>
+    ),
+    thead: ({ children }) => (
+      <thead className="bg-zinc-950 border-b border-zinc-900 text-zinc-500 font-bold uppercase tracking-wider">
+        {children}
+      </thead>
+    ),
+    tbody: ({ children }) => (
+      <tbody className="divide-y divide-zinc-955 bg-black">
+        {children}
+      </tbody>
+    ),
+    tr: ({ children }) => (
+      <tr className="hover:bg-zinc-950 transition-colors">
+        {children}
+      </tr>
+    ),
+    th: ({ children }) => (
+      <th className="px-4 py-3 border-r border-zinc-900 last:border-r-0">
+        {children}
+      </th>
+    ),
+    td: ({ children }) => (
+      <td className="px-4 py-3 text-zinc-400 border-r border-zinc-900 last:border-r-0">
+        {children}
+      </td>
+    ),
+    pre: ({ children }) => <>{children}</>,
+    code: ({ node, inline, className, children, ...props }) => {
+      const match = /language-(\w+)/.exec(className || '');
+      const langName = match ? match[1] : '';
+      return !inline && match ? (
+        <div className="relative border border-zinc-900 rounded-lg overflow-hidden my-6 bg-zinc-950">
+          <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-900 bg-zinc-900/40">
+            <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500 font-mono">{langName}</span>
+            <CopyButton text={String(children).replace(/\n$/, '')} />
+          </div>
+          <pre className="p-4 overflow-x-auto text-zinc-300 font-mono text-xs leading-relaxed">
+            <code className={className} {...props}>
+              {children}
+            </code>
+          </pre>
+        </div>
+      ) : (
+        <code className="bg-zinc-900/80 px-1.5 py-0.5 rounded text-white font-mono text-[12px]" {...props}>
+          {children}
+        </code>
+      );
+    }
   };
 
   return (
@@ -114,7 +314,7 @@ const LeetCodePOTD = () => {
         type="website"
       />
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         
         {/* Header Section */}
         <div className="border-b border-white pb-8 mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -137,7 +337,7 @@ const LeetCodePOTD = () => {
         {selectedChallenge && (
           <button 
             onClick={() => setSelectedChallenge(null)}
-            className="inline-flex items-center text-xs uppercase tracking-wider font-bold mb-8 border border-zinc-800 hover:border-white px-4 py-2 rounded transition bg-zinc-950"
+            className="inline-flex items-center text-xs uppercase tracking-wider font-bold mb-8 border border-zinc-800 hover:border-white px-4 py-2 rounded transition bg-zinc-955"
           >
             ← Back to challenges list
           </button>
@@ -217,13 +417,13 @@ const LeetCodePOTD = () => {
                 ))
               ) : (
                 <div className="text-center py-16 border border-dashed border-zinc-900 rounded-lg">
-                  <p className="text-zinc-650 uppercase text-xs">No LeetCode POTD questions found</p>
+                  <p className="text-zinc-655 uppercase text-xs">No LeetCode POTD questions found</p>
                 </div>
               )}
             </div>
           </div>
         ) : (
-          /* Detailed Challenge Blog-Style View */
+          /* Detailed Challenge Workspace Layout */
           <div className="space-y-8 animate-fade-in">
             {/* Header info */}
             <div className="border-b border-zinc-800 pb-6">
@@ -232,7 +432,7 @@ const LeetCodePOTD = () => {
                 <span className="text-[10px] border border-zinc-700 px-2 py-0.5 rounded text-zinc-300 uppercase">
                   {selectedChallenge.difficulty}
                 </span>
-                <span className="text-[10px] bg-zinc-905 border border-zinc-850 px-2.5 py-0.5 rounded text-zinc-400 uppercase">
+                <span className="text-[10px] bg-zinc-900 border border-zinc-800 px-2.5 py-0.5 rounded text-zinc-400 uppercase">
                   {selectedChallenge.platform}
                 </span>
               </div>
@@ -253,86 +453,98 @@ const LeetCodePOTD = () => {
               </div>
             </div>
 
-            {/* Markdown Body Content with Custom Monochrome Styles */}
-            <div className="prose prose-invert max-w-none text-zinc-300 leading-relaxed font-light text-sm
-              prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight
-              prose-h2:text-white prose-h2:text-lg prose-h2:uppercase prose-h2:tracking-wider prose-h2:border-l-2 prose-h2:border-l-white prose-h2:pl-3 prose-h2:mt-12 prose-h2:mb-4
-              prose-h3:text-zinc-400 prose-h3:text-xs prose-h3:uppercase prose-h3:tracking-widest prose-h3:mt-8 prose-h3:mb-3
-              prose-p:mb-6 prose-p:text-zinc-300 prose-p:leading-relaxed
-              prose-ul:list-disc prose-ul:pl-5 prose-ul:mb-6 prose-ul:space-y-2
-              prose-ol:list-decimal prose-ol:pl-5 prose-ol:mb-6 prose-ol:space-y-2
-              prose-li:text-zinc-300
-              prose-hr:border-t prose-hr:border-zinc-850 prose-hr:my-8
-              prose-blockquote:border-l-2 prose-blockquote:border-l-white prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-zinc-400 prose-blockquote:my-6
-              ">
+            {/* Interactive Workspace Navigation Tabs */}
+            <div className="flex border-b border-zinc-800 overflow-x-auto pb-px gap-1">
+              {[
+                { id: 'description', label: '1. Description' },
+                { id: 'walkthrough', label: '2. Walkthrough' },
+                { id: 'brute_force', label: '3. Brute Force' },
+                { id: 'optimized', label: '4. Optimization' },
+                { id: 'code', label: '5. Solutions' },
+                { id: 'quiz', label: '6. Quiz & Revision' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveDetailTab(tab.id);
+                    trackEvent('click', 'leetcode_potd_tab', tab.id);
+                  }}
+                  className={`py-3 px-5 text-xs font-bold uppercase tracking-wider border-b-2 whitespace-nowrap transition ${
+                    activeDetailTab === tab.id
+                      ? 'border-white text-white bg-zinc-950/20 font-black'
+                      : 'border-transparent text-zinc-500 hover:text-zinc-300 hover:border-zinc-800'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab content panel */}
+            <div className="relative">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw]}
-                components={{
-                  table: ({ children }) => (
-                    <div className="my-6 overflow-x-auto border border-zinc-800 rounded-lg">
-                      <table className="w-full text-left border-collapse font-mono text-xs">
-                        {children}
-                      </table>
-                    </div>
-                  ),
-                  thead: ({ children }) => (
-                    <thead className="bg-zinc-900/50 border-b border-zinc-800 text-zinc-400 font-bold uppercase tracking-wider">
-                      {children}
-                    </thead>
-                  ),
-                  tbody: ({ children }) => (
-                    <tbody className="divide-y divide-zinc-900">
-                      {children}
-                    </tbody>
-                  ),
-                  tr: ({ children }) => (
-                    <tr className="hover:bg-zinc-900/20 transition-colors">
-                      {children}
-                    </tr>
-                  ),
-                  th: ({ children }) => (
-                    <th className="px-4 py-3 border-r border-zinc-900 last:border-r-0">
-                      {children}
-                    </th>
-                  ),
-                  td: ({ children }) => (
-                    <td className="px-4 py-3 text-zinc-300 border-r border-zinc-900 last:border-r-0">
-                      {children}
-                    </td>
-                  ),
-                  pre: ({ children }) => <>{children}</>,
-                  code: ({ node, inline, className, children, ...props }) => {
-                    const match = /language-(\w+)/.exec(className || '');
-                    const langName = match ? match[1] : '';
-                    return !inline && match ? (
-                      <div className="relative border border-zinc-800 rounded-lg overflow-hidden my-6 bg-zinc-950">
-                        <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-900 bg-zinc-900/40">
-                          <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-400 font-mono">{langName}</span>
-                          <CopyButton text={String(children).replace(/\n$/, '')} />
-                        </div>
-                        <pre className="p-4 overflow-x-auto text-zinc-300 font-mono text-xs leading-relaxed">
-                          <code className={className} {...props}>
-                            {children}
-                          </code>
-                        </pre>
-                      </div>
-                    ) : (
-                      <code className="bg-zinc-900 px-1.5 py-0.5 rounded text-white font-mono text-xs border border-zinc-850" {...props}>
-                        {children}
-                      </code>
-                    );
-                  }
-                }}
+                components={markdownComponents}
               >
-                {selectedChallenge.content}
+                {activeDetailTab === 'code' ? '### Coding Workspace\n' : ''}
+              </ReactMarkdown>
+
+              {/* IDE Code Editor integration for solutions tab */}
+              {activeDetailTab === 'code' && extractedCode && (
+                <div className="mb-8">
+                  {/* Language selection toggles - Only render toggle if both languages are present */}
+                  {extractedCode.java && extractedCode.javascript && (
+                    <div className="flex border border-zinc-800 p-1 bg-zinc-950 rounded-lg max-w-[200px] mb-4">
+                      {['java', 'javascript'].map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => {
+                            setActiveCodeLang(lang);
+                            trackEvent('click', 'leetcode_potd_lang', lang);
+                          }}
+                          className={`flex-1 py-1 px-3 text-[10px] font-bold uppercase tracking-wider rounded transition ${
+                            activeCodeLang === lang 
+                              ? 'bg-white text-black font-black' 
+                              : 'text-zinc-500 hover:text-white'
+                          }`}
+                        >
+                          {lang === 'javascript' ? 'JS' : 'Java'}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Render the code editor component for whichever language is currently set */}
+                  {(activeCodeLang === 'java' && extractedCode.java) && (
+                    <CodeEditor 
+                      code={extractedCode.java} 
+                      language="Java" 
+                    />
+                  )}
+                  {(activeCodeLang === 'javascript' && extractedCode.javascript) && (
+                    <CodeEditor 
+                      code={extractedCode.javascript} 
+                      language="JavaScript" 
+                    />
+                  )}
+                </div>
+              )}
+
+              {/* Rest of the Markdown content for the tab */}
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
+                components={markdownComponents}
+              >
+                {parsedGroups[activeDetailTab]?.map(sec => `## ${sec.title}\n${sec.content}`).join('\n\n') || ''}
               </ReactMarkdown>
             </div>
           </div>
         )}
 
         {/* Footer link back to home */}
-        <div className="mt-16 text-center border-t border-zinc-850 pt-10">
+        <div className="mt-16 text-center border-t border-zinc-855 pt-10">
           <Link
             to="/"
             onClick={() => trackEvent('click', 'leetcode_potd_page', 'back_home')}
