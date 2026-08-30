@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2091. Removing Minimum and Maximum From Array Solution | Mukesh Pal LeetCode POTD</title>
+  <meta name="description" content="Find the minimum number of deletions from the front or back of an array to remove both the minimum and maximum elements." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mukprabhakar.in/leetcode-potd/removing-minimum-and-maximum-from-array" />
+  
+  <!-- SPA redirect decoder for GitHub Pages -->
+  <script>window.location.href = '/?/leetcode-potd/removing-minimum-and-maximum-from-array';</script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem; border-bottom: 1px solid #27272a;">
+    <p><a href="/leetcode-potd">← Back to LeetCode POTD</a> | <a href="/">Portfolio Home</a></p>
+  </header>
+
+  <article style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.2;">2091. Removing Minimum and Maximum From Array</h1>
+      <p style="color: #a1a1aa; font-size: 0.95rem; margin-top: 0;">
+        Difficulty: <strong>Medium</strong> | Published on <strong>2026-08-30</strong>
+      </p>
+    </header>
+
+    <div style="font-size: 1.1rem; line-height: 1.8; color: #d4d4d8;">
+      <h1 style="color: #10b981; margin-top: 2.5rem;">2091. Removing Minimum and Maximum From Array</h1>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's teach this one from absolute zero, same structure as before.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">1. Problem in Very Simple Language</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You have a list of numbers, all different from each other (no duplicates).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Somewhere in this list is the <strong>smallest</strong> number, and somewhere else is the <strong>largest</strong> number.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You want to get rid of <em>both</em> of these two special numbers. But you're only allowed to remove numbers in one of two ways:
+<ul style="line-height: 1.7; color: #d4d4d8; padding-left: 1.5rem;"><li>Remove from the <strong>front</strong> (delete the leftmost remaining number), or</li>
+<li>Remove from the <strong>back</strong> (delete the rightmost remaining number).</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Each single removal (front or back) counts as <strong>one deletion</strong>, and it also removes whatever number happens to be sitting at that end right now — even ordinary numbers you don't care about get deleted along the way if they're \"in front of\" your target.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Your goal: find the <strong>smallest total number of deletions</strong> needed so that, by the time you're done, both the minimum and the maximum values have been removed (it's fine if other numbers get removed too, as a side effect).
+<li><strong>What's given:</strong> an array of distinct integers.</li>
+<li><strong>What to find:</strong> the position of the smallest and largest values, and the cheapest way to clear both of them out using only front/back deletions.</li>
+<li><strong>What to return:</strong> the minimum number of deletions.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">2. Real-Life Analogy</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine a line of people waiting at a bus stop, standing in a single row. Two particular people in this row are \"VIPs\" you need to send away — one is the shortest person, one is the tallest person. But there's a rule: you can only ask people to leave from the <strong>front of the line</strong> or the <strong>back of the line</strong>, one at a time — you can't just pluck someone out of the middle.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">If both VIPs happen to be standing near the front, you only need a few \"front\" removals. If one VIP is near the front and the other near the back, you might get away with removing a few from each end. If both VIPs are somewhere in the middle-ish area, you have to decide: is it cheaper to clear everyone from the front up through both VIPs, clear everyone from the back up through both, or clear one VIP from the front and the other from the back (leaving the middle-most untouched people alone)?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">3. Important Programming Concepts I Need First</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Array</h3>
+<li><strong>Concept:</strong> A numbered list of values, positions (called \"indices\") starting at 0.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums = [2,10,7,5,4,1,8,6]</code> — position 0 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>, position 5 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>.</li>
+<li><strong>Why we need it:</strong> Our whole input is an array, and positions (indices) are the key thing we're reasoning about — not the values themselves, but <em>where</em> they sit.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Variable</h3>
+<li><strong>Concept:</strong> A named \"box\" that stores a single value you can use and update later.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int minIndex = 5;</code> stores the number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code> in a box named <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minIndex</code>.</li>
+<li><strong>Why we need it:</strong> We need to remember <em>where</em> the minimum value and the maximum value are located.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Loop</h3>
+<li><strong>Concept:</strong> A way to repeat an action for each item in a list automatically.</li>
+<li><strong>Example:</strong> \"Go through every position in the array, checking if this is a new smallest or largest value seen so far.\"</li>
+<li><strong>Why we need it:</strong> To find the minimum and maximum values' positions, we scan through the whole array once.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">If/else</h3>
+<li><strong>Concept:</strong> Lets the program make decisions — \"if this condition is true, do this; otherwise do something else.\"</li>
+<li><strong>Example:</strong> \"If the current number is smaller than the smallest one seen so far, update our record.\"</li>
+<li><strong>Why we need it:</strong> Finding min/max, and later comparing our 3 possible removal strategies, both require decision-making.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Function / Method</h3>
+<li><strong>Concept:</strong> A named, reusable block of code that performs a specific task and can be called by name.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Math.min(a, b)</code> is a built-in function that returns the smaller of two numbers.</li>
+<li><strong>Why we need it:</strong> We'll use <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Math.min</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Math.max</code> to simplify comparing our final strategies.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Index (position) vs Value — an important distinction</h3>
+<li><strong>Concept:</strong> The <em>value</em> is the actual number stored (like <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code>), while the <em>index</em> is <em>where</em> it sits in the array (like position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>). These are two completely different things, and this problem cares almost entirely about <strong>indices</strong>, not values.</li>
+<li><strong>Why we need it:</strong> A common beginner trap in this problem is accidentally reasoning about the <em>values</em> of the min/max (like \"10 is big, so...\") when really only their <em>positions</em> in the array matter for counting deletions.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Time Complexity</h3>
+We'll use this to confirm our solution is efficient enough for arrays of length up to 100,000.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">4. Understand the Input</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Take Example 1:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">nums = [2, 10, 7, 5, 4, 1, 8, 6]</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's list out each position and value:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| Value | 2 | 10 | 7 | 5 | 4 | 1 | 8 | 6 |
+<li>The <strong>minimum</strong> value in this array is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>, and it sits at <strong>index 5</strong>.</li>
+<li>The <strong>maximum</strong> value in this array is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code>, and it sits at <strong>index 1</strong>.</li>
+<li>We are looking for: the fewest total front/back deletions so that both index 5's value and index 1's value get removed.</li>
+<li>Why is it important that the minimum is at index 5 (near the back-ish/middle) while the maximum is at index 1 (near the front)? Because their <em>positions</em>, not their actual values (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code>), are what determines how many deletions each strategy costs.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">5. Understand the Output</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>
+<li>The explanation removes <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> elements from the front (this removes index 0 and index 1 — and index 1 is exactly where our maximum, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code>, lives!) and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> elements from the back (this removes indices 7, 6, 5 — and index 5 is exactly where our minimum, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>, lives!).</li>
+<li>Total deletions: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2 + 3 = 5</code>.</li>
+<li>Why is this the best? Because the minimum (index 5) and maximum (index 1) are somewhat spread apart — one near the front, one more towards the back — so a mixed \"some from front, some from back\" strategy turns out cheapest, compared to clearing everything from just one side.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">6. Solve the Example Manually</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's solve Example 1 step by step, exactly as a human would think, without code.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 1: Find the index of the minimum and the index of the maximum.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Scanning through <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[2, 10, 7, 5, 4, 1, 8, 6]</code>:
+<li>Smallest value found: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>, at index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>.</li>
+<li>Largest value found: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code>, at index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 2: Figure out the smaller and larger of these two indices</strong>, since it doesn't matter <em>which one</em> (min or max) is on the left — what matters is their positions relative to each other.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Here, the two indices are <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>. The smaller one is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> (let's call it <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code>), the larger one is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code> (let's call it <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 3: There are exactly 3 possible strategies. Let's compute the cost of each one, using <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 8</code> (array length).</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Strategy | How it works | Cost formula | Calculation | Result |
+|---|---|---|---|---|
+| A: Remove both from the front | Delete everything from index 0 up through <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code> (the larger index) | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right + 1</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 + 1</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">6</code> |
+| B: Remove both from the back | Delete everything from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> (the smaller index) up through the end | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n - left</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">8 - 1</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">7</code> |
+| C: Remove one from front, one from back | Delete everything from index 0 up through <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code>, PLUS everything from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code> to the end | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(left + 1) + (n - right)</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1+1) + (8-5)</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2 + 3 = 5</code> |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 4: Take the minimum of these three strategy costs.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">min(6, 7, 5) = 5</code> ✔️ matches the expected output!</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">7. Think Like a Programmer</h2>
+<li><strong>What do I know?</strong> The positions of the minimum and maximum values.</li>
+<li><strong>What do I need to find?</strong> The cheapest way to guarantee both get removed, using only front or back deletions.</li>
+<li><strong>What can I try?</strong> Since we can only chip away from the two ends, and we need to reach <em>both</em> special positions, there are really only a few fundamentally different \"shapes\" the deletions can take: peel entirely from the front until we've passed both targets, peel entirely from the back until we've passed both targets, or peel some from the front (covering whichever target is closer to the front) and some from the back (covering whichever target is closer to the back).</li>
+<li><strong>What happens if I try every possibility?</strong> Actually, in this problem, there genuinely are only <strong>3</strong> meaningful possibilities total — not an exponential explosion — because once you know the two target positions, any front/back deletion strategy that successfully removes both must fit one of these 3 shapes. So \"try every possibility\" is actually already cheap here!</li>
+<li><strong>Can I make it faster?</strong> It's already about as fast as possible — we just need one pass to find min/max positions, then a constant amount of arithmetic.</li>
+<li><strong>What information should I remember?</strong> Just two numbers: the index of the minimum, and the index of the maximum.</li>
+<li><strong>What pattern do I notice?</strong> Whichever of the two indices is smaller, calling it <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code>, and whichever is larger, calling it <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>, all 3 strategies can be expressed purely in terms of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>, and the array length <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code>.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">8. Start With the Brute Force Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Interestingly, for this particular problem, the \"brute force\" and the \"optimal\" solution are almost the same thing, because the number of genuinely different strategies is fixed at 3, regardless of array size. Let's still walk through it in the spirit of \"start simple.\"</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Brute force idea:</strong> Find where the min and max are. Then directly compute the cost of each of the 3 removal strategies (front-only, back-only, mixed), and return the smallest of the three.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why it works:</strong> Any way of clearing both endpoints using only front/back deletions must end up looking like one of these 3 shapes — you can't remove both without either (a) your front-cursor passing both, (b) your back-cursor passing both, or (c) each cursor passing exactly one.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why it's correct:</strong> There's no 4th shape — if front-cursor passes only one target and back-cursor passes zero, the other target never gets removed, which fails the requirement.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Time complexity:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> — one pass to find min/max positions, then constant-time arithmetic.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Space complexity:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code> — we only store a couple of index variables.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Since actually writing \"keep swapping while it helps\" correctly is tricky and slow, let's skip straight past this shaky brute force and go directly to reasoning about <em>structure</em> (Section 7's insight), which is really the natural next step for this problem. (Unlike Two Sum-style problems, here the \"obvious\" brute force isn't even clearly correct without a lot of extra care — so the real lesson is: recognize the connected-components structure early.)</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">9. Why Is a More Naive Idea (Simulating Deletions) Not Ideal?</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You might be tempted to literally <em>simulate</em> removing elements one at a time from either end, trying every possible combination of \"how many from front, how many from back\" and checking if both targets got removed. If you tried <em>all</em> combinations of front-count and back-count (from 0 up to n each), that's up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n × n</code> combinations to check — for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 100,000</code>, that's 10 billion checks, way too slow. Realizing that there are really only <strong>3 meaningful shapes</strong> (not <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n²</code> shapes) is the key simplification that avoids this slowdown entirely.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">11. Find the Better Approach</h2>
+<blockquote style="border-left: 4px solid #10b981; padding-left: 1rem; color: #a1a1aa; font-style: italic; margin: 1.5rem 0;">"Can we avoid doing unnecessary work?"</blockquote>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">We already avoided it, by recognizing there are only 3 possible \"shapes\" of a valid solution, rather than trying every combination of front-count and back-count.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Naive idea:
+Try every combination of (deletions from front, deletions from back)
+        ↓
+O(n²) combinations — too slow
+        ↓
+Realize: only 3 meaningful strategies exist —
+front-only, back-only, or split (front covers the earlier target, back covers the later one)
+        ↓
+Just compute all 3 directly using left/right index math
+        ↓
+O(n) solution (dominated by the single pass to find min/max)</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⭐ Key Insight</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Before the insight</h3>
+It might feel like there are many ways to mix front and back deletions, and we'd need to search through combinations to find the cheapest.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The problem</h3>
+Searching combinations directly would be slow, and it's not obvious at first that the search space is actually tiny.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The insight</h3>
+<strong>Only the <em>positions</em> (indices) of the minimum and maximum matter — not their values — and any valid removal strategy must take one of exactly 3 shapes:</strong> clear everything up to and including the later-positioned target from the front, clear everything from and including the earlier-positioned target from the back, or split the work — clear the front up through the earlier target, and clear the back up through the later target. Because clearing an \"earlier\" target automatically clears anything before it too (front deletions happen in order), you never need to consider more complicated mixed strategies.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">After the insight</h3>
+The whole problem becomes: find two indices, sort them into <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>, and plug them into 3 simple formulas. No simulation, no combination-searching — just direct arithmetic.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">13. Dry Run the Optimized Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's dry run <strong>Example 2</strong>.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">nums = [0, -4, 19, 1, 8, -2, -3, 5]</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| Value | 0 | -4 | 19 | 1 | 8 | -2 | -3 | 5 |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 1: Scan to find min and max positions.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| i | nums[i] | New min? (minIndex) | New max? (maxIndex) |
+|---|---|---|---|
+| 0 (start) | 0 | minIndex=0 | maxIndex=0 |
+| 1 | -4 | -4 < 0 → minIndex=1 | -4 not > 0 → maxIndex=0 |
+| 2 | 19 | 19 not < -4 → minIndex=1 | 19 > 0 → maxIndex=2 |
+| 3 | 1 | 1 not < -4 → minIndex=1 | 1 not > 19 → maxIndex=2 |
+| 4 | 8 | 8 not < -4 → minIndex=1 | 8 not > 19 → maxIndex=2 |
+| 5 | -2 | -2 not < -4 → minIndex=1 | -2 not > 19 → maxIndex=2 |
+| 6 | -3 | -3 not < -4 → minIndex=1 | -3 not > 19 → maxIndex=2 |
+| 7 | 5 | 5 not < -4 → minIndex=1 | 5 not > 19 → maxIndex=2 |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Final: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minIndex = 1</code> (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-4</code>), <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxIndex = 2</code> (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">19</code>).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 2: Compute left/right.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left = min(1, 2) = 1</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right = max(1, 2) = 2</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 3: Compute all three strategies.</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 8</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Strategy | Formula | Calculation | Result |
+|---|---|---|---|
+| Front only | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right + 1</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2 + 1</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> |
+| Back only | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n - left</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">8 - 1</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">7</code> |
+| Mixed | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(left+1) + (n-right)</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1+1) + (8-2)</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2 + 6 = 8</code> |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 4: Take the minimum.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">min(3, 7, 8) = 3</code> ✔️ matches the expected output!</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Notice here that \"front only\" wins, because both the min and max are conveniently located very close together near the front (indices 1 and 2).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">14. Optimized Code</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">class Solution {
+    public int minimumDeletions(int[] nums) {
+        int n = nums.length;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int minIndex = 0;
+        int maxIndex = 0;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (int i = 1; i &lt; n; i++) {
+            if (nums[i] &lt; nums[minIndex]) {
+                minIndex = i;
+            }
+            if (nums[i] &gt; nums[maxIndex]) {
+                maxIndex = i;
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int left = Math.min(minIndex, maxIndex);
+        int right = Math.max(minIndex, maxIndex);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int removeFromFrontOnly = right + 1;
+        int removeFromBackOnly = n - left;
+        int removeFromBothEnds = (left + 1) + (n - right);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return Math.min(removeFromFrontOnly, Math.min(removeFromBackOnly, removeFromBothEnds));
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">class Solution {
+    minimumDeletions(nums) {
+        const n = nums.length;
+        if (n === 1) return 1;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">let minIndex = 0;
+        let maxIndex = 0;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (let i = 1; i &lt; n; i++) {
+            if (nums[i] &lt; nums[minIndex]) {
+                minIndex = i;
+            }
+            if (nums[i] &gt; nums[maxIndex]) {
+                maxIndex = i;
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const left = Math.min(minIndex, maxIndex);
+        const right = Math.max(minIndex, maxIndex);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const removeFromFrontOnly = right + 1;
+        const removeFromBackOnly = n - left;
+        const removeFromBothEnds = (left + 1) + (n - right);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return Math.min(removeFromFrontOnly, removeFromBackOnly, removeFromBothEnds);
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">15. Explain Optimized Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int n = nums.length;</code> — get the total count of elements; we need this for the formulas involving \"distance from the end.\"</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int minIndex = 0; int maxIndex = 0;</code> — start our search assuming index 0 holds both records, since it's the only data point we have before scanning.</li>
+<li>The <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for</code> loop — visits each remaining index once, updating our best-so-far records whenever we find something more extreme.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> / <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code> — normalize our two found positions into \"whichever comes first\" and \"whichever comes second,\" since the formulas only care about relative order, not which one was technically the min vs the max.</li>
+<li>The three formula lines — directly compute the cost of each of the 3 valid strategies, using simple index arithmetic (explained in detail in Section 9).</li>
+<li>The final <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return Math.min(...)</code> — picks the cheapest of the three.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">16. Test With Multiple Examples</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 1 — Normal Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums = [2,10,7,5,4,1,8,6]</code> → dry-ran manually in Section 6 → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 2 — Different Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums = [0,-4,19,1,8,-2,-3,5]</code> → dry-ran in Section 13 → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 3 — Edge Case (single element)</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums = [101]</code>. Here <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 1</code>. Scanning: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minIndex = 0</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxIndex = 0</code> (the loop from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i=1</code> to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i<1</code> never runs, since there's nothing to compare). <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left = 0</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right = 0</code>.
+<li>Front only: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right + 1 = 1</code></li>
+<li>Back only: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n - left = 1 - 0 = 1</code></li>
+<li>Mixed: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(left+1) + (n-right) = (0+1) + (1-0) = 1 + 1 = 2</code></li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">min(1, 1, 2) = 1</code> ✔️ — makes perfect sense: the single element is both the min and the max, and removing it (either \"from the front\" or \"from the back,\" they're the same action here) takes exactly 1 deletion.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">17. Edge Cases</h2>
+<li><strong>Array has exactly one element</strong> → that element is simultaneously the min and max; answer is always <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> (see Example 3 above).</li>
+<li><strong>Minimum and maximum are right next to each other</strong> (adjacent indices) → the \"front only\" or \"back only\" strategy is often (but not always) very cheap, since both targets get cleared together quickly from whichever side is closer.</li>
+<li><strong>Minimum is at index 0, maximum is at index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n-1</code> (or vice versa)</strong> → removing from both ends will each need to clear the <em>entire</em> array in the worst arrangement, but the \"front only\" or \"back only\" strategy will cost exactly <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> in that case, and the mixed strategy will cost just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1 + 1 = 2</code> (best case!) — showing why checking all 3 strategies matters, since which one wins really depends on the arrangement.</li>
+<li><strong>Negative numbers involved</strong> → doesn't change anything about the logic, since we're comparing values only to find <em>positions</em> of min/max — Java's <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;"><</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">></code> work correctly on negative numbers just like positive ones.</li>
+<li><strong>Minimum and maximum happen to be the very same position</strong> — impossible here, since the problem guarantees all values are <strong>distinct</strong>, so the smallest and largest values are always two genuinely different elements (unless the array has only 1 element, where trivially min=max=that one element).</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">18. Time Complexity</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>What is time complexity?</strong> A way to describe how the amount of work grows as the input size grows, focusing on the general trend rather than exact timing — like noting that \"checking twice as many mailboxes takes roughly twice as long,\" regardless of how fast you personally check each one.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Finding min/max positions: O(n)   — one single pass through the array
+Computing the 3 formulas:  O(1)   — just a few arithmetic operations, doesn&#039;t grow with n
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Overall: O(n)</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why:</strong> We only ever look at each element once, to compare it against our current best-known min and max positions. After that single pass, everything else is just plain arithmetic on two numbers (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>) — no further looping needed at all. This is about as fast as any algorithm could possibly be for this problem, since you can't even know where the min/max are without looking at every element at least once.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">19. Space Complexity</h2>
+<li>We only ever store a small, fixed number of extra variables: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minIndex</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxIndex</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>, and the three strategy costs.</li>
+<li>None of these grow as the array grows — we never create any new arrays, lists, or other structures that scale with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code>.</li></ul>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">So the extra space used is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code> — constant, regardless of how large the input array is.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">20. Common Mistakes Beginners Make</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ \"I should look at the <em>values</em> of the min and max (like comparing <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code>) to figure out the cost.\"
+✅ Only the <strong>indices</strong> (positions) of the min and max matter for counting deletions — the actual values themselves are irrelevant once we've located them.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ \"I only need to consider removing from the front, or removing from the back — not both together.\"
+✅ There's a third essential strategy: removing some elements from the front AND some from the back, which is often the cheapest option (as seen in Example 1). Missing this case gives wrong answers.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ \"I need to figure out <em>which</em> one (min or max) is more to the left, and treat them differently based on that.\"
+✅ It doesn't matter which one is the min and which is the max — only their relative positions matter. That's exactly why we compute <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left = Math.min(minIndex, maxIndex)</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right = Math.max(minIndex, maxIndex)</code>: this normalizes away the \"which one is which\" question entirely.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ \"The mixed strategy cost should be <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left + right</code> or some other combination without the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">+1</code> and using <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n -</code>.\"
+✅ Be careful with off-by-one counting: removing \"through index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code>, inclusive,\" from the front costs <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left + 1</code> (not just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code>), because index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> is the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(left+1)</code>-th element when counting from 1. Similarly, removing from index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code> to the end costs <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n - right</code> elements (not <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n - right - 1</code>), since there are exactly <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n - right</code> elements from index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code> to index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n-1</code> inclusive.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">21. How to Recognize This Pattern in Other Problems</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Watch for these signal phrases:</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">&quot;Remove from the front or back only&quot;
+&quot;Minimum number of deletions/operations from either end&quot;
+&quot;Positions&quot; or &quot;indices&quot; mattering more than values
+&quot;There are only a few possible final configurations&quot;</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Whenever a problem restricts you to only touching the two <em>ends</em> of a sequence, think: <strong>the number of fundamentally different strategies is often small and fixed (not exponential) — try to enumerate them directly instead of simulating.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">22. Interview Thinking</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">1. Understand the input    → array of distinct integers
+2. Understand the output   → minimum front/back deletions to remove both min and max
+3. Try brute force         → realize the &quot;brute force&quot; here is actually just checking 3 fixed strategies
+4. Find what makes it slow → nothing is really slow here once you spot the 3-strategy structure;
+                              the risk is over-complicating it into an O(n²) combination search
+5. Identify repeated work  → none needed; this is a &quot;find 2 positions, do fixed math&quot; problem
+6. What can be stored?     → just the two positions (min&#039;s index and max&#039;s index)
+7. Optimize                → normalize into left/right, apply 3 formulas, take the minimum
+8. Check edge cases        → single-element array, min/max adjacent, min/max at opposite ends
+9. Analyze complexity      → O(n) time, O(1) space</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Applied here: this is a great example of a problem where recognizing \"there are only 3 possible shapes\" immediately gives you the optimal solution — no fancy data structure needed.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">23. Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Try these before checking the answers:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. If the minimum is at index 3 and the maximum is at index 3 as well... wait, could that ever actually happen in this problem? Why or why not?
+2. If <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minIndex = 6</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxIndex = 2</code>, what are <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>?
+3. For an array of length <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 10</code>, if <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left = 4</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right = 4</code> (same position — hypothetically), what would each of the 3 strategy costs be? (This helps sanity-check the formulas even though <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left == right</code> can't truly happen here, since min ≠ max means they're always different indices — think about <em>why</em> the formulas still \"make sense\" mathematically.)</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><br></p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">Answer to Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. No — since all values in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums</code> are guaranteed distinct, the minimum and maximum are always two different values, so they must live at two different indices. They can never be the exact same position.
+2. <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left = Math.min(6, 2) = 2</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right = Math.max(6, 2) = 6</code>.
+3. Front only: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right + 1 = 5</code>. Back only: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n - left = 10 - 4 = 6</code>. Mixed: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(left+1) + (n-right) = (4+1) + (10-4) = 5 + 6 = 11</code>. (This hypothetical case shows the mixed formula \"double counts\" the shared position if <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> equalled <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>, which is exactly why the problem's guarantee of distinct values — and therefore genuinely different indices — matters for the formula to make sense without extra adjustment.)</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">24. Final Revision</h2>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🧠 Problem in One Sentence</h2>
+Find the fewest front/back deletions needed to remove both the array's minimum and maximum values.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🔑 Main Idea</h2>
+Only the positions of the min and max matter; sort those two positions into <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>, then the answer is the minimum of exactly 3 possible strategies: front-only, back-only, or split between both ends.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⚙️ Algorithm</h2>
+1. Scan the array once to find the index of the minimum value and the index of the maximum value.
+2. Set <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> = the smaller of these two indices, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code> = the larger.
+3. Compute: front-only cost = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right + 1</code>, back-only cost = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n - left</code>, mixed cost = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(left + 1) + (n - right)</code>.
+4. Return the smallest of these three values.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⏱️ Complexity</h2>
+Time: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>
+Space: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🎯 Pattern to Remember</h2>
+\"Only touch the two ends\" problems often reduce to a small, fixed number of enumerable strategies based purely on key positions/indices — no need to simulate deletions one by one.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">25. Beginner Quiz</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong>(Understanding)</strong> Why does it not matter whether the minimum comes before the maximum in the array, or the other way around?
+2. <strong>(Basic concept)</strong> What is the difference between an element's <em>value</em> and its <em>index</em>, and which one actually matters for this problem's cost calculation?
+3. <strong>(Logic)</strong> Why are there only 3 possible strategies for removing both the min and max, instead of many more?
+4. <strong>(Dry run)</strong> For <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums = [3, 1, 2, 5, 4]</code>, find the min and max positions, compute <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>, and calculate all 3 strategy costs. What's the final answer?
+5. <strong>(Complexity/pattern)</strong> Why is this solution <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> and not, say, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n log n)</code> or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code>, and what key restriction in the problem statement (about <em>how</em> you're allowed to remove elements) is the clue that tells you to think about \"positions from the ends\" rather than searching all subsets?</p>
+    </div>
+  </article>
+
+  <footer style="max-width: 800px; margin: 4rem auto 0; padding: 2rem 1rem; border-top: 1px solid #27272a; text-align: center; color: #71717a; font-size: 0.9rem;">
+    <p>&copy; 2026 Mukesh Pal. All rights reserved. Full-Stack Developer & Co-Founder at CodeByte.</p>
+  </footer>
+</body>
+</html>
