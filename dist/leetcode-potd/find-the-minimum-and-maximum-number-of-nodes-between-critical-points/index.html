@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2058. Find the Minimum and Maximum Number of Nodes Between Critical Points Solution | Mukesh Pal LeetCode POTD</title>
+  <meta name="description" content="Find the minimum and maximum distance between critical points (local maxima/minima) in a linked list in a single pass." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mukprabhakar.in/leetcode-potd/find-the-minimum-and-maximum-number-of-nodes-between-critical-points" />
+  
+  <!-- SPA redirect decoder for GitHub Pages -->
+  <script>window.location.href = '/?/leetcode-potd/find-the-minimum-and-maximum-number-of-nodes-between-critical-points';</script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem; border-bottom: 1px solid #27272a;">
+    <p><a href="/leetcode-potd">← Back to LeetCode POTD</a> | <a href="/">Portfolio Home</a></p>
+  </header>
+
+  <article style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.2;">2058. Find the Minimum and Maximum Number of Nodes Between Critical Points</h1>
+      <p style="color: #a1a1aa; font-size: 0.95rem; margin-top: 0;">
+        Difficulty: <strong>Medium</strong> | Published on <strong>2026-08-31</strong>
+      </p>
+    </header>
+
+    <div style="font-size: 1.1rem; line-height: 1.8; color: #d4d4d8;">
+      <h1 style="color: #10b981; margin-top: 2.5rem;">2058. Find the Minimum and Maximum Number of Nodes Between Critical Points</h1>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's teach this from absolute zero, same structure as before.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">1. Problem in Very Simple Language</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You're given a <strong>linked list</strong> — a chain of nodes, where each node holds a number and points to the next node in the chain (we'll explain "linked list" fully in a moment).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Walking through this chain, some nodes are special. A node is called a <strong>critical point</strong> if it's either:
+<ul style="line-height: 1.7; color: #d4d4d8; padding-left: 1.5rem;"><li>a <strong>local maxima</strong> — its value is <em>strictly bigger</em> than both the node right before it AND the node right after it (like a little "peak"), or</li>
+<li>a <strong>local minima</strong> — its value is <em>strictly smaller</em> than both the node right before it AND the node right after it (like a little "valley").</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Important rule: the very <strong>first</strong> node and the very <strong>last</strong> node can <em>never</em> be critical points, because a first node has no "previous" node, and a last node has no "next" node — and you need both neighbors to even check.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Once you've found all the critical points (there could be zero, one, two, or many), you look at their <strong>positions</strong> (not their values — their positions/indices in the chain) and compute:
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code> = the smallest gap (in positions) between any two critical points.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxDistance</code> = the largest gap (in positions) between any two critical points.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">If there are fewer than 2 critical points total, you can't compute any distance, so you return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[-1, -1]</code>.
+<li><strong>What's given:</strong> the head (starting node) of a linked list.</li>
+<li><strong>What to find:</strong> all critical points' positions, then the smallest and largest gap between any two of them.</li>
+<li><strong>What to return:</strong> a 2-element array <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[minDistance, maxDistance]</code>.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">2. Real-Life Analogy</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine you're walking along a mountain trail, and at various points along the trail there are little signposts marking your <strong>distance from the start</strong> (like "3 km", "4 km", "5 km", ...). As you walk, the trail's <em>elevation</em> goes up and down. Some spots are exactly at the top of a little hill (higher than the ground just before and just after you) — those are "peaks." Some spots are exactly at the bottom of a little dip (lower than the ground just before and just after) — those are "valleys."</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Peaks and valleys are your "critical points." You want to know: among all these peaks and valleys, what's the <em>shortest</em> distance (in km, using those signposts) between any two of them, and what's the <em>longest</em> distance between any two of them? Note you're comparing <strong>signpost numbers</strong> (positions), not how high or low the ground was at each point.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">3. Important Programming Concepts I Need First</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Linked List</h3>
+<li><strong>Concept:</strong> A linked list is a chain of "nodes." Each node holds a value AND a pointer (a reference/arrow) to the <em>next</em> node in the chain. Unlike an array, you can't jump straight to "position 5" — you have to walk node by node, starting from the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">head</code> (the first node), following the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">next</code> pointers one at a time.</li>
+<li><strong>Simple Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">head → [3] → [1] → [4] → [1] → null</code>. Here, the node holding <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> points to the node holding <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>, which points to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4</code>, which points to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>, which points to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> (meaning "nothing after this, I'm the last one").</li>
+<li><strong>Why we need it:</strong> The input to this problem is a linked list, not a plain array, so we must walk through it using <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.next</code> instead of indexing with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[i]</code>.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Node (and its two parts)</h3>
+<li><strong>Concept:</strong> In Java, a node here is an object with two fields: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">val</code> (the number it stores) and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">next</code> (a reference to the next node, or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> if it's the last one).</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node.val</code> gives you the number; <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node.next</code> gives you the next node in the chain (or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code>).</li>
+<li><strong>Why we need it:</strong> We'll be constantly reading <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.val</code> to compare values, and following <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.next</code> to move forward.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Variable</h3>
+<li><strong>Concept:</strong> A named "box" to store a value for later use.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int prevVal = 3;</code> remembers "the previous node's value was 3."</li>
+<li><strong>Why we need it:</strong> As we walk the list, we need to remember "what was the previous node's value" and "what was the previous node's position," since we don't have array indexing to look backward.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Loop (specifically, a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while</code> loop)</h3>
+<li><strong>Concept:</strong> Repeats an action until some condition becomes false. A <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while</code> loop is especially natural for linked lists because we don't know the length in advance — we just keep going <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while (currentNode != null)</code>.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while (node != null) { ...; node = node.next; }</code> walks through every node exactly once.</li>
+<li><strong>Why we need it:</strong> We must walk the entire linked list from head to end, and a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while</code> loop (checking for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code>) is the standard way to do that.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">If/else</h3>
+<li><strong>Concept:</strong> Lets the program branch based on a condition.</li>
+<li><strong>Example:</strong> "If the current value is bigger than both neighbors, mark it as a local maxima."</li>
+<li><strong>Why we need it:</strong> Detecting whether a node is a critical point (and if so, whether it's a max or min) is fundamentally an if/else decision.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Index / Position tracking (manual, since linked lists have no built-in indexing)</h3>
+<li><strong>Concept:</strong> Since a linked list doesn't let you ask "what's at position 5?" directly, if we want to know <em>where</em> something is, we have to count it ourselves as we walk — using a variable that increases by 1 each step.</li>
+<li><strong>Why we need it:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxDistance</code> are computed using <strong>positions</strong>, so we must track "which position am I currently at?" manually with a counter variable.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Function / Method</h3>
+<li><strong>Concept:</strong> A reusable named block of code.</li>
+<li><strong>Why we need it:</strong> Not strictly required to introduce a new one here, but our solution itself is a method (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nodesBetweenCriticalPoints</code>) that we'll build step by step.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Array (for the final output)</h3>
+<li><strong>Concept:</strong> A small fixed list of values.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int[] result = new int[2];</code> creates a 2-box array; <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">result[0]</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">result[1]</code> are the two boxes.</li>
+<li><strong>Why we need it:</strong> Our answer must be returned as a 2-element array: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[minDistance, maxDistance]</code>.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Time Complexity</h3>
+We'll use this at the end to explain why our solution is fast enough for lists up to 100,000 nodes long.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">4. Understand the Input</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Take Example 2:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">head = [5, 3, 1, 2, 5, 1, 2]</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">This represents a linked list: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 → 3 → 1 → 2 → 5 → 1 → 2 → null</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's number the positions starting from 0, just like array indices, even though it's technically a linked list:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Position | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|---|
+| Value | 5 | 3 | 1 | 2 | 5 | 1 | 2 |
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">head</code> points to the very first node, whose value is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>.</li>
+<li>Each number is connected to the next by a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.next</code> pointer, ending in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> after the last node (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> at position 6).</li>
+<li>We are looking for: which positions are local maxima or minima, then the min/max distance between them.</li>
+<li>Why can't position 0 (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>) or position 6 (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>) ever be critical points? Because position 0 has no "previous" node, and position 6 has no "next" node — the rule explicitly requires both neighbors to exist.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">5. Understand the Output</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[1, 3]</code>
+<li>Walking through, we check every "middle" position (1 through 5, since 0 and 6 can't qualify):</li>
+<li>Position 1 (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>): previous is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>, next is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>. Is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> bigger than both? No (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3 < 5</code>). Is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> smaller than both? No (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3 > 1</code>). Not critical.</li>
+<li>Position 2 (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>): previous is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>, next is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>. Is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> smaller than both <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>? Yes! <strong>Local minima</strong> at position 2.</li>
+<li>Position 3 (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>): previous is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>, next is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>. Not bigger than both, not smaller than both. Not critical.</li>
+<li>Position 4 (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>): previous is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>, next is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>. Is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code> bigger than both <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>? Yes! <strong>Local maxima</strong> at position 4.</li>
+<li>Position 5 (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>): previous is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>, next is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>. Is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> smaller than both <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>? Yes! <strong>Local minima</strong> at position 5.</li>
+<li>So critical points are at positions <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[2, 4, 5]</code>.</li>
+<li>Gaps between consecutive critical points: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4 - 2 = 2</code>, and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 - 4 = 1</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code> = the smallest of all pairwise gaps = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> (between positions 4 and 5).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxDistance</code> = the gap between the very <strong>first</strong> and very <strong>last</strong> critical point = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 - 2 = 3</code> (between positions 2 and 5).</li>
+<li>Final answer: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[1, 3]</code> — matches!</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">6. Solve the Example Manually</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's carefully solve Example 2 by hand, walking node by node like a human (and like our code eventually will).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 → 3 → 1 → 2 → 5 → 1 → 2</code>, positions 0 through 6.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">We can only check a node for critical-point status once we know its previous value, its own value, and its next value. Let's walk through step by step, sliding a little 3-node window along the list:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Step | Position being checked | Prev value | Current value | Next value | Bigger than both? | Smaller than both? | Critical? |
+|---|---|---|---|---|---|---|---|
+| 1 | 1 | 5 | 3 | 1 | No | No | No |
+| 2 | 2 | 3 | 1 | 2 | No | Yes | <strong>Local minima</strong> |
+| 3 | 3 | 1 | 2 | 5 | No | No | No |
+| 4 | 4 | 2 | 5 | 1 | Yes | No | <strong>Local maxima</strong> |
+| 5 | 5 | 5 | 1 | 2 | No | Yes | <strong>Local minima</strong> |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">(We never check position 0 or position 6, since they lack a full previous/next pair.)</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Critical points found, in order: position 2, position 4, position 5.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Now let's track two things as we would while scanning left to right:
+<li>The position of the <strong>very first</strong> critical point we ever found (call it <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos</code>) — this only gets set once, and never changes after that.</li>
+<li>The position of the <strong>most recently seen</strong> critical point (call it <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prevCriticalPos</code>) — this updates every time we find a new one, and each time we update it, we can immediately check "how far is this one from the previous one?" to possibly update our running <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code>.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Critical point found at position | firstCriticalPos | prevCriticalPos (before this one) | Gap to prevCriticalPos | Running minDistance | 
+|---|---|---|---|---|
+| 2 | 2 (just set, first one!) | none yet | — | still infinity (nothing to compare yet) |
+| 4 | 2 (unchanged) | 2 | 4 - 2 = 2 | 2 |
+| 5 | 2 (unchanged) | 4 | 5 - 4 = 1 | min(2, 1) = 1 |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">After scanning everything:
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos = 2</code>, and the <strong>last</strong> critical point we found was at position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxDistance = lastCriticalPos - firstCriticalPos = 5 - 2 = 3</code> (this is always the gap between the very first and very last critical point — more on <em>why</em> in Section 7).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance = 1</code> (the smallest gap we ever saw between two <em>consecutive</em> critical points, tracked as we went).</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Final answer: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[1, 3]</code> ✔️ matches!</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">7. Think Like a Programmer</h2>
+<li><strong>What do I know?</strong> I can walk the list node by node, and at each node (except the first and last), I can check its previous, current, and next values.</li>
+<li><strong>What do I need to find?</strong> The smallest and largest gap between any two critical points' positions.</li>
+<li><strong>What can I try?</strong> The most direct idea: first collect <em>all</em> critical point positions into a list, then afterward, compare every pair of positions to find the smallest and largest gap.</li>
+<li><strong>What happens if I try every possibility?</strong> If there are <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code> critical points, comparing every pair takes about <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k × k</code> comparisons. In the worst case <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code> could be close to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n/2</code> (roughly half of all nodes could be peaks/valleys alternating), so this could be slow-ish, though not catastrophically slow. But we can do even better — we don't actually need to compare <em>every</em> pair.</li>
+<li><strong>Can I make it faster?</strong> Yes! Here's the key realization: <strong>the maximum distance is always simply the gap between the very first critical point and the very last critical point.</strong> Why? Because any two critical points that are <em>both</em> strictly between the first and last one will always have a <em>smaller</em> gap between them than the outermost pair does (since positions only increase as we walk forward, the first-to-last span is the biggest possible span you could ever measure). So for max distance, we don't need to compare all pairs at all — just remember the first and last critical positions.</li>
+<li>For <strong>minimum distance</strong>, on the other hand, the smallest gap is <em>always</em> between two <strong>consecutive</strong> critical points (right next to each other in our found-order), never between two that have another critical point in between them (since skipping over a middle one can only make the gap bigger, not smaller). So we only ever need to compare each critical point to the <em>previous</em> critical point we found — never to older ones further back.</li>
+<li><strong>What information should I remember?</strong> As we scan: the position of the first critical point ever found, the position of the most recently found critical point (to compute consecutive gaps), and running best values for min/max distance.</li>
+<li><strong>What pattern do I notice?</strong> We can find the entire answer in <strong>one single pass</strong> through the list, without ever storing all critical points in a separate list at all!</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">8. Start With the Brute Force Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Brute force idea:</strong> First, walk the entire list once and record the position of every critical point into a list (e.g., an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">ArrayList<Integer></code>). Then, use two nested loops to compare every pair of positions in that list, tracking the smallest and largest difference found.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why it works:</strong> By checking literally every pair, we're guaranteed to find the true minimum and maximum gap — no risk of missing anything.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why it's correct:</strong> Exhaustively comparing all pairs can never miss the actual smallest or largest gap, since every possible pair gets checked.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Time complexity:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> to walk the list and find critical points, plus <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(k²)</code> to compare all pairs, where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code> is the number of critical points found (and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code> can be up to roughly <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n/2</code>). So worst case, this is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Space complexity:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(k)</code> to store the list of critical point positions.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">import java.util.<em>;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">class Solution {
+    public int[] nodesBetweenCriticalPoints(ListNode head) {
+        List&lt;Integer&gt; criticalPositions = new ArrayList&lt;&gt;();</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">ListNode prev = head;
+        ListNode curr = head.next;
+        int position = 1;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Walk through, checking every &quot;middle&quot; node
+        while (curr != null &amp;&amp; curr.next != null) {
+            boolean isMax = curr.val &gt; prev.val &amp;&amp; curr.val &gt; curr.next.val;
+            boolean isMin = curr.val &lt; prev.val &amp;&amp; curr.val &lt; curr.next.val;
+            if (isMax || isMin) {
+                criticalPositions.add(position);
+            }
+            prev = curr;
+            curr = curr.next;
+            position++;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (criticalPositions.size() &lt; 2) {
+            return new int[]{-1, -1};
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int minDistance = Integer.MAX<em>VALUE;
+        int maxDistance = Integer.MIN</em>VALUE;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Compare every pair (brute force!)
+        for (int i = 0; i &lt; criticalPositions.size(); i++) {
+            for (int j = i + 1; j &lt; criticalPositions.size(); j++) {
+                int gap = criticalPositions.get(j) - criticalPositions.get(i);
+                minDistance = Math.min(minDistance, gap);
+                maxDistance = Math.max(maxDistance, gap);
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return new int[]{minDistance, maxDistance};
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">9. Explain the Brute Force Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">List<Integer> criticalPositions = new ArrayList<>();</code> — an empty, growable list where we'll collect the positions of every critical point we find.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">ListNode prev = head; ListNode curr = head.next;</code> — we set up two "pointers" (references): <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prev</code> starts at the first node, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> starts at the second node. This way, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> is always the node we're currently examining, and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prev</code> is always the node right before it.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int position = 1;</code> — since <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> starts at the </em>second<em> node (index 1, if we imagine array-style indexing), we initialize our position counter to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> to match.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while (curr != null && curr.next != null)</code> — we keep looping as long as <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> exists AND <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> has a next node — because without both a previous node (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prev</code>, guaranteed to exist here) and a next node (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr.next</code>), <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> can never be a critical point, so there's no point checking it.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">boolean isMax = curr.val > prev.val && curr.val > curr.next.val;</code> — checks: is the current node's value strictly bigger than </em>both<em> its previous and next neighbor's values? If so, it's a local maxima.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">boolean isMin = curr.val < prev.val && curr.val < curr.next.val;</code> — same idea, but checking for strictly smaller than both, meaning local minima.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (isMax || isMin) { criticalPositions.add(position); }</code> — if either condition is true, we record this position as a critical point.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prev = curr; curr = curr.next; position++;</code> — this is how we "slide the window" forward: what was <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> becomes the new <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prev</code>, we move <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> one step further using <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.next</code>, and we increment our manual position counter to match.</li>
+<li>After the loop, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">criticalPositions</code> holds every critical point's position, in increasing order (since we found them while walking left to right).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (criticalPositions.size() < 2) return new int[]{-1, -1};</code> — the problem says if there are fewer than 2 critical points, we can't compute any distance, so we return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[-1, -1]</code> immediately.</li>
+<li>The nested <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for</code> loops — <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> picks one critical position, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j</code> (starting right after <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>) picks another; together they examine every possible pair exactly once (never comparing something to itself, and never comparing the same pair twice).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int gap = criticalPositions.get(j) - criticalPositions.get(i);</code> — since our list is in increasing order and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j > i</code>, this gap is always positive.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance = Math.min(minDistance, gap); maxDistance = Math.max(maxDistance, gap);</code> — we keep running track of the smallest and largest gap seen across all pairs.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">10. Why Is the Brute Force Solution Not Ideal?</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine a linked list with 100,000 nodes, arranged so that roughly half of them (about 50,000) end up being critical points (values zig-zagging up and down the whole way, like <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1,3,1,3,1,3,...</code>). Comparing every pair among 50,000 critical points means roughly <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">50,000 × 50,000 / 2</code>, which is over a billion comparisons — way too slow for a single test case. We need a way to compute the answer using far fewer comparisons.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">11. Find the Better Approach</h2>
+<blockquote style="border-left: 4px solid #10b981; padding-left: 1rem; color: #a1a1aa; font-style: italic; margin: 1.5rem 0;">"Can we avoid doing unnecessary work?"</blockquote>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Yes — remember our two realizations from Section 7:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxDistance</code> only ever needs the FIRST and LAST critical point positions</strong> — nothing in between matters at all for computing it.
+2. <strong><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code> only ever needs to compare each critical point to the ONE right before it</strong> (the "previous" critical point found), never to any critical point further back.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Brute Force:
+Collect all critical positions
+        ↓
+Compare every pair → O(k²)
+        ↓
+Realize: max gap is always (last - first)
+        ↓
+Realize: min gap is always between two CONSECUTIVE critical points
+        ↓
+Track &quot;first found&quot; and &quot;most recently found&quot; as we scan
+        ↓
+One single pass, no pair-comparisons needed at all</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⭐ Key Insight</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Before the insight</h3>
+We were thinking we'd need to gather every critical point first, then go back and compare all of them against each other to find the best min/max gaps.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The problem</h3>
+Comparing all pairs is wasteful — most of that comparison work turns out to be completely unnecessary once we understand the structure of the positions.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The insight</h3>
+Since critical point positions only ever <strong>increase</strong> as we scan through the list (we find them in left-to-right order, never out of order), two facts become guaranteed:
+<li>The gap between the very first critical point found and the very last one found is <strong>always at least as large</strong> as the gap between any other two critical points — because any "inner" pair is, by definition, squeezed inside that outer span. So <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxDistance = lastCriticalPos - firstCriticalPos</code>, always, no comparison needed.</li>
+<li>The smallest possible gap between any two critical points must be between two that are <strong>immediately next to each other</strong> in the found-order — if you skip over a middle critical point to compare two further-apart ones, that gap can only be equal to or bigger than the sum of the smaller consecutive gaps, never smaller. So we only ever need to compare <strong>consecutive pairs</strong>, which we can do live, as we scan, using just one "previous critical point" variable.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">After the insight</h3>
+We never need to store the full list of critical positions at all (though it's fine to, for clarity) — we can compute the entire answer in a <strong>single left-to-right pass</strong>, updating a few running variables: the first critical position found, the most recently found critical position, and running min/max values.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">13. Dry Run the Optimized Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's dry-run <strong>Example 3</strong> to see a slightly different case.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">head = [1, 3, 2, 2, 3, 2, 2, 2, 7]</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Position | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|---|---|---|
+| Value | 1 | 3 | 2 | 2 | 3 | 2 | 2 | 2 | 7 |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">We scan positions 1 through 7 (positions 0 and 8 can never qualify).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Position | Prev | Curr | Next | isMax? | isMin? | Critical? | firstCriticalPos | prevCriticalPos | minDistance so far | lastCriticalPos so far |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 1 | 3 | 2 | Yes (3>1 and 3>2) | — | <strong>Critical (max)</strong> | set to 1 | none yet | ∞ (nothing to compare) | 1 |
+| 2 | 3 | 2 | 2 | No | No (2 is not < 2, they're equal — "strictly smaller" fails) | Not critical | 1 | 1 | ∞ | 1 |
+| 3 | 2 | 2 | 3 | No | No | Not critical | 1 | 1 | ∞ | 1 |
+| 4 | 2 | 3 | 2 | Yes (3>2 and 3>2) | — | <strong>Critical (max)</strong> | 1 (unchanged) | 1 → gap = 4-1=3 | 3 | 4 |
+| 5 | 3 | 2 | 2 | No | No (equal, not strictly smaller) | Not critical | 1 | 4 | 3 | 4 |
+| 6 | 2 | 2 | 2 | No | No | Not critical | 1 | 4 | 3 | 4 |
+| 7 | 2 | 2 | 7 | No | No | Not critical | 1 | 4 | 3 | 4 |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">After the full scan: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos = 1</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">lastCriticalPos = 4</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance = 3</code> (the only consecutive gap we found, between positions 1 and 4).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxDistance = lastCriticalPos - firstCriticalPos = 4 - 1 = 3</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Final answer: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[3, 3]</code> ✔️ matches the expected output! This also nicely demonstrates </em>why<em> equal neighboring values (like the repeated <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>s) never count as critical — the condition requires <strong>strictly</strong> greater or smaller.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">14. Optimized Code</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">/<strong>
+<li>Definition for singly-linked list.</li>
+<li>public class ListNode {</li>
+<li>int val;</li>
+<li>ListNode next;</li>
+<li>ListNode() {}</li>
+<li>ListNode(int val) { this.val = val; }</li>
+<li>ListNode(int val, ListNode next) { this.val = val; this.next = next; }</li>
+<li>}</li>
+ </em>/
+class Solution {
+    public int[] nodesBetweenCriticalPoints(ListNode head) {
+        int firstCriticalPos = -1;
+        int prevCriticalPos = -1;
+        int minDistance = Integer.MAX<em>VALUE;
+        int currentPosition = 1;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">ListNode prev = head;
+        ListNode curr = head.next;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">while (curr.next != null) {
+            boolean isMax = curr.val &gt; prev.val &amp;&amp; curr.val &gt; curr.next.val;
+            boolean isMin = curr.val &lt; prev.val &amp;&amp; curr.val &lt; curr.next.val;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (isMax || isMin) {
+                if (firstCriticalPos == -1) {
+                    firstCriticalPos = currentPosition;
+                } else {
+                    minDistance = Math.min(minDistance, currentPosition - prevCriticalPos);
+                }
+                prevCriticalPos = currentPosition;
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">prev = curr;
+            curr = curr.next;
+            currentPosition++;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (firstCriticalPos == -1 || prevCriticalPos == firstCriticalPos) {
+            return new int[]{-1, -1};
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int maxDistance = prevCriticalPos - firstCriticalPos;
+        return new int[]{minDistance, maxDistance};
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">/</strong>
+<li>Definition for singly-linked list.</li>
+<li>function ListNode(val, next) {</li>
+<li>this.val = (val===undefined ? 0 : val)</li>
+<li>this.next = (next===undefined ? null : next)</li>
+<li>}</li>
+ <em>/
+class Solution {
+    nodesBetweenCriticalPoints(head) {
+        let firstCriticalPos = -1;
+        let prevCriticalPos = -1;
+        let minDistance = Infinity;
+        let currentPosition = 1;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">let prev = head;
+        let curr = head.next;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">while (curr.next !== null) {
+            const isMax = curr.val &gt; prev.val &amp;&amp; curr.val &gt; curr.next.val;
+            const isMin = curr.val &lt; prev.val &amp;&amp; curr.val &lt; curr.next.val;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (isMax || isMin) {
+                if (firstCriticalPos === -1) {
+                    firstCriticalPos = currentPosition;
+                } else {
+                    minDistance = Math.min(minDistance, currentPosition - prevCriticalPos);
+                }
+                prevCriticalPos = currentPosition;
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">prev = curr;
+            curr = curr.next;
+            currentPosition++;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (firstCriticalPos === -1 || prevCriticalPos === firstCriticalPos) {
+            return [-1, -1];
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const maxDistance = prevCriticalPos - firstCriticalPos;
+        return [minDistance, maxDistance];
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">15. Explain Optimized Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int firstCriticalPos = -1;</code> — will hold the position of the first critical point we ever find. We start it at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code> to mean \"not found yet\" (a valid position can never actually be <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>, so this is a safe \"empty\" marker).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int prevCriticalPos = -1;</code> — will hold the position of the </em>most recently found<em> critical point, updated every time we find a new one. Also starts as \"not found yet.\"</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int minDistance = Integer.MAX</em>VALUE;</code> — we start this at the largest possible integer value, so that the very first real gap we compute is guaranteed to be smaller than it, and will correctly become our new minimum (this is the same \"start with an impossibly bad value, then improve it\" trick from other problems).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int currentPosition = 1;</code> — our manual position counter, matching where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> starts (the second node).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">ListNode prev = head; ListNode curr = head.next;</code> — set up our two walking references, same as brute force: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prev</code> trails one step behind <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while (curr.next != null)</code> — we loop as long as <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> has a next node (meaning <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> isn't the very last node). We don't need to separately check <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr != null</code> here, because <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> starts at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">head.next</code> and the problem guarantees at least 2 nodes exist, so <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> is never <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> going into a valid iteration.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">boolean isMax = ...; boolean isMin = ...;</code> — exactly the same critical-point check as brute force: strictly bigger than both neighbors, or strictly smaller than both.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (isMax || isMin) { ... }</code> — whenever we find a critical point:</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (firstCriticalPos == -1)</code> — if this is the </em>first<em> critical point we've ever seen (our \"first\" tracker is still unset), we record its position as <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos</code>. We do NOT compute a gap here, since there's nothing before it to compare to yet.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">else { minDistance = Math.min(minDistance, currentPosition - prevCriticalPos); }</code> — otherwise, this is at least our </em>second<em> critical point (or later), so we compute the gap between this one and the immediately previous critical point we found, and update <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code> if this gap is smaller than anything seen so far.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prevCriticalPos = currentPosition;</code> — regardless of which branch we took, we always update \"most recently found critical point\" to be this one, so the </em>next<em> critical point (if any) can correctly compare against it.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prev = curr; curr = curr.next; currentPosition++;</code> — slide our window forward by one node, same as brute force.</li>
+<li>After the loop: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (firstCriticalPos == -1 || prevCriticalPos == firstCriticalPos)</code> — this checks: did we find </em>zero<em> critical points at all (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos</code> never got set), OR did we find </em>exactly one<em> critical point (in which case <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prevCriticalPos</code> would have only ever been set to the same value as <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos</code>, since the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">else</code> branch — which updates <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prevCriticalPos</code> after the first — never ran)? Either way, that's fewer than 2 critical points, so we return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[-1, -1]</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int maxDistance = prevCriticalPos - firstCriticalPos;</code> — by the time we reach here, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prevCriticalPos</code> holds the position of the </em>very last<em> critical point found (since it gets overwritten every time), and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos</code> holds the very first one — exactly the pair we proved gives the maximum distance.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return new int[]{minDistance, maxDistance};</code> — return our final answer.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">16. Test With Multiple Examples</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 1 — Normal Case (fewer than 2 critical points)</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">head = [3, 1]</code>. Here <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr = head.next</code> is the node with value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>, and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr.next</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> immediately — so the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while (curr.next != null)</code> loop body never executes even once! <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos</code> stays <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code> → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[-1, -1]</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 2 — Different Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">head = [5,3,1,2,5,1,2]</code> → dry-ran conceptually in Section 6 → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[1, 3]</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 3 — Edge Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">head = [1,3,2,2,3,2,2,2,7]</code> → dry-ran in Section 13 → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[3, 3]</code> ✔️
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">17. Edge Cases</h2>
+<li><strong>List has only 2 nodes</strong> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr.next</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> right away, loop never runs, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos</code> stays <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code> → return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[-1, -1]</code> (there's no possible \"middle\" node with both a previous and next neighbor).</li>
+<li><strong>List has exactly one critical point</strong> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos</code> gets set once, but <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prevCriticalPos</code> ends up equal to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos</code> (since the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">else</code> branch that would update it differently never executes for a second point) → we correctly detect this via <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prevCriticalPos == firstCriticalPos</code> and return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[-1, -1]</code>.</li>
+<li><strong>All values are identical</strong> (e.g., <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[2,2,2,2]</code>) → no node is ever </em>strictly<em> bigger or smaller than its neighbors → zero critical points found → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[-1, -1]</code>.</li>
+<li><strong>Critical points are adjacent in </em>value<em> pattern but not truly \"back to back\" in a zigzag</strong> — doesn't matter; our algorithm only cares about </em>positions<em> of found critical points, which naturally handles any spacing.</li>
+<li><strong>Very long list (up to 100,000 nodes)</strong> — our single-pass approach handles this efficiently, unlike the brute-force pairwise comparison.</li>
+<li><strong>First and last actual list nodes look locally \"extreme\"</strong> — irrelevant, since they're structurally excluded from ever being checked (no previous/next respectively) by our loop bounds.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">18. Time Complexity</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>What is time complexity?</strong> It's a way of estimating how the amount of work grows as the input grows — like noticing that reading a book twice as long takes roughly twice as long to read, using a general rule rather than a stopwatch.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Brute Force:
+O(n) to scan + O(k²) to compare all critical point pairs
+= O(n²) in the worst case (when k is proportional to n)
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Optimized:
+O(n) — a single pass through the list, constant work per node</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why:</strong> In the optimized version, we visit each node exactly once, and at each node we do only a small, fixed amount of work (a couple of comparisons and variable updates) — no matter how many critical points we've found so far, checking a new one against \"the previous one\" is always instant, since we only keep track of a single number (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prevCriticalPos</code>), never a growing list to search through. Compare this to brute force, where as more critical points pile up, comparing all of them to each other gets slower and slower — like re-checking your entire guest list every time one more person RSVPs, instead of just noting \"how far apart is this RSVP from the last one?\"</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">19. Space Complexity</h2>
+<li>We only ever store a small, fixed number of extra variables: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstCriticalPos</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prevCriticalPos</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">currentPosition</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prev</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> — none of these grow as the list grows.</li>
+<li>We don't build any list, array, or other structure that scales with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> (unlike the brute-force version, which stored every critical position in an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">ArrayList</code>).</li></ul>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">So extra space used is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code> — constant, regardless of how long the linked list is.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">20. Common Mistakes Beginners Make</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ \"I should check if the head node or the last node is a critical point too.\"
+✅ The problem explicitly rules this out — a node can only be critical if it has </em>both<em> a previous and a next node, which the first and last nodes never do.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ \"Local maxima/minima just means bigger or smaller than the immediate neighbors — equal counts too.\"
+✅ The comparison must be <strong>strictly</strong> greater or strictly smaller. If a neighbor has the </em>exact same<em> value, that node cannot be a critical point (this trips people up with repeated/plateau values, like in Example 3).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ \"I need to store all critical positions in a list and compare every pair to be safe.\"
+✅ You only need the </em>first<em> and </em>last<em> found positions for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxDistance</code>, and </em>consecutive<em> pairs for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code> — storing everything and comparing all pairs is unnecessary extra work (and slower).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ \"I can just use array indices since it's basically like an array.\"
+✅ It's a linked list — there's no <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums[i]</code> here. You must manually track position with a counter variable as you walk using <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.next</code>, since linked lists don't support direct indexing.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ \"I'll check <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr != null</code> in my loop condition.\"
+✅ Since we need <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr.next</code> to exist too (to check the \"next neighbor\"), the real stopping condition should be based on <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr.next != null</code> — and since the problem guarantees at least 2 nodes, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code> itself (starting at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">head.next</code>) is safely non-null throughout.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">21. How to Recognize This Pattern in Other Problems</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Watch for these signal phrases:</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">&quot;Local maxima / local minima&quot;
+&quot;Peak&quot; or &quot;valley&quot; detection
+&quot;Distance between two positions/indices&quot; in a sequential structure
+&quot;Previous and next&quot; comparisons while scanning
+&quot;Fewer than two ... return [-1, -1]&quot; (a common &#039;not enough data&#039; guard)</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Whenever you're scanning a sequence and only need to compare each element to its <strong>immediate neighbors</strong> (not the whole sequence), and the final answer involves gaps between </em>found<em> positions, think: <strong>track "first found" and "most recent found" as you scan — you rarely need to store everything and compare all pairs.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">22. Interview Thinking</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">1. Understand the input    → a singly linked list of positive integers
+2. Understand the output   → [minDistance, maxDistance] between critical points, or [-1,-1]
+3. Try brute force         → collect all critical positions, then compare every pair
+4. Find what makes it slow → comparing all pairs is O(k²), unnecessary work
+5. Identify repeated work  → we don&#039;t need old critical points once a newer one appears
+                              (for min); we don&#039;t need &quot;middle&quot; ones at all (for max)
+6. What can be stored?     → just the first-found position and the most-recent-found position
+7. Optimize                → single pass, update min/max running values as we go
+8. Check edge cases        → fewer than 2 critical points, adjacent equal values, short lists
+9. Analyze complexity      → O(n) time, O(1) space</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Applied here: recognizing that max-distance only needs the two extreme endpoints, and min-distance only needs consecutive comparisons, collapses an apparent \"compare everything\" problem into a simple single pass.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">23. Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Try these before checking the answers:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Why is it guaranteed that <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxDistance</code> is always exactly <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(position of last critical point) - (position of first critical point)</code>, and never some other pair?
+2. If we find critical points at positions <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2, 5, 9, 20</code>, what is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code>? (Hint: you don't need to check <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">9-2</code> or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">20-2</code>.)
+3. Why do we start <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code> at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Integer.MAX<em>VALUE</code> instead of, say, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><br></p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">Answer to Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Because critical point positions are discovered in strictly increasing order as we scan left to right, the very first one is the smallest position and the very last one is the largest position among all critical points — so the gap between them is automatically the largest possible gap you could form from any two critical points in the whole set.
+2. <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance = 3</code>, from the gap <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 - 2 = 3</code>, since <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">9 - 5 = 4</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">20 - 9 = 11</code> are both larger. We only ever needed to compare consecutive pairs: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(2,5)</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(5,9)</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(9,20)</code> — never the non-consecutive ones.
+3. We start at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Integer.MAX</em>VALUE</code> because we're about to repeatedly take the </em>minimum* of this variable and newly computed gaps — starting \"impossibly high\" guarantees that the very first real gap we compute will correctly replace it, the same trick used whenever you're hunting for a running minimum.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">24. Final Revision</h2>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🧠 Problem in One Sentence</h2>
+Find every local max/min node in a linked list (by position), then report the smallest and largest gap between any two of them.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🔑 Main Idea</h2>
+The maximum distance is always between the very first and very last critical point found; the minimum distance is always between two consecutive critical points — so a single left-to-right pass, tracking only \"first found\" and \"most recently found,\" is enough.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⚙️ Algorithm</h2>
+1. Walk the list with two references (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prev</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr</code>), tracking position manually.
+2. At each \"middle\" node (has both a previous and next), check if it's a local maxima or minima.
+3. On finding a critical point: if it's the first one, just record its position. Otherwise, compute the gap to the previous critical point and update <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minDistance</code>.
+4. Always update \"most recently found critical point\" after checking.
+5. After the scan: if fewer than 2 critical points were found, return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[-1,-1]</code>. Otherwise, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxDistance</code> = last found position − first found position.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⏱️ Complexity</h2>
+Time: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>
+Space: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🎯 Pattern to Remember</h2>
+\"Scan once, track first + most-recent\" beats \"collect everything, then compare all pairs\" whenever max needs only the extremes and min needs only neighbors.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">25. Beginner Quiz</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong>(Understanding)</strong> Why can the head node and the tail node of the list never be critical points, no matter what their values are?
+2. <strong>(Basic concept)</strong> What's the difference between checking <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">curr.val > prev.val</code> (not strict... wait, it IS strict) versus using <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">>=</code> instead of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">></code> — why would that be wrong here?
+3. <strong>(Logic)</strong> Why don't we ever need to compare a critical point to one that is two or more critical points back (not the immediately previous one)?
+4. <strong>(Dry run)</strong> For <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">head = [2, 1, 5, 3, 1]</code>, find all critical points (by position) and compute <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[minDistance, maxDistance]</code>.
+5. <strong>(Complexity/pattern)</strong> Why is this solution <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code> space instead of needing an array to store all node values first, and what key phrase in the problem (\"previous and next node\") should make you think of a \"sliding trio\" scan rather than random access?</p>
+    </div>
+  </article>
+
+  <footer style="max-width: 800px; margin: 4rem auto 0; padding: 2rem 1rem; border-top: 1px solid #27272a; text-align: center; color: #71717a; font-size: 0.9rem;">
+    <p>&copy; 2026 Mukesh Pal. All rights reserved. Full-Stack Developer & Co-Founder at CodeByte.</p>
+  </footer>
+</body>
+</html>
