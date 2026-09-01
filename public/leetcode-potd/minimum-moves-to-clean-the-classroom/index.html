@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3568. Minimum Moves to Clean the Classroom Solution | Mukesh Pal LeetCode POTD</title>
+  <meta name="description" content="Find the minimum total number of moves needed to collect all litter in a grid classroom using state-space BFS with bitmasks and energy tracking." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mukprabhakar.in/leetcode-potd/minimum-moves-to-clean-the-classroom" />
+  
+  <!-- SPA redirect decoder for GitHub Pages -->
+  <script>window.location.href = '/?/leetcode-potd/minimum-moves-to-clean-the-classroom';</script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem; border-bottom: 1px solid #27272a;">
+    <p><a href="/leetcode-potd">← Back to LeetCode POTD</a> | <a href="/">Portfolio Home</a></p>
+  </header>
+
+  <article style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.2;">3568. Minimum Moves to Clean the Classroom</h1>
+      <p style="color: #a1a1aa; font-size: 0.95rem; margin-top: 0;">
+        Difficulty: <strong>Hard</strong> | Published on <strong>2026-09-01</strong>
+      </p>
+    </header>
+
+    <div style="font-size: 1.1rem; line-height: 1.8; color: #d4d4d8;">
+      <h1 style="color: #10b981; margin-top: 2.5rem;">3568. Minimum Moves to Clean the Classroom</h1>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">This one is meaningfully harder than the previous problems — it introduces two new big ideas (BFS and bitmasks) — so let's build up carefully, same structure as before.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">1. Problem in Very Simple Language</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You're in a classroom represented as a grid of rows and columns. Each cell is one of:
+<ul style="line-height: 1.7; color: #d4d4d8; padding-left: 1.5rem;"><li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'S'</code> — where the student starts (exactly one of these).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'L'</code> — a piece of litter that must be picked up (there are at most 10 of these).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code> — a "recharge station." Stepping on it fully restores the student's energy, no matter how little energy they had left.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'X'</code> — a wall/obstacle. The student can never step here.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'.'</code> — just empty floor, walk through freely.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">The student also has a maximum energy capacity, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">energy</code>, and starts completely full. Every single step (up/down/left/right to a neighboring cell) costs exactly 1 energy. If energy would hit 0 and the student isn't standing on an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code>, they're stuck — they cannot take another step unless they're on a reset tile.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Goal:</strong> find the minimum total number of moves needed to walk over <em>every</em> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'L'</code> cell at least once (collecting all litter), or return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code> if it's impossible no matter what path is taken.
+<li><strong>What's given:</strong> the grid, and the energy capacity.</li>
+<li><strong>What to find:</strong> the shortest walking path (respecting obstacles and the energy/recharge rule) that touches every litter cell.</li>
+<li><strong>What to return:</strong> the number of moves in that shortest path, or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">2. Real-Life Analogy</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine a robot vacuum with a battery that only lasts, say, 20 minutes of driving. Scattered around the house are 10 dirty spots it must visit, some walls it can't drive through, and a few charging pads that instantly top the battery back to full the moment it drives over one — no matter how low the battery was.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">The robot needs to plan a route that hits all 10 dirty spots, is allowed to swing by charging pads as many times as it likes along the way, but can never let the battery hit zero anywhere except <em>while standing on</em> a charging pad. You want the <em>shortest possible total driving time</em> (in minutes) that gets every spot cleaned.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">3. Important Programming Concepts I Need First</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Grid / 2D Array</h3>
+<li><strong>Concept:</strong> A grid is just a 2D array — rows and columns of cells, each reachable by <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">grid[row][col]</code>.</li>
+<li><strong>Why we need it:</strong> The classroom itself is the input, given as an array of strings (each string is one row).</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Queue (new!)</h3>
+<li><strong>Concept:</strong> A queue is a "first in, first out" (FIFO) structure — like a line at a coffee shop: whoever joined the line first gets served first. You add items at the back (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">enqueue</code>/<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">offer</code>) and remove items from the front (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">dequeue</code>/<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">poll</code>).</li>
+<li><strong>Simple Example:</strong> Add <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">A</code>, then <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">B</code>, then <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">C</code> → the queue is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[A, B, C]</code> → removing gives you <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">A</code> first, then <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">B</code>, then <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">C</code>.</li>
+<li><strong>Why we need it:</strong> We're about to use <strong>BFS</strong> (below), and BFS <em>always</em> uses a queue to control the order in which we explore things.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Breadth-First Search (BFS) (new — the central idea of this problem!)</h3>
+<li><strong>Concept:</strong> BFS is a way to explore a graph (or grid) "layer by layer" — first you look at everything reachable in 1 step, then everything reachable in exactly 2 steps, then 3, and so on. Because it expands in complete layers, <strong>the very first time BFS reaches some target, that's guaranteed to be via the shortest possible number of steps.</strong> This makes BFS the standard tool whenever a problem asks for a <em>minimum number of moves/steps</em> on a grid, with all moves costing the same (1 each).</li>
+<li><strong>Simple Example:</strong> Starting at a cell, BFS visits all 4 direct neighbors first (distance 1), then all cells reachable from those (distance 2), etc., never revisiting a cell once it's been reached.</li>
+<li><strong>Why we need it:</strong> The entire problem is "minimum number of moves" — a textbook signal for BFS.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">State (a very important concept for this problem)</h3>
+<li><strong>Concept:</strong> Normally in a grid BFS, "where you are" (just row, column) is enough information to know what you can do next. But here, two students standing on the <em>exact same cell</em> might be able to do very different things depending on <strong>how much energy they have left</strong> and <strong>which litter they've already picked up</strong> — so "state" here must include more than position. A <em>state</em> is simply "all the information needed to know exactly what happens next."</li>
+<li><strong>Why we need it:</strong> This problem's state is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(row, column, energy remaining, which litter collected so far)</code> — not just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(row, column)</code>.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Bitmask (new!)</h3>
+<li><strong>Concept:</strong> A bitmask is a compact way to represent "which items from a small set have been chosen," using the binary digits (bits) of a single number. If you have up to 10 litter items, number them <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> through <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">9</code>. A number's bit at position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> being <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> means "litter item <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> has been collected"; <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> means "not yet." For example, if litter items <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> are collected but not <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>, the mask in binary is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">101</code>, which is the number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>.</li>
+<li><strong>Simple Example:</strong> With 3 litter items, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mask = 0</code> means "none collected," <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mask = 7</code> (binary <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">111</code>) means "all 3 collected." Checking bit <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(mask >> i) & 1</code>. Setting bit <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mask | (1 << i)</code>.</li>
+<li><strong>Why we need it:</strong> Since there are at most 10 litter pieces, there are at most <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2^10 = 1024</code> possible "which ones are collected" combinations — small enough to treat as just another number in our state, instead of tracking a whole separate list/set.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">4-directional movement</h3>
+<li><strong>Concept:</strong> From any cell <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(r, c)</code>, the 4 neighbors are <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(r-1,c)</code> up, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(r+1,c)</code> down, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(r,c-1)</code> left, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(r,c+1)</code> right.</li>
+<li><strong>Why we need it:</strong> Every move in this problem is exactly one of these 4 steps.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Array (multi-dimensional, for tracking "have I already visited this exact state?")</h3>
+<li><strong>Concept:</strong> Just like a 1D array has one index, we can have arrays indexed by multiple things at once (conceptually a 4D array here: row, column, energy, mask).</li>
+<li><strong>Why we need it:</strong> BFS needs to avoid revisiting the exact same state twice (otherwise it could loop forever or waste huge amounts of time) — we need a fast way to check "have I been in this exact (position, energy, collected-so-far) situation before?"</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">4. Understand the Input</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Take Example 2:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">classroom = [&quot;LS&quot;, &quot;RL&quot;]
+energy = 4</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">This is a 2-row, 2-column grid:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| | col 0 | col 1 |
+|---|---|---|
+| <strong>row 0</strong> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">L</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">S</code> |
+| <strong>row 1</strong> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">R</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">L</code> |
+<li>The student starts at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0, 1)</code> (row 0, col 1), the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'S'</code> cell, with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4</code> energy.</li>
+<li>There are two litter cells: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,0)</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,1)</code>.</li>
+<li>There's one recharge cell at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,0)</code>.</li>
+<li>No obstacles here.</li>
+<li>We need to find the fewest moves to visit both <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,0)</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,1)</code>, potentially passing through <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,0)</code> if the energy math requires it, without ever running out of energy off of an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code>.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">5. Understand the Output</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>
+<li>Path: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,1) → (0,0)</code> [collect litter #1, energy: 4→3] → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,0)</code> [step on R, energy resets to 4] → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,1)</code> [collect litter #2, energy: 4→3].</li>
+<li>That's 3 total moves, and litter is fully collected. There's no way to do it in fewer moves (you need at least 1 move to reach each litter cell from a shared adjacent cell, and here neither litter cell is adjacent to the other, so at least 3 moves are structurally required, and 3 is achievable) — so <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> is optimal.</li>
+<li>Notice the recharge wasn't even strictly needed for the <em>energy</em> here (energy stayed positive throughout even without it) — it's just naturally on the shortest path between the two litter pieces. In harder cases, you'd be <em>forced</em> through an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code> purely to survive long stretches without running out of energy.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">6. Solve the Example Manually</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's manually reason through <strong>Example 3</strong>, since it's the trickiest (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code> case):</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">classroom = [&quot;L.S&quot;, &quot;RXL&quot;]
+energy = 3</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Grid:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| | col 0 | col 1 | col 2 |
+|---|---|---|---|
+| <strong>row 0</strong> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">L</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">S</code> |
+| <strong>row 1</strong> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">R</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">X</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">L</code> |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Student starts at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,2)</code> with energy <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's see what's reachable:
+<li>From <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,2)</code>, moves left to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,1)</code> [energy 3→2], then <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,0)</code> [energy 2→1] — that's litter #1 collected, using 2 moves, energy left = 1.</li>
+<li>From <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,0)</code>, energy is 1. Can we get to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,0)</code> (the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">R</code>)? Yes — that's adjacent, 1 move, energy would hit 0 upon arrival, but since <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,0)</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code>, energy resets to full (3) the instant we land there. </li>
+<li>Now from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,0)</code> with energy 3 (freshly reset), we need to reach <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2)</code> (litter #2). But <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,1)</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'X'</code> — a wall! We cannot go directly right. Is there any other route from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,0)</code> to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2)</code>? Going back up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,0)</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,1)</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,2)</code> → down to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2)</code>... let's check: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,0)→(0,0)</code> [1 move] <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">→(0,1)</code> [1] <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">→(0,2)</code> [1] <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">→(1,2)</code> [1] = 4 moves, but we only have 3 energy after the reset, and no <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">R</code> along this new sub-route. We run out of energy exactly at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,2)</code> (having used all 3), unable to take the 4th move down to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2)</code>.</li>
+<li>Is there any other path to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2)</code> at all? The only way into <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2)</code> is from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,2)</code> (above) or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,1)</code> (blocked by <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">X</code>). And reaching <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,2)</code> from anywhere requires passing through the top row, which (from the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">R</code> at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,0)</code>) costs at least 3 moves just to reach <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,2)</code>, leaving 0 energy — not enough for the 4th move into <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2)</code>.</li>
+<li>No matter how we shuffle the order, litter cell <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2)</code> is simply <strong>unreachable</strong> within the energy budget. So the answer is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>. ✔️ matches!</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">This example really shows why we can't just think "shortest path ignoring energy" — the energy budget can make an otherwise-reachable cell permanently unreachable.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">7. Think Like a Programmer</h2>
+<li><strong>What do I know?</strong> The grid layout, where obstacles/recharges/litter are, and the energy cap.</li>
+<li><strong>What do I need to find?</strong> The minimum moves to touch all litter cells, respecting the energy rule.</li>
+<li><strong>What can I try?</strong> Since "minimum moves on a grid" is the classic signal for BFS, my first instinct is BFS. But normal grid BFS only tracks position — here I also need to know how much energy I have left (since that affects what moves are even legal) AND which litter I've already picked up (since I need ALL of it, not just any one piece).</li>
+<li><strong>What happens if I try every possibility?</strong> If I tried every possible <em>order</em> of visiting the 10 litter pieces (10! ≈ 3.6 million orderings) and, for each order, tried to find full paths between them, that's technically finite, but doesn't cleanly account for energy carrying over between litter pickups (energy left when you finish leg 1 affects what's affordable on leg 2) — this naive ordering approach gets complicated fast and doesn't obviously give minimum moves easily.</li>
+<li><strong>Can I make it faster / cleaner?</strong> Yes — bundle <em>everything relevant</em> into a single BFS <strong>state</strong>: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(row, col, energy remaining, bitmask of litter collected)</code>. Now a single BFS, expanding one state at a time, naturally handles "try every order," "track energy correctly across the whole journey (including resets)," and "know exactly when we're fully done (mask is complete)" — all at once, and BFS guarantees the <em>first</em> time we reach a "mask is complete" state is via the minimum number of moves.</li>
+<li><strong>What information should I remember?</strong> For every combination of (cell, energy level, litter collected so far), have I already visited it? If yes, skip it (no point re-exploring identical situations).</li>
+<li><strong>What pattern do I notice?</strong> This is a "shortest path in an enlarged graph" — the "nodes" of our graph aren't just grid cells, they're <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(cell, energy, mask)</code> triples. Once you see it this way, it's just ordinary BFS on a bigger graph.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">8. Start With the Brute Force Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Here, "brute force" and "correct optimized approach" are actually the <strong>same core idea</strong> — full-state BFS — because trying to shortcut it (e.g., ignoring energy, or ignoring litter-order) produces <em>wrong</em> answers, not just <em>slow</em> ones. So let's build the full-state BFS directly, understanding <em>why</em> each piece of the state is necessary, rather than starting from something naively wrong.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why full-state BFS works:</strong> Every legal sequence of moves corresponds to some walk through these <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(cell, energy, mask)</code> states. BFS explores all such walks in order of increasing move-count, so the first time it finds any state where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mask</code> equals "everything collected," that's provably the minimum possible number of moves.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Time complexity:</strong> Number of distinct states ≤ <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(rows × cols) × (energy + 1) × 2^(number of litter)</code>. With the given limits (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">rows, cols ≤ 20</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">energy ≤ 50</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">litter ≤ 10</code>), that's at most <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">400 × 51 × 1024 ≈ 20.9 million</code> states, each with 4 possible moves — a large but <em>finite and manageable</em> amount of work for a computer.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Space complexity:</strong> We need to remember whether each of those ~20.9 million states has been visited — an array of that size.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">9. Explain the Core Idea Piece by Piece</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Before jumping to code, let's make sure each part of the state makes sense:
+<li><strong>Why include <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">row, col</code>?</strong> Obviously — we need to know where the student physically is, to know which moves are legal (not into a wall, not off the grid).</li>
+<li><strong>Why include <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">energy remaining</code>?</strong> Because the <em>same cell</em> can be in two very different "situations" depending on how much energy is left — with 5 energy left you might be able to reach a far-away litter cell directly, but with 1 energy left from that same cell, you might need to detour through a recharge station first. Two students on the same cell with different energy can have completely different futures — so energy must be part of the state, not just a side detail.</li>
+<li><strong>Why include the litter bitmask?</strong> Because we need to know the <em>goal condition</em>: "have we collected everything?" A student standing on a specific cell having collected litter <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{0, 2}</code> versus having collected <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{0, 2, 5}</code> are in genuinely different situations for the rest of the problem (different amounts of remaining work) — bundling this into the state lets BFS naturally explore "all possible orders" of collection without us having to code that separately.</li>
+<li><strong>What happens when we step onto an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code> cell?</strong> Regardless of what our energy was <em>before</em> the move, the moment we land on <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code>, energy becomes full again. This is a simple rule to encode: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">newEnergy = (targetCell == 'R') ? energyCap : currentEnergy - 1</code>.</li>
+<li><strong>What happens when we step onto an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'L'</code> cell?</strong> We simply turn on that litter's bit in the mask: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">newMask = mask | (1 << litterIndex)</code>. (Stepping on an already-collected litter cell again just leaves the bit already-on — no harm, no special case needed.)</li>
+<li><strong>When can we NOT move at all?</strong> If current energy is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> and we're not on an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code> (but remember: if we're currently on <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code>, our energy in the state is already full, since we reset it the instant we arrived — so energy being <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> in our state representation always means "genuinely stuck," never "on a recharge tile with 0 shown").</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">11. From Idea to Algorithm</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Represent every &quot;situation&quot; as (row, col, energy, mask)
+        ↓
+Start state: (S&#039;s row, S&#039;s col, full energy, mask = 0)
+        ↓
+BFS layer by layer, trying all 4 moves from each state
+        ↓
+Skip any (row, col, energy, mask) we&#039;ve already visited
+        ↓
+The MOMENT we pop a state where mask == &quot;all litter collected&quot;,
+that state&#039;s move-count is the answer
+        ↓
+If BFS runs out of new states without ever completing the mask → -1</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⭐ Key Insight</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Before the insight</h3>
+It's tempting to think of this as "find shortest path to each litter piece separately, then combine," treating energy resets as something to handle per-leg.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The problem</h3>
+Energy does <strong>not</strong> reset between litter pickups — only when you physically step on an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code> tile. So how much energy you have left when you <em>start</em> trying to reach the next litter piece depends entirely on your whole journey so far, not just "which litter is next." Treating legs independently (assuming full energy at the start of each leg) silently gives <strong>wrong answers</strong> whenever a path <em>needs</em> to arrive at a litter cell with some energy still in reserve to continue onward, or conversely, a path only barely limps to a litter cell with 0 energy left and <em>must</em> detour to a recharge before doing anything else.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The insight</h3>
+<strong>Fold energy and "litter collected so far" directly into the definition of a BFS node.</strong> Once you do that, there's no more separate bookkeeping needed for orderings or energy resets — plain BFS, expanding one move at a time, automatically discovers the correct minimum-move journey through any order of litter and any number of recharges, because it's exploring the <em>true</em> space of possible situations, not a simplified (and subtly incorrect) approximation of it.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">After the insight</h3>
+The "hard" combinatorial parts of this problem (which order to visit litter in, when to detour for a recharge) are never explicitly coded at all — they fall out for free from letting BFS explore the full, correctly-defined state graph.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">13. Dry Run (Conceptual) on Example 1</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">classroom = [&quot;S.&quot;, &quot;XL&quot;], energy = 2</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Grid:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| | col 0 | col 1 |
+|---|---|---|
+| <strong>row 0</strong> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">S</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.</code> |
+| <strong>row 1</strong> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">X</code> | <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">L</code> |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">There's 1 litter piece (bit 0), at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,1)</code>. Start state: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(row=0, col=0, energy=2, mask=0b0)</code>, distance 0.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Move | From state | To state | Distance |
+|---|---|---|---|
+| 1 | (0,0,e=2,mask=0) | (0,1,e=1,mask=0) [moved right; <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,1)</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.</code>] | 1 |
+| 2 | (0,1,e=1,mask=0) | (1,1,e=0,mask=<strong>1</strong>) [moved down; <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,1)</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">L</code>, so bit 0 turns on] | 2 |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">At distance 2, we reach a state with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mask = 1 = maskFull</code> (only 1 litter piece exists) → <strong>answer is 2</strong> ✔️. Note that <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,0)</code> was never explored at all, since it's <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'X'</code> (obstacle) — BFS simply never generates a move into it.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">14. Optimized Code</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">import java.util.<em>;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">class Solution {
+    public int minMoves(String[] classroom, int energy) {
+        int rows = classroom.length;
+        int cols = classroom[0].length();
+        char[][] grid = new char[rows][cols];
+        for (int r = 0; r &lt; rows; r++) {
+            grid[r] = classroom[r].toCharArray();
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Locate the start, and assign each litter cell a bit index
+        int startR = -1, startC = -1;
+        int[][] litterBit = new int[rows][cols];
+        for (int[] row : litterBit) Arrays.fill(row, -1);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int litterCount = 0;
+        for (int r = 0; r &lt; rows; r++) {
+            for (int c = 0; c &lt; cols; c++) {
+                if (grid[r][c] == &#039;S&#039;) {
+                    startR = r;
+                    startC = c;
+                } else if (grid[r][c] == &#039;L&#039;) {
+                    litterBit[r][c] = litterCount;
+                    litterCount++;
+                }
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int maskFull = (1 &lt;&lt; litterCount) - 1;
+        if (litterCount == 0) {
+            return 0; // nothing to collect
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int energyLevels = energy + 1;     // possible energy values: 0..energy
+        int maskCount = 1 &lt;&lt; litterCount;  // possible litter combinations</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// visited[r][c][e][mask] flattened into one array
+        boolean[] visited = new boolean[rows </em> cols <em> energyLevels </em> maskCount];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int[] dr = {-1, 1, 0, 0};
+        int[] dc = {0, 0, -1, 1};</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">ArrayDeque&lt;int[]&gt; queue = new ArrayDeque&lt;&gt;(); // {r, c, e, mask, dist}</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int startMask = 0; // &#039;S&#039; cell is never litter
+        int startIdx = encode(startR, startC, energy, startMask, cols, energyLevels, maskCount);
+        visited[startIdx] = true;
+        queue.add(new int[]{startR, startC, energy, startMask, 0});</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">while (!queue.isEmpty()) {
+            int[] cur = queue.poll();
+            int r = cur[0], c = cur[1], e = cur[2], mask = cur[3], dist = cur[4];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (mask == maskFull) {
+                return dist;
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (e == 0) {
+                continue; // stuck: no energy and not on a fresh reset
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (int dir = 0; dir &lt; 4; dir++) {
+                int nr = r + dr[dir];
+                int nc = c + dc[dir];
+                if (nr &lt; 0 || nr &gt;= rows || nc &lt; 0 || nc &gt;= cols) continue;
+                if (grid[nr][nc] == &#039;X&#039;) continue;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int newEnergy = (grid[nr][nc] == &#039;R&#039;) ? energy : e - 1;
+                int newMask = mask;
+                if (litterBit[nr][nc] != -1) {
+                    newMask = mask | (1 &lt;&lt; litterBit[nr][nc]);
+                }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int idx = encode(nr, nc, newEnergy, newMask, cols, energyLevels, maskCount);
+                if (!visited[idx]) {
+                    visited[idx] = true;
+                    queue.add(new int[]{nr, nc, newEnergy, newMask, dist + 1});
+                }
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return -1; // BFS exhausted without ever completing the mask
+    }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">private int encode(int r, int c, int e, int mask, int cols, int energyLevels, int maskCount) {
+        return ((r <em> cols + c) </em> energyLevels + e) <em> maskCount + mask;
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">class Solution {
+    minMoves(classroom, energy) {
+        const rows = classroom.length;
+        const cols = classroom[0].length;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">let startR = -1, startC = -1;
+        const litterBit = Array.from({ length: rows }, () =&gt; new Array(cols).fill(-1));</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">let litterCount = 0;
+        for (let r = 0; r &lt; rows; r++) {
+            for (let c = 0; c &lt; cols; c++) {
+                if (classroom[r][c] === &#039;S&#039;) {
+                    startR = r;
+                    startC = c;
+                } else if (classroom[r][c] === &#039;L&#039;) {
+                    litterBit[r][c] = litterCount;
+                    litterCount++;
+                }
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const maskFull = (1 &lt;&lt; litterCount) - 1;
+        if (litterCount === 0) {
+            return 0;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const energyLevels = energy + 1;
+        const maskCount = 1 &lt;&lt; litterCount;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const encode = (r, c, e, mask) =&gt; {
+            return ((r </em> cols + c) <em> energyLevels + e) </em> maskCount + mask;
+        };</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const totalStates = rows <em> cols </em> energyLevels <em> maskCount;
+        const visited = new Uint8Array(totalStates);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const dr = [-1, 1, 0, 0];
+        const dc = [0, 0, -1, 1];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const queue = [];
+        let head = 0;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const startMask = 0;
+        const startIdx = encode(startR, startC, energy, startMask);
+        visited[startIdx] = 1;
+        queue.push([startR, startC, energy, startMask, 0]);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">while (head &lt; queue.length) {
+            const [r, c, e, mask, dist] = queue[head++];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (mask === maskFull) {
+                return dist;
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (e === 0) {
+                continue;
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (let dir = 0; dir &lt; 4; dir++) {
+                const nr = r + dr[dir];
+                const nc = c + dc[dir];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (nr &lt; 0 || nr &gt;= rows || nc &lt; 0 || nc &gt;= cols) continue;
+                if (classroom[nr][nc] === &#039;X&#039;) continue;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const newEnergy = (classroom[nr][nc] === &#039;R&#039;) ? energy : e - 1;
+                let newMask = mask;
+                if (litterBit[nr][nc] !== -1) {
+                    newMask = mask | (1 &lt;&lt; litterBit[nr][nc]);
+                }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const idx = encode(nr, nc, newEnergy, newMask);
+                if (!visited[idx]) {
+                    visited[idx] = 1;
+                    queue.push([nr, nc, newEnergy, newMask, dist + 1]);
+                }
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return -1;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">15. Explain the Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">char[][] grid = ...</code> — convert the array of strings into a 2D character grid, so we can index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">grid[r][c]</code> directly.</li>
+<li>The first double loop — scans every cell once to find the single <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'S'</code> (recording <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">startR, startC</code>) and to assign each <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'L'</code> cell a unique bit index (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0, 1, 2, ...</code>), stored in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">litterBit[r][c]</code>. Any cell that isn't litter keeps <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code> in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">litterBit</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int maskFull = (1 << litterCount) - 1;</code> — this produces a number whose lowest <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">litterCount</code> bits are all <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> — e.g., with 3 litter pieces, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maskFull = 0b111 = 7</code>. This is our "everything collected" target.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (litterCount == 0) return 0;</code> — an edge case: if there's no litter at all, we're already done with zero moves.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">boolean[] visited = ...</code> — this is our giant "have I been in this exact <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(r, c, e, mask)</code> situation before?" tracker, flattened into a single 1D array for speed (Java doesn't handle huge multi-dimensional arrays as efficiently as one big 1D array with manual index math).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">encode(...)</code> — converts a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(r, c, e, mask)</code> combination into one unique integer index into that flat <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">visited</code> array, similar to how you'd convert a 2D grid position into a 1D array index (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">r </em> cols + c</code>), just extended with two more "digits" (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">e</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mask</code>).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">ArrayDeque<int[]> queue</code> — our BFS queue. Each entry stores <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{row, col, energy, mask, distanceSoFar}</code> bundled together.</li>
+<li>We seed the queue with the starting state: student's start position, full energy, empty mask, distance <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>. We also immediately mark it visited.</li>
+<li>The main <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">while (!queue.isEmpty())</code> loop — this is the heart of BFS: keep pulling the <em>oldest</em> item off the front of the queue (guaranteed by the queue's FIFO behavior to be processed in increasing distance order) and process it.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (mask == maskFull) return dist;</code> — the moment we pop a state where everything's been collected, we're done — and because BFS processes states in non-decreasing distance order, this is guaranteed to be the <em>minimum</em> possible distance.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (e == 0) continue;</code> — if there's no energy left, this state is a dead end; we don't try to generate any moves from it.</li>
+<li>The <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for (int dir = 0; dir < 4; dir++)</code> loop — tries each of the 4 directions.</li>
+<li>Boundary and obstacle checks — skip anything off the grid or blocked by <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'X'</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int newEnergy = (grid[nr][nc] == 'R') ? energy : e - 1;</code> — implements the recharge rule exactly as discussed: full reset if stepping onto <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code>, otherwise spend 1 energy.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">newMask</code> update — if the target cell is litter, turn on its bit; otherwise the mask is unchanged.</li>
+<li>We compute the new state's flat index, and if it's never been visited, we mark it visited and add it to the queue with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">dist + 1</code>.</li>
+<li>If the queue empties out completely without ever hitting <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mask == maskFull</code>, we <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return -1</code> — meaning it's truly impossible.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">16. Test With Multiple Examples</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 1 — Normal Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">["S.", "XL"], energy=2</code> → dry-ran in Section 13 → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 2 — Different Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">["LS", "RL"], energy=4</code> → BFS explores from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,1)</code>; shortest path to collecting both litter bits is 3 moves (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,1)→(0,0)→(1,0)→(1,1)</code>, mask becomes complete exactly when the litter at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,1)</code> is stepped on) → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 3 — Edge Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">["L.X", "RXL"], energy=3</code> (as reasoned by hand in Section 6) → the state <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2)</code> with the second litter bit set is never generated by BFS, no matter the energy value, because every route into <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2)</code> requires more consecutive moves than any reachable energy level allows → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code> ✔️
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">17. Edge Cases</h2>
+<li><strong>No litter at all (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">litterCount == 0</code>)</strong> → answer is immediately <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>; handled by an early return before BFS even starts.</li>
+<li><strong>A litter cell is fully walled off</strong> (surrounded by <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'X'</code> with no path in) → BFS simply never reaches any state containing that cell, so <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mask == maskFull</code> is never achieved → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>.</li>
+<li><strong>Energy exactly enough, no slack at all</strong> → still works correctly, since BFS only ever generates a move when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">e > 0</code> at the moment of the move, so it naturally respects "just barely enough energy" paths without any special-casing.</li>
+<li><strong>Multiple recharge stations, and a path that needs several of them in sequence</strong> → handled naturally, since every time we land on <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code> in the BFS transition, energy resets, no matter how many times this has already happened along the path.</li>
+<li><strong>Only 1 litter piece and it's directly reachable with no recharge needed</strong> → works like a normal single-target BFS, degrading gracefully.</li>
+<li><strong>The grid is 1 row or 1 column</strong> → no special handling needed; the same 4-direction logic just has fewer valid moves in practice (moves off the single row/column are rejected by the boundary check).</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">18. Time Complexity</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>What is time complexity?</strong> It estimates how much work grows as inputs grow — the same "twice the input, roughly twice (or more) the work" idea as before, just now applied to a state space instead of a plain array.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Total distinct states: (rows × cols) × (energy + 1) × 2^(litterCount)
+Bounded by: 20 × 20 × 51 × 1024 ≈ 20.9 million states
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Each state generates at most 4 transitions (one per direction)</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Overall: O(rows × cols × energy × 2^litterCount)</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why:</strong> Every state is visited (and its 4 neighbors examined) <strong>at most once</strong>, thanks to the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">visited</code> array preventing re-processing. So the total work is proportional to the total number of possible states, times a small constant (4 directions). With the problem's guaranteed small limits (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">rows, cols ≤ 20</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">energy ≤ 50</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">litter ≤ 10</code>), this comes out to roughly 20 million states — large, but a fixed, bounded amount of work a computer can chew through, unlike something that grows explosively (like trying every possible <em>order</em> of visiting 10 litter pieces, which would be <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10! ≈ 3.6</code> million <em>orderings</em>, each potentially requiring its own separate search — the state-based BFS elegantly avoids needing to enumerate orderings at all).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">19. Space Complexity</h2>
+<li>The <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">visited</code> boolean array has one entry per possible state: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">rows × cols × (energy+1) × 2^litterCount</code> — up to about 20.9 million <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">boolean</code> entries.</li>
+<li>The BFS queue, at any moment, holds a subset of these states (bounded by the same total).</li></ul>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">So overall extra space is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(rows × cols × energy × 2^litterCount)</code> — the same bound as the time complexity, since we need to remember every state we might visit.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">20. Common Mistakes Beginners Make</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "I'll just do BFS on <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(row, col)</code> only, like a normal shortest-path grid problem."
+✅ Plain <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(row, col)</code> BFS can't tell the difference between "I'm here with lots of energy" and "I'm here with almost none," nor can it know which litter has already been collected — both are essential to correctness here, not just optimizations.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "I'll compute shortest distances between each pair of key points (S and each L) separately, assuming full energy at the start of each leg, then combine them like a traveling-salesman problem."
+✅ This silently assumes energy resets between litter pickups, which isn't true — energy only resets at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code> tiles. This approach can give wrong (too optimistic or too pessimistic) answers, as shown conceptually in Section 8's introduction.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "If energy hits exactly 0, but I'm about to <em>arrive</em> at an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code> cell, that's not allowed."
+✅ It's allowed — the check is about whether you have energy <em>before</em> making a move (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">e > 0</code> to attempt any move at all), and if the <em>destination</em> of that move is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code>, the energy resets to full immediately upon arrival, regardless of how little was left just before the move.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "I only need to mark a cell as visited once, regardless of energy or mask."
+✅ You must track visited status per <em>entire state</em> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(cell, energy, mask)</code> — the same cell can legitimately be revisited many times throughout a solution, as long as it's with a genuinely new energy level or litter combination not seen before at that cell.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "Since there could be up to 10 litter pieces, I should try all <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10!</code> orderings explicitly."
+✅ Unnecessary — folding the collected-litter bitmask into the BFS state already implicitly explores every meaningful ordering, without you ever having to generate permutations by hand.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">21. How to Recognize This Pattern in Other Problems</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Watch for these signal phrases:</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">&quot;Minimum number of moves/steps&quot; on a grid → strongly suggests BFS
+&quot;At most 10/12/15 of some special item&quot; → suggests a bitmask can represent &quot;which ones are done&quot;
+&quot;Energy/fuel/keys that reset or get consumed&quot; → suggests the resource must be folded INTO the search state, not handled separately
+&quot;Must collect/visit all of X&quot; → often combines naturally with a bitmask-based BFS/DP</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Whenever a shortest-path problem has some extra resource (energy, keys, fuel) that changes what moves are legal, and/or a small set of "must-visit" items, think: <strong>expand the BFS state to include that resource and/or a bitmask of progress</strong>, rather than trying to handle it as a separate calculation layered on top of plain positional BFS.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">22. Interview Thinking</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">1. Understand the input    → grid with S/L/R/X/., plus an energy cap
+2. Understand the output   → minimum moves to collect all litter, or -1
+3. Try brute force         → naive idea: BFS on position alone — quickly realize it&#039;s WRONG,
+                              not just slow, because energy and progress matter too
+4. Find what makes it slow/wrong → position alone doesn&#039;t capture enough information
+5. Identify what&#039;s missing → remaining energy, and which litter has been collected
+6. What can be stored?     → fold both into the BFS state itself
+7. Optimize                → single BFS over (row, col, energy, mask); first completion = answer
+8. Check edge cases        → no litter at all, unreachable litter, multiple recharges needed
+9. Analyze complexity      → O(rows × cols × energy × 2^litterCount) time and space</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Applied here: the real "aha" isn't a clever formula — it's recognizing that the <em>state itself</em> was too small, and the fix is enlarging what a BFS "node" represents until it captures everything that actually affects the future.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">23. Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Try these before checking the answers:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Why can't we just track <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(row, col)</code> and separately remember "current energy" and "mask" as plain variables outside the BFS state, updating them as we go?
+2. If a cell has already been visited with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">energy = 5, mask = 0b011</code>, and later BFS reaches the <em>same cell</em> with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">energy = 2, mask = 0b011</code>, should we explore from this new state too, or skip it? Why?
+3. Why is it fine to stop and return the answer the <em>moment</em> we pop a state with the full mask, instead of continuing to check if some other completion is even shorter?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><br></p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">Answer to Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Because BFS naturally explores <em>many different paths at once</em>, branching in all directions — there isn't just one single "current" energy or mask at any moment; different branches of the search are simultaneously at different cells with different energy/mask combinations. The state must travel <em>with</em> each branch, which is exactly what bundling it into the queue entries accomplishes.
+2. We should explore it — <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(2, 0b011)</code> is a genuinely different state from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(5, 0b011)</code> at the same cell, since with less energy remaining, different future moves may or may not be affordable. It's not automatically "worse" in a way that lets us skip it — treating it as unvisited is required for correctness (although as noted in Section 19, this is exactly why the state space includes the energy dimension explicitly, rather than just row/col).
+3. Because BFS explores states in strictly non-decreasing order of distance (it processes everything at distance <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">d</code> before anything at distance <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">d+1</code>), the very first time we encounter a "fully collected" state is guaranteed to have the smallest possible distance — no other completion, found later in the queue, could ever have a smaller distance than one found earlier.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">24. Final Revision</h2>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🧠 Problem in One Sentence</h2>
+Find the minimum number of grid moves to collect all litter, where energy depletes with each move and only fully resets when standing on a recharge tile.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🔑 Main Idea</h2>
+Treat <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(position, remaining energy, bitmask of litter collected)</code> as a single BFS state, and run ordinary breadth-first search over this enlarged state space — the first time the mask becomes "everything collected" gives the minimum moves.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⚙️ Algorithm</h2>
+1. Locate the start cell and assign each litter cell a unique bit.
+2. BFS from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(start, full energy, mask=0)</code>, exploring 4 directions per state.
+3. On each move: energy resets to full if landing on <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">'R'</code>, otherwise drops by 1; mask gains a bit if landing on unlit litter.
+4. Skip moves where current energy is 0, and skip states already visited.
+5. Return the distance the instant a state with the full mask is popped; if BFS exhausts without that, return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⏱️ Complexity</h2>
+Time: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(rows × cols × energy × 2^litterCount)</code>
+Space: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(rows × cols × energy × 2^litterCount)</code>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🎯 Pattern to Remember</h2>
+When a grid shortest-path problem has an extra depletable/resettable resource and a small "must-collect-all" set, enlarge the BFS state to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(position, resource, bitmask)</code> rather than trying to bolt these on separately.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">25. Beginner Quiz</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong>(Understanding)</strong> Why does energy need to be part of the BFS state instead of just checked as a side condition?
+2. <strong>(Basic concept)</strong> If there are 4 litter pieces and you've collected the 2nd and 4th (using 0-indexed positions 0,1,2,3), what is the mask in binary, and as a decimal number?
+3. <strong>(Logic)</strong> Why can't we safely assume energy resets to full every time we start heading toward the next litter piece?
+4. <strong>(Dry run)</strong> For a tiny 1×3 grid <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">["S", "L", "R"]</code> written as a single row <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"SLR"</code> with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">energy = 1</code>, walk through what BFS would do, and give the final answer.
+5. <strong>(Complexity/pattern)</strong> Why does this problem's state space multiply <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">rows × cols × energy × 2^litterCount</code> instead of just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">rows × cols</code>, and what specific phrase in the problem (about energy resetting) is the clue that a plain positional BFS would be incorrect, not just slow?</p>
+    </div>
+  </article>
+
+  <footer style="max-width: 800px; margin: 4rem auto 0; padding: 2rem 1rem; border-top: 1px solid #27272a; text-align: center; color: #71717a; font-size: 0.9rem;">
+    <p>&copy; 2026 Mukesh Pal. All rights reserved. Full-Stack Developer & Co-Founder at CodeByte.</p>
+  </footer>
+</body>
+</html>
