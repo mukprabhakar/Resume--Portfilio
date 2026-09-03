@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3875. Construct Uniform Parity Array I Solution | Mukesh Pal LeetCode POTD</title>
+  <meta name="description" content="Determine if an array can be transformed into a uniform parity array by keeping or subtracting other elements. Explains the mathematical proof showing why the answer is always true." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mukprabhakar.in/leetcode-potd/construct-uniform-parity-array-i" />
+  
+  <!-- SPA redirect decoder for GitHub Pages -->
+  <script>window.location.href = '/?/leetcode-potd/construct-uniform-parity-array-i';</script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem; border-bottom: 1px solid #27272a;">
+    <p><a href="/leetcode-potd">← Back to LeetCode POTD</a> | <a href="/">Portfolio Home</a></p>
+  </header>
+
+  <article style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.2;">3875. Construct Uniform Parity Array I</h1>
+      <p style="color: #a1a1aa; font-size: 0.95rem; margin-top: 0;">
+        Difficulty: <strong>Easy</strong> | Published on <strong>2026-09-03</strong>
+      </p>
+    </header>
+
+    <div style="font-size: 1.1rem; line-height: 1.8; color: #d4d4d8;">
+      <h1 style="color: #10b981; margin-top: 2.5rem;">3875. Construct Uniform Parity Array I</h1>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">This one is a nice change of pace — it's "Easy," and the real challenge isn't writing complicated code, it's spotting a clean <strong>mathematical proof</strong> hiding inside the problem. Let's build it up from zero.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">1. Problem in Very Simple Language</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You have an array <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1</code> of numbers, all different from each other.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You must build a second array <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2</code>, same length, where <strong>every single element of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2</code> is even, OR every single element is odd</strong> — you pick which one, but you can't mix.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">For each position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2</code>, you're allowed to fill it in with <strong>one of two choices</strong>:
+<ul style="line-height: 1.7; color: #d4d4d8; padding-left: 1.5rem;"><li>Just copy the number straight over: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2[i] = nums1[i]</code>, or</li>
+<li>Subtract some <em>other</em> number in the array from it: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2[i] = nums1[i] - nums1[j]</code> (where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j</code> is any other valid position, not <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> itself).</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You get to make this choice independently for every position — some positions can use the "copy" option while others use the "subtract" option, however you like.
+<li><strong>What's given:</strong> the array <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1</code>.</li>
+<li><strong>What to find:</strong> is there <em>some</em> way to fill in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2</code> (mixing copy/subtract choices freely) so that everything ends up the same parity (all even or all odd)?</li>
+<li><strong>What to return:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code> if possible, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">false</code> if not.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">2. Real-Life Analogy</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine a row of lockers, each with a number tag on it. For each locker, you're allowed to either keep its tag exactly as-is, OR swap it for "this locker's number minus some other locker's number." Your goal: end up with every single locker showing either an odd tag or an even tag — no mixing allowed. You get to decide, locker by locker, which trick to use.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">3. Important Programming Concepts I Need First</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Array</h3>
+<li><strong>Concept:</strong> A numbered list of values.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1 = [2, 3]</code> — position 0 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>, position 1 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>.</li>
+<li><strong>Why we need it:</strong> Our whole input and output are arrays.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Even and Odd numbers, and "Parity"</h3>
+<li><strong>Concept:</strong> A number is <strong>even</strong> if it divides evenly by 2 (no remainder), and <strong>odd</strong> if it doesn't. "Parity" is just the general word for "is it even or odd?" — two numbers "have the same parity" if they're both even or both odd.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code> have the same parity (both even). <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">7</code> have different parity.</li>
+<li><strong>Why we need it:</strong> The entire goal of this problem — "all odd or all even" — is a statement purely about parity.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Subtraction and Parity (a key mathematical fact)</h3>
+<li><strong>Concept:</strong> When you subtract one whole number from another, there's a simple, reliable rule for the <em>parity</em> of the result:</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">even − even = even</code></li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">odd − odd = even</code></li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">even − odd = odd</code></li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">odd − even = odd</code></li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">In other words: <strong>subtracting an even number never changes parity. Subtracting an odd number always flips parity</strong> (even ↔ odd).
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10 - 4 = 6</code> (even − even = even, parity unchanged). <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10 - 3 = 7</code> (even − odd = odd, parity flipped).</li>
+<li><strong>Why we need it:</strong> This single fact is the entire engine behind solving this problem — figuring out exactly when we <em>can</em> and <em>can't</em> change a number's parity using the "subtract" option.</li></p>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Loop</h3>
+<li><strong>Concept:</strong> Repeats an action for every item in a list.</li>
+<li><strong>Example:</strong> "Go through every number in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1</code> and count how many are odd."</li>
+<li><strong>Why we need it:</strong> We need to scan the array once to count odd numbers.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">If/else</h3>
+<li><strong>Concept:</strong> Branching logic based on a condition.</li>
+<li><strong>Why we need it:</strong> We'll reason through a couple of "what if" scenarios based on how many odd numbers exist.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Boolean</h3>
+<li><strong>Concept:</strong> A value that's either <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code> or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">false</code>.</li>
+<li><strong>Why we need it:</strong> Our answer is literally a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code>/<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">false</code> value.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">4. Understand the Input</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Take Example 1:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">nums1 = [2, 3]</code></pre>
+<li>Position 0 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> (even).</li>
+<li>Position 1 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> (odd).</li>
+<li>We're asked: can we build <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2</code>, same length, where we independently choose "copy" or "subtract another element" at each position, such that the result is either fully odd or fully even?</li>
+<li>Why does it matter that <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> is even and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> is odd? Because whether we can <em>change</em> a number's parity (via subtraction) depends entirely on whether there's an <em>odd</em> number elsewhere in the array to subtract (as we'll prove in a moment).</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">5. Understand the Output</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code>
+<li>The example shows: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2[0] = nums1[0] - nums1[1] = 2 - 3 = -1</code> (odd!), and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2[1] = nums1[1] = 3</code> (already odd).</li>
+<li>Both final values are odd, so the "all odd" target was achieved.</li>
+<li>Notice <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2[0]</code> used the "subtract" trick to <em>flip</em> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> (even) into something odd, by subtracting the odd number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> — exactly matching our parity-flip rule from Section 3.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">6. Solve the Example Manually</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's manually reason through <strong>Example 1</strong>: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1 = [2, 3]</code>.</p>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Step 1: Look at each element's own parity</h3>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Index | Value | Parity |
+|---|---|---|
+| 0 | 2 | even |
+| 1 | 3 | odd |</p>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Step 2: Try target = "all even"</h3>
+<li>Index 1 (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>, odd) needs to become even. To flip its parity, we must subtract an <em>odd</em> number from it (per our rule). Is there an odd number at some <em>other</em> index? The only odd number in the whole array is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> itself, at index 1 — there's no <em>other</em> odd number anywhere else to use! So index 1 is stuck — it can't become even.</li>
+<li><strong>Target "all even" fails.</strong></li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Step 3: Try target = "all odd"</h3>
+<li>Index 0 (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>, even) needs to become odd. To flip its parity, we subtract an <em>odd</em> number from it. Is there an odd number at some other index? Yes — index 1 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>, which is odd! So <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2[0] = 2 - 3 = -1</code>, which is odd. ✔️</li>
+<li>Index 1 (value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>, odd) already matches the target — just copy it directly: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2[1] = 3</code>. ✔️</li>
+<li><strong>Target "all odd" succeeds!</strong></li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Since at least one target (odd) works, the answer is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code>. ✔️ matches!</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">7. Think Like a Programmer</h2>
+<li><strong>What do I know?</strong> For any element, I can either leave its parity alone (copy), or flip it (subtract an odd number, per our rule) — but flipping requires an odd number to exist <em>somewhere else</em> in the array.</li>
+<li><strong>What do I need to find?</strong> Whether <em>either</em> "make everything even" or "make everything odd" is achievable.</li>
+<li><strong>What can I try?</strong> Check both possible targets (all-even, all-odd) separately, and see if either one is achievable for every element.</li>
+<li><strong>What happens if I try every possibility?</strong> There are only 2 targets to check (even or odd) — nowhere near an exponential search. This is naturally small and fast.</li>
+<li><strong>Can I make it faster?</strong> It's already about as fast as it can be — but let's see if we can find an even deeper shortcut by understanding <em>when</em> each target succeeds or fails, using nothing more than counting.</li>
+<li><strong>What information should I remember?</strong> Just one number: <strong>how many odd numbers are in the whole array</strong> (let's call it <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount</code>).</li>
+<li><strong>What pattern do I notice?</strong> For target "all even": every <em>odd</em> element needs to flip, which requires <em>another</em> odd element to subtract (not itself!). This is only impossible when there's <strong>exactly one</strong> odd number total (that lone odd number has no partner). For target "all odd": every <em>even</em> element needs to flip, which requires <em>any</em> odd element to exist somewhere in the array. This is only impossible when there are <strong>zero</strong> odd numbers total.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">8. Start With the Brute Force Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Brute force idea:</strong> For each of the 2 possible targets (all-even, all-odd), check every element: if it already matches the target, fine; if not, check whether there's <em>some other</em> element with odd parity available to subtract (since only subtracting an odd number can flip parity). If every element can be satisfied, that target works — return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code>. If neither target works, return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">false</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why it works:</strong> We're directly checking, for both possible goals, whether every element individually has a legal way to reach that goal — which is exactly the definition of "constructible."</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Time complexity:</strong> For each of the 2 targets, we scan all <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> elements, and for the ones that need to flip, we just need to know "does <em>some</em> odd number exist elsewhere?" — which we can precompute once (count of odd numbers) rather than re-scanning per element. So this is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> overall.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Space complexity:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code> extra space (just a counter).</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">class Solution {
+    public boolean uniformArray(int[] nums1) {
+        int n = nums1.length;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int oddCount = 0;
+        for (int num : nums1) {
+            if (num % 2 != 0) {
+                oddCount++;
+            }
+        }
+        int evenCount = n - oddCount;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Check target &quot;all even&quot;:
+        // Every ODD element needs to flip, which needs ANOTHER odd element
+        // (not itself) to subtract. Fails only if there&#039;s exactly 1 odd number.
+        boolean allEvenPossible = (oddCount != 1);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Check target &quot;all odd&quot;:
+        // Every EVEN element needs to flip, which needs ANY odd element
+        // to exist somewhere. Fails only if there are 0 odd numbers.
+        boolean allOddPossible = (oddCount &gt;= 1);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return allEvenPossible || allOddPossible;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">9. Explain the Brute Force Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int n = nums1.length;</code> — store the array length (used implicitly through <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">evenCount</code>, though we don't strictly need <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> elsewhere).</li>
+<li>The <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for (int num : nums1)</code> loop — walks through every element once, checking <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">num % 2 != 0</code> (true if the number is odd), incrementing <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount</code> each time we find one. This is the <em>only</em> pass we need over the actual array data.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int evenCount = n - oddCount;</code> — not strictly required for the final answer, but useful to have named for clarity (everything that's not odd is even).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">boolean allEvenPossible = (oddCount != 1);</code> — as reasoned in Section 7: target "all even" fails <em>only</em> when there's exactly one odd number (it has no other odd partner to flip with); it succeeds whenever there are zero odd numbers (nothing needs to flip at all) or two-or-more odd numbers (each odd element can always find some <em>other</em> odd element to pair with).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">boolean allOddPossible = (oddCount >= 1);</code> — target "all odd" fails <em>only</em> when there are zero odd numbers anywhere (no odd number exists to use for flipping the evens); it succeeds as soon as at least one odd number exists anywhere in the array, since every even element can reuse that same odd number to flip.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return allEvenPossible || allOddPossible;</code> — the overall answer is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code> if <em>either</em> target is achievable.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">10. Why Is This Already "Ideal" — Nothing More to Optimize?</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Unlike some earlier problems, there's no slow nested loop lurking here to eliminate — a single pass to count odd numbers, followed by two simple boolean checks, is already about as fast as any solution could be (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>, which is required at minimum just to look at every input element once). So instead of "optimizing," let's dig one level deeper and discover something remarkable about this specific problem.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">11. Find the Deeper Pattern</h2>
+<blockquote style="border-left: 4px solid #10b981; padding-left: 1rem; color: #a1a1aa; font-style: italic; margin: 1.5rem 0;">"Can we simplify this even further?"</blockquote>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's look very closely at our two conditions:</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">allEvenPossible = (oddCount != 1)
+allOddPossible  = (oddCount &gt;= 1)</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allEvenPossible</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">false</code> <strong>only</strong> when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount == 1</code>.
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allOddPossible</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">false</code> <strong>only</strong> when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount == 0</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">These are two <em>completely different, mutually exclusive</em> numbers (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount</code> can't simultaneously equal both <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>)! That means <strong>it is mathematically impossible for both conditions to be false at the same time.</strong> At least one of them is <em>always</em> true, no matter what the array looks like.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⭐ Key Insight</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Before the insight</h3>
+It feels like we need to carefully check both targets and combine the results with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">||</code>, expecting that sometimes both could fail, giving <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">false</code>.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The problem</h3>
+It's not obvious at first that <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">false</code> might never actually be reachable — the problem <em>looks</em> like it should sometimes be impossible, given it's phrased as a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code>/<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">false</code> question.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The insight</h3>
+<strong>The two failure conditions (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount == 1</code> for "all even," and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount == 0</code> for "all odd") can never both be true simultaneously</strong>, since <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount</code> is a single specific number and can't equal two different values at once. Therefore, for <em>any</em> valid input array, <strong>at least one of the two targets is always achievable</strong> — meaning the answer to this problem is <strong>always <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code></strong>, for every possible valid input!
+<h3 style="color: #ffffff; margin-top: 1.5rem;">After the insight</h3>
+The entire problem reduces to a one-line proof rather than a computation: given the constraints (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n ≥ 1</code>, distinct positive integers), you can <em>always</em> construct a valid <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2</code>. The "algorithm" becomes trivial — but understanding <em>why</em> is the actual point of the problem.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">13. Dry Run — Confirming "Always True" on a Tricky Case</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's test the trickiest possible scenario: <strong>exactly one odd number</strong>, to make sure the proof holds.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">nums1 = [1, 2, 4]</code></pre>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount = 1</code> (only the value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> is odd).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allEvenPossible = (oddCount != 1)</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1 != 1)</code> → <strong>false</strong>. (Makes sense: the lone odd number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> has no other odd partner to flip to even.)</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allOddPossible = (oddCount >= 1)</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1 >= 1)</code> → <strong>true</strong>.</li>
+<li>Since <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allOddPossible</code> is true, we go with target "all odd": </li>
+<li>Index 0 (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>, odd): already matches, copy directly → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>.</li>
+<li>Index 1 (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>, even): flip using the odd number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2 - 1 = 1</code> (odd). ✔️</li>
+<li>Index 2 (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4</code>, even): flip using the odd number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4 - 1 = 3</code> (odd). ✔️</li>
+<li>Final <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2 = [1, 1, 3]</code> — all odd! Construction succeeds, confirming <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code>.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Even in this "worst case" for the even-target, the odd-target rescues us — exactly as the proof guarantees.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">14. Optimized Code</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">class Solution {
+    public boolean uniformArray(int[] nums1) {
+        int oddCount = 0;
+        for (int num : nums1) {
+            if (num % 2 != 0) {
+                oddCount++;
+            }
+        }
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">boolean allEvenPossible = (oddCount != 1);
+        boolean allOddPossible = (oddCount &gt;= 1);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return allEvenPossible || allOddPossible; // always true, but shown for clarity
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">class Solution {
+    uniformArray(nums1) {
+        let oddCount = 0;
+        for (const num of nums1) {
+            if (num % 2 !== 0) {
+                oddCount++;
+            }
+        }
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const allEvenPossible = (oddCount !== 1);
+        const allOddPossible = (oddCount &gt;= 1);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return allEvenPossible || allOddPossible;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">15. Explain the Code Line by Line</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Already covered in full detail in Section 9 — the logic is identical. The only "new" thing to internalize here is that, given the proof in Section 11, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allEvenPossible || allOddPossible</code> is a tautology (always true) for this specific problem's constraints — which is why the bare <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return true;</code> version is 100% equivalent and passes every test case.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">16. Test With Multiple Examples</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 1 — Normal Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1 = [2, 3]</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount = 1</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allEvenPossible = false</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allOddPossible = true</code> → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 2 — Different Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1 = [4, 6]</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount = 0</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allEvenPossible = true</code> (nothing needs to flip), <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allOddPossible = false</code> → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code> ✔️ (via the "all even" route, both already even, just copy directly)
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 3 — Edge Case (single element)</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1 = [7]</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 1</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount = 1</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allEvenPossible = false</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">allOddPossible = true</code> (the single element <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">7</code> is already odd, so target "all odd" is trivially satisfied by copying — no flip ever needed since there's nothing to flip) → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code> ✔️
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">17. Edge Cases</h2>
+<li><strong>All elements already even</strong> (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount = 0</code>) → target "all even" is trivially true (just copy everything); no flipping ever attempted.</li>
+<li><strong>All elements already odd</strong> (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount = n</code>) → target "all odd" is trivially true (just copy everything).</li>
+<li><strong>Exactly one odd element</strong> → target "all even" fails for that lone odd element (no partner), but target "all odd" always succeeds (that one odd number can flip every even element).</li>
+<li><strong>Single-element array (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 1</code>)</strong> → no other index ever exists to subtract from, so the only usable choice is "copy" — but that's always already uniform (trivially, one element is automatically "all the same parity" as itself).</li>
+<li><strong>Large arrays with many mixed parities</strong> → still always works, since target "all odd" only ever needs <em>one</em> existing odd number as a universal helper for every even element.</li></ul>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">18. Time Complexity</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>What is time complexity?</strong> A way to describe how much work an algorithm does as its input grows, using a general rule of thumb.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Counting odd numbers: O(n) — one pass through the array
+Everything else: O(1) — just comparing a couple of numbers
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Overall: O(n)</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why:</strong> We only need to look at each number once, to check whether it's odd. After that, the rest is just simple arithmetic on a single counted value — no nested loops, no repeated scanning. This is the fastest possible complexity for a problem that requires looking at every input element at least once (you can't know anything about numbers you haven't looked at).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">19. Space Complexity</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">We only ever store a couple of counter variables (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount</code>, and optionally <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">evenCount</code>) — none of which grow with the size of the input array.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">So extra space used is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code> — constant.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">20. Common Mistakes Beginners Make</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "I need to actually try building <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2</code> element by element and check if it works, simulating the whole process."
+✅ You never need to <em>construct</em> the actual array — you only need to reason about whether a valid construction <em>exists</em>, which boils down to counting odd numbers and checking two simple conditions.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "Subtracting any other number flips the parity."
+✅ Only subtracting an <strong>odd</strong> number flips parity. Subtracting an <strong>even</strong> number leaves parity unchanged — this distinction is the entire key to the problem.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "If there's exactly one odd number, the answer must be tricky or possibly false."
+✅ It initially seems that way (target "all even" indeed fails in that case), but target "all odd" <em>always</em> saves the day whenever there's at least one odd number — so this specific case still results in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "I should check whether <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j</code> can equal <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>."
+✅ The problem states <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j != i</code> for the subtraction option — but this restriction almost never actually matters here, since the "helper" element we use (an odd number, when flipping an even element, or vice versa) always has <em>different parity</em> from the element being flipped, so it can never be the <em>same</em> element anyway (a number can't simultaneously be both the element at index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> and have different parity from itself).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "This problem needs a complex algorithm since it's asking about constructing an array."
+✅ Not every construction problem requires simulating the actual construction — sometimes (as here), a short mathematical argument about <em>feasibility</em> is the entire solution, which is exactly why this is rated "Easy" despite sounding constructive.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">21. How to Recognize This Pattern in Other Problems</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Watch for these signal phrases:</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">&quot;Choose one of the following options for each element&quot;
+&quot;All elements must satisfy some property (parity, sign, etc.)&quot;
+&quot;Return true/false&quot; (rather than &quot;return the array&quot;) — hints the real question
+  is about FEASIBILITY, not actual construction
+&quot;Distinct integers&quot; combined with simple arithmetic operations (+, -, parity)</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Whenever a problem gives you a couple of simple per-element choices and asks "is it possible," try first asking: <strong>"under what condition would this be impossible?"</strong> — sometimes, as here, that condition turns out to be so narrow (or self-contradictory) that the answer is almost always (or literally always) achievable.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">22. Interview Thinking</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">1. Understand the input    → array of distinct integers
+2. Understand the output   → true/false: can we make nums2 uniformly odd or even?
+3. Try brute force         → check both targets directly using a parity-counting pass
+4. Find what makes it slow → nothing is slow here — it&#039;s already O(n)
+5. Identify repeated work  → none; but look for a deeper mathematical shortcut
+6. What can be stored?     → just a count of odd numbers
+7. Optimize / simplify     → realize the two failure conditions (oddCount==1, oddCount==0)
+                              can never happen simultaneously → answer is ALWAYS true
+8. Check edge cases        → single element, all-even, all-odd, exactly one odd number
+9. Analyze complexity      → O(n) time (or O(1) if you fully exploit the proof), O(1) space</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Applied here: the interview-winning move isn't clever code — it's spotting that the two "impossible" scenarios are mutually exclusive, so the answer collapses to a guaranteed <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code>. Even if you don't fully prove this in the moment, the counting-based solution is a fully correct, efficient fallback.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">23. Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Try these before checking the answers:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Why does subtracting an <em>even</em> number never change a value's parity, using the "even − even = even, odd − even = odd" facts from Section 3?
+2. If <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1</code> has 5 elements, 4 of them odd and 1 even, which target (all-even or all-odd) is <em>guaranteed</em> to work, and why?
+3. Can you construct any array (respecting the problem's constraints) where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount</code> is simultaneously 0 and 1? Why or why not — and what does that tell you about this problem's answer?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><br></p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">Answer to Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Subtracting an even number keeps the "evenness contribution" unchanged: even − even stays even (removing an even amount doesn't cross an odd/even boundary), and odd − even stays odd (same idea) — in both cases, the <em>original</em> parity survives untouched.
+2. Target "all odd" is guaranteed to work here: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount = 4 ≥ 1</code>, so the single even element can flip to odd using any of the 4 available odd numbers, and the 4 odd elements just copy directly.
+3. No — <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount</code> is a single specific count of a fixed array; it's exactly one number, and can't be two different values at once. Since target "all even" only fails when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount == 1</code>, and target "all odd" only fails when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount == 0</code>, and these can never both hold true simultaneously, <strong>at least one target always succeeds</strong> — meaning this problem's answer is provably always <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">true</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">24. Final Revision</h2>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🧠 Problem in One Sentence</h2>
+Determine whether <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1</code> can be transformed, index by index (copy or subtract-another-element), into an array that's entirely odd or entirely even.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🔑 Main Idea</h2>
+Subtracting an even number never changes parity; subtracting an odd number always flips it — so target "all even" only fails when there's exactly one odd number, and target "all odd" only fails when there are zero odd numbers. These two failure conditions can never both hold, so one target is always achievable.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⚙️ Algorithm</h2>
+1. Count how many elements in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1</code> are odd (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount</code>).
+2. Target "all even" is achievable unless <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount == 1</code>.
+3. Target "all odd" is achievable unless <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount == 0</code>.
+4. Return true if either target is achievable (which is provably always the case).
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⏱️ Complexity</h2>
+Time: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>
+Space: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🎯 Pattern to Remember</h2>
+When a problem offers per-element "keep or transform" choices tied to a simple property (like parity), check whether the two possible failure conditions can ever coexist — if they can't, the answer may be a guaranteed constant.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">25. Beginner Quiz</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong>(Understanding)</strong> Why does the problem allow <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j</code> to be <em>any</em> other index, rather than requiring a specific relationship between <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j</code>?
+2. <strong>(Basic concept)</strong> What is the parity of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">15 - 8</code>? Of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">15 - 9</code>? Explain using the "subtracting odd flips, subtracting even doesn't" rule.
+3. <strong>(Logic)</strong> Why does target "all even" specifically fail when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount == 1</code>, but succeed when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">oddCount == 2</code> or more?
+4. <strong>(Dry run)</strong> For <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums1 = [10, 21, 33]</code>, count the odd numbers, determine which target(s) work, and describe one valid construction of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums2</code>.
+5. <strong>(Complexity/pattern)</strong> Why can this problem be solved in <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> time (or arguably <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code>), and what does it mean for a "return true/false" problem to have a provably constant answer — how might you recognize this kind of situation in a different problem?</p>
+    </div>
+  </article>
+
+  <footer style="max-width: 800px; margin: 4rem auto 0; padding: 2rem 1rem; border-top: 1px solid #27272a; text-align: center; color: #71717a; font-size: 0.9rem;">
+    <p>&copy; 2026 Mukesh Pal. All rights reserved. Full-Stack Developer & Co-Founder at CodeByte.</p>
+  </footer>
+</body>
+</html>
