@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3904. Smallest Stable Index II Solution | Mukesh Pal LeetCode POTD</title>
+  <meta name="description" content="Find the smallest index where the maximum of all elements from the start minus the minimum of all elements to the end is at most k with large constraints (N up to 100,000) using prefix max and suffix min precomputation." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mukprabhakar.in/leetcode-potd/smallest-stable-index-ii" />
+  
+  <!-- SPA redirect decoder for GitHub Pages -->
+  <script>window.location.href = '/?/leetcode-potd/smallest-stable-index-ii';</script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem; border-bottom: 1px solid #27272a;">
+    <p><a href="/leetcode-potd">← Back to LeetCode POTD</a> | <a href="/">Portfolio Home</a></p>
+  </header>
+
+  <article style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.2;">3904. Smallest Stable Index II</h1>
+      <p style="color: #a1a1aa; font-size: 0.95rem; margin-top: 0;">
+        Difficulty: <strong>Medium</strong> | Published on <strong>2026-09-05</strong>
+      </p>
+    </header>
+
+    <div style="font-size: 1.1rem; line-height: 1.8; color: #d4d4d8;">
+      <h1 style="color: #10b981; margin-top: 2.5rem;">3904. Smallest Stable Index II</h1>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Good news: this is <strong>exactly the same problem</strong> as Part I — same definition, same examples — with only one thing changed in the constraints: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> can now be up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10^5</code> instead of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">100</code>. That single change is the whole story of this "sequel." Let's walk through it properly anyway, since it's worth understanding <em>why</em> this constraint bump matters.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">1. Problem in Very Simple Language</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Identical to Part I: for every index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>, the <strong>instability score</strong> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">max(nums[0..i]) - min(nums[i..n-1])</code> — the biggest value from the start through <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> (inclusive), minus the smallest value from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> through the end (inclusive). An index is <strong>stable</strong> if this score is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">≤ k</code>. Find the smallest stable index, or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code> if none exists.
+<ul style="line-height: 1.7; color: #d4d4d8; padding-left: 1.5rem;"><li><strong>What's given:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code> — but now <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums</code> can have up to 100,000 elements.</li>
+<li><strong>What to find:</strong> the same thing as before.</li>
+<li><strong>What to return:</strong> the same thing as before.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">2. Real-Life Analogy</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Same hiking-trail analogy as Part I: standing at any point, you look backward for the highest peak you've passed, and forward for the lowest valley ahead. You want the first spot where that gap is small enough. The only difference now: <strong>the trail is 1,000 times longer</strong> — so whatever method you use to scan it needs to not get dramatically slower just because the trail grew.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">3. Important Programming Concepts I Need First</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Everything from Part I still applies directly:
+<li><strong>Prefix Max</strong> — <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] = max(nums[0..i])</code>, built in one left-to-right pass, where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] = max(prefixMax[i-1], nums[i])</code>.</li>
+<li><strong>Suffix Min</strong> — <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin[i] = min(nums[i..n-1])</code>, built in one right-to-left pass, where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin[i] = min(suffixMin[i+1], nums[i])</code>.</li>
+<li><strong>Why these avoid rescanning:</strong> each one only ever needs "the previous running best" plus "the one new element," never a fresh look back over the whole range.</li></p>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">New concept this time: Why constraints actually matter here</h3>
+<li><strong>Concept:</strong> A brute-force approach with nested loops (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code>) that seemed "fine" when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n ≤ 100</code> (at most <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10,000</code> operations) becomes catastrophic when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n ≤ 100,000</code> (up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10,000,000,000</code> operations) — the <em>exact same code</em>, just given a bigger input, goes from "instant" to "would take minutes or longer," which competitive judges like LeetCode simply won't wait for (they enforce a time limit, typically a couple of seconds).</li>
+<li><strong>Why we need it:</strong> This is precisely why Part I could get away with brute force but Part II cannot — the algorithm must be genuinely <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> (or close to it) this time, not just "technically correct."</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">4. Understand the Input</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Identical to Part I's Example 1:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">nums = [5, 0, 1, 4]
+k = 3</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">5. Understand the Output</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Identical reasoning to Part I: output is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>, since index 3 is the first index where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">max(0..i) - min(i..n-1) <= k</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">6. Solve the Example Manually</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">This is identical to Part I's Section 6 — building <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax = [5,5,5,5]</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin = [0,0,1,4]</code>, then finding index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> as the first place where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] - suffixMin[i] = 5 - 4 = 1 <= 3</code>. Nothing changes about the manual process — only about how we'd have to implement it if <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> were huge.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">7. Think Like a Programmer</h2>
+<li><strong>What do I know?</strong> The exact same relationships as Part I: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">max(0..i) = max(max(0..i-1), nums[i])</code>, and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">min(i..n-1) = min(min(i+1..n-1), nums[i])</code>.</li>
+<li><strong>What's different this time?</strong> With <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">100,000</code>, any approach that does <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> work <em>per index</em> (like rescanning a growing/shrinking range from scratch for every <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>) totals <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> ≈ <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code> billion operations in the worst case — this <strong>will time out</strong>.</li>
+<li><strong>What must I do instead?</strong> Use the prefix-max / suffix-min precomputation from Part I — which was already the "proper" <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> solution there, just not strictly <em>required</em> by Part I's tiny constraints. Now, it's mandatory.</li>
+<li><strong>Is there anything conceptually new to figure out?</strong> No — the insight is 100% the same as Part I. This "Part II" is really testing whether you <em>actually</em> understood why the optimized approach works, or whether you just happened to get away with brute force last time because the input was small.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">8. Why the Part I Brute Force Now Fails</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's revisit the brute force from Part I to see exactly where it breaks:</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">// This will TIME OUT for n up to 100,000
+class Solution {
+    public int firstStableIndex(int[] nums, int k) {
+        int n = nums.length;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (int i = 0; i &lt; n; i++) {
+            int maxLeft = Integer.MIN<em>VALUE;
+            for (int a = 0; a &lt;= i; a++) {              // up to n iterations
+                maxLeft = Math.max(maxLeft, nums[a]);
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int minRight = Integer.MAX</em>VALUE;
+            for (int b = i; b &lt; n; b++) {                // up to n iterations
+                minRight = Math.min(minRight, nums[b]);
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (maxLeft - minRight &lt;= k) {
+                return i;
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return -1;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why it times out:</strong> The outer loop runs <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> times, and <em>each</em> iteration does up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2n</code> work (rescanning both the left part and the right part from scratch). That's <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> total — for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 100,000</code>, that's on the order of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code> billion basic operations. Even at a very generous "100 million operations per second" estimate, that's roughly 100 seconds — far beyond what any judge will allow (typically 1-2 seconds for Java).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">11. The Fix: Reuse Part I's Optimized Approach</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">O(n²) brute force (rescanning per index)
+        ↓
+Precompute prefixMax once, left to right — O(n)
+Precompute suffixMin once, right to left — O(n)
+        ↓
+Final scan: O(n) lookup-and-compare, no rescanning
+        ↓
+Total: O(n) — now safely handles n up to 100,000</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⭐ Key Insight</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Before the insight</h3>
+It's tempting to think "Part II is a totally new, harder problem" just because the constraints grew.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The problem</h3>
+Nothing about the <em>definition</em> changed — only the <em>scale</em>. If you don't already have a truly <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> (or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n log n)</code>) solution, the bigger input size will expose that weakness immediately via a timeout, even though your Part I brute-force logic was 100% <em>correct</em>.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The insight</h3>
+<strong>Constraint changes between "Part I" and "Part II" versions of a problem are almost always a direct signal about required time complexity, not a signal that the core logic needs to change.</strong> The prefix-max / suffix-min technique from Part I was <em>already</em> the right full solution — Part I just didn't force you to discover it. Part II does.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">After the insight</h3>
+We reuse the exact same algorithm, unchanged in structure, and it now comfortably handles the full constraint range.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">13. Dry Run</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Identical to Part I's Section 13 (Example 2: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums=[3,2,1], k=1</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax=[3,3,3]</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin=[1,1,1]</code>, every index scores <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>, none <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">≤ 1</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>). The computation process is completely unchanged; only the <em>size</em> of array this process needs to comfortably scale to has grown.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">14. Optimized Code</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">class Solution {
+    public int firstStableIndex(int[] nums, int k) {
+        int n = nums.length;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int[] prefixMax = new int[n];
+        prefixMax[0] = nums[0];
+        for (int i = 1; i &lt; n; i++) {
+            prefixMax[i] = Math.max(prefixMax[i - 1], nums[i]);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int[] suffixMin = new int[n];
+        suffixMin[n - 1] = nums[n - 1];
+        for (int i = n - 2; i &gt;= 0; i--) {
+            suffixMin[i] = Math.min(suffixMin[i + 1], nums[i]);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (int i = 0; i &lt; n; i++) {
+            if (prefixMax[i] - suffixMin[i] &lt;= k) {
+                return i;
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return -1;
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">class Solution {
+    firstStableIndex(nums, k) {
+        const n = nums.length;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const prefixMax = new Array(n);
+        prefixMax[0] = nums[0];
+        for (let i = 1; i &lt; n; i++) {
+            prefixMax[i] = Math.max(prefixMax[i - 1], nums[i]);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const suffixMin = new Array(n);
+        suffixMin[n - 1] = nums[n - 1];
+        for (let i = n - 2; i &gt;= 0; i--) {
+            suffixMin[i] = Math.min(suffixMin[i + 1], nums[i]);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (let i = 0; i &lt; n; i++) {
+            if (prefixMax[i] - suffixMin[i] &lt;= k) {
+                return i;
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return -1;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">16. Test With Multiple Examples</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 1 — Normal Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[5,0,1,4], k=3</code> → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 2 — Different Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[3,2,1], k=1</code> → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 3 — Edge Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[0], k=0</code> → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 4 — The case that actually distinguishes Part I from Part II</h3>
+A worst-case-shaped array of length <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">100,000</code>, e.g. strictly decreasing (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[100000, 99999, ..., 1]</code>), with a generous <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code>. The brute force from Section 8 would take on the order of <strong>10 billion operations</strong> and time out. The prefix/suffix version processes this instantly, doing three clean passes of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">100,000</code> steps each — about <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">300,000</code> total operations, finishing in a few milliseconds.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">17. Edge Cases</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">All the same edge cases from Part I apply unchanged (single element, all-increasing, all-decreasing, all-equal, no stable index). One <em>new</em> thing worth calling out explicitly for this version:
+<li><strong>Maximum-size input (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 100,000</code>) combined with an unlucky shape (e.g., no stable index exists at all, forcing a full scan through all 100,000 indices before returning <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>)</strong> — this is the true stress test. Our <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> solution handles it easily (three <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">100,000</code>-length passes); the brute force from Section 8 would not.</li></ul></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">18. Time Complexity</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Brute Force (Part I&#039;s naive version):
+O(n²) — for n = 100,000, this is ~10,000,000,000 operations → TIMES OUT
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Optimized (prefix/suffix precomputation):
+O(n) — three separate single passes, each touching every element once
+      → for n = 100,000, this is ~300,000 operations total → runs instantly</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why this matters now, when it didn't in Part I:</strong> with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n ≤ 100</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> tops out at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10,000</code> operations — trivially fast regardless of approach. With <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n ≤ 100,000</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> explodes to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code> billion — a difference of roughly a <strong>million-fold</strong> increase in work, purely from the constraint change. This is exactly why "Part II" versions of easy problems exist: to force you to actually use the efficient technique, not just the correct-but-slow one.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">19. Space Complexity</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Same as Part I: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>, for the two helper arrays <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin</code>. This is very comfortable even at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 100,000</code> (two arrays of 100,000 integers each is trivial memory usage).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">20. Common Mistakes Beginners Make</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "My Part I brute-force solution worked, so it must still be correct here — maybe there's a bug elsewhere."
+✅ The logic is correct, but <em>too slow</em>. A "Time Limit Exceeded" verdict (rather than "Wrong Answer") is the classic symptom of an algorithm that's logically right but complexity-wise inadequate for the given constraints — the fix is a faster algorithm, not different logic.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "I'll just try to make the brute force's inner loops slightly faster (micro-optimizing the same O(n²) shape)."
+✅ Shaving constants off an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> algorithm doesn't change the fundamental scaling problem — at <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n=100,000</code>, even a "twice as fast" <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> solution is still on the order of 5 billion operations, still far too slow. You need to change the <em>complexity class</em> entirely (to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>), not just optimize within the slow one.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "This must require a totally different, more advanced algorithm since it's now rated differently or has bigger constraints."
+✅ Not necessarily — sometimes (like here), the <em>correct</em> efficient algorithm was already fully knowable from the original problem statement; the bigger constraints just remove the option of skipping it.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">21. How to Recognize This Pattern in Other Problems</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Same problem statement and examples, but &quot;II&quot; has much larger constraints
+      → the REQUIRED algorithm almost certainly hasn&#039;t changed conceptually,
+        but your IMPLEMENTATION must now hit a stricter time complexity
+&quot;n up to 100&quot; vs &quot;n up to 10^5 or 10^9&quot; → a huge jump like this is the
+      clearest possible signal that O(n²) (fine for the small version)
+      will fail the large version</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Whenever you see a "II" sequel with the exact same wording but drastically bigger limits, your first move should be: <strong>re-examine your Part I solution's complexity, and if it wasn't already O(n) or O(n log n), figure out the version of it that is</strong>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">22. Interview Thinking</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">1. Understand the input    → same as Part I, just n up to 1e5 instead of 100
+2. Understand the output   → same as Part I
+3. Try brute force         → same O(n²) idea as Part I
+4. Find what makes it slow → O(n²) at n=1e5 is ~1e10 operations — will time out
+5. Identify repeated work  → same realization as Part I: prefix max / suffix min
+                              can each be built incrementally in one pass
+6. What can be stored?     → prefixMax array, suffixMin array
+7. Optimize                → build both in O(n), then O(n) final scan
+8. Check edge cases        → same as Part I, plus explicitly consider max-size stress cases
+9. Analyze complexity      → O(n) time, O(n) space — now REQUIRED, not just nice-to-have</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">The interview lesson here: always ask yourself, even when brute force technically passes, <strong>"would this still work if the input were 1,000x bigger?"</strong> — that habit is exactly what separates a solution that happens to pass small tests from one that's genuinely correct in complexity.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">23. Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. If <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 100,000</code> and the array happens to be sorted in strictly increasing order, roughly how many operations would the Part I brute force perform in the worst case (as it checks index by index)? Roughly how many would the optimized version perform?
+2. Why doesn't building <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin</code> as two <em>separate</em> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> passes (rather than one combined pass) hurt our overall complexity?
+3. If a future "Part III" of this problem allowed <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10^7</code>, would the current <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> solution still likely be fast enough? Why?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><br></p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">Answer to Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Brute force: roughly <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n²/2 ≈ 5</code> billion operations in the worst case. Optimized: roughly <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3n = 300,000</code> operations total (one pass each for prefixMax, suffixMin, and the final scan) — a difference of about four orders of magnitude.
+2. Because <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n) + O(n) + O(n)</code> is still <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> overall — adding a fixed number of linear passes together doesn't change the overall growth rate; it's still "grows proportionally to n," just with a bigger constant multiplier (3x instead of 1x).
+3. Very likely yes — <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 10^7</code> is about 10 million basic operations across each pass (30 million total), which modern judges can typically handle within a couple of seconds.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">24. Final Revision</h2>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🧠 Problem in One Sentence</h2>
+Identical to Part I: find the smallest index where the max of everything to its left (inclusive) minus the min of everything to its right (inclusive) is at most <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code> — but now <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> can be up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">100,000</code>, so the solution must genuinely be <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🔑 Main Idea</h2>
+The Part I "optimized" approach (prefix-max + suffix-min precomputation) wasn't optional flourish — it's the mandatory solution once <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> grows large, since the brute-force <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> rescanning approach becomes computationally infeasible.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⚙️ Algorithm</h2>
+1. Build <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] = max(prefixMax[i-1], nums[i])</code>, left to right.
+2. Build <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin[i] = min(suffixMin[i+1], nums[i])</code>, right to left.
+3. Scan left to right, return the first <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] - suffixMin[i] <= k</code>.
+4. If none found, return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⏱️ Complexity</h2>
+Time: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>
+Space: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🎯 Pattern to Remember</h2>
+When a "Part II" keeps the same definition but massively raises <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code>, treat it as a direct instruction: <strong>your solution must be O(n) or O(n log n) — go find (or reuse) that version.</strong>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">25. Beginner Quiz</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong>(Understanding)</strong> What is the only thing that actually changed between Part I and Part II of this problem?
+2. <strong>(Basic concept)</strong> Roughly how many operations does an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> algorithm perform when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n = 100,000</code>, and how does that compare to an <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> algorithm on the same input?
+3. <strong>(Logic)</strong> Why does a solution that passes all of Part I's test cases not guarantee it will pass Part II's, even though the problem statement is word-for-word identical?
+4. <strong>(Dry run)</strong> For a strictly decreasing array of length 5, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[50, 40, 30, 20, 10]</code>, with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k = 15</code>, compute <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin</code>, and find the smallest stable index using the optimized approach.
+5. <strong>(Complexity/pattern)</strong> What general lesson should you take away for recognizing "Part II" style sequels on LeetCode, specifically regarding how much attention to pay to the constraints section versus the problem description?</p>
+    </div>
+  </article>
+
+  <footer style="max-width: 800px; margin: 4rem auto 0; padding: 2rem 1rem; border-top: 1px solid #27272a; text-align: center; color: #71717a; font-size: 0.9rem;">
+    <p>&copy; 2026 Mukesh Pal. All rights reserved. Full-Stack Developer & Co-Founder at CodeByte.</p>
+  </footer>
+</body>
+</html>

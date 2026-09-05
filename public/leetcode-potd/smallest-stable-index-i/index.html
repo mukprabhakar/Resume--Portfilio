@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3903. Smallest Stable Index I Solution | Mukesh Pal LeetCode POTD</title>
+  <meta name="description" content="Find the smallest index where the maximum of all elements from the start minus the minimum of all elements to the end is at most k using prefix max and suffix min precomputations." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mukprabhakar.in/leetcode-potd/smallest-stable-index-i" />
+  
+  <!-- SPA redirect decoder for GitHub Pages -->
+  <script>window.location.href = '/?/leetcode-potd/smallest-stable-index-i';</script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem; border-bottom: 1px solid #27272a;">
+    <p><a href="/leetcode-potd">← Back to LeetCode POTD</a> | <a href="/">Portfolio Home</a></p>
+  </header>
+
+  <article style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.2;">3903. Smallest Stable Index I</h1>
+      <p style="color: #a1a1aa; font-size: 0.95rem; margin-top: 0;">
+        Difficulty: <strong>Easy</strong> | Published on <strong>2026-09-05</strong>
+      </p>
+    </header>
+
+    <div style="font-size: 1.1rem; line-height: 1.8; color: #d4d4d8;">
+      <h1 style="color: #10b981; margin-top: 2.5rem;">3903. Smallest Stable Index I</h1>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's teach this one from absolute zero, same structure as always.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">1. Problem in Very Simple Language</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You have an array of numbers, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums</code>, and a threshold number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">For <strong>every single index</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> in the array, you compute a special value called its <strong>instability score</strong>, defined as:
+<ul style="line-height: 1.7; color: #d4d4d8; padding-left: 1.5rem;"><li>Look at all the numbers from the <strong>very start</strong> of the array up through index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> (inclusive) — find the <strong>biggest</strong> number among them.</li>
+<li>Look at all the numbers from index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> (inclusive) all the way to the <strong>very end</strong> of the array — find the <strong>smallest</strong> number among them.</li>
+<li>Subtract: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(biggest number in the first part) - (smallest number in the second part)</code>. That's the instability score for index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Notice something important: index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> is included in <strong>both</strong> halves — once when finding the max of "everything up to and including <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>," and once when finding the min of "everything from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> to the end, including <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>."</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">An index is called <strong>stable</strong> if its instability score is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">≤ k</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Goal:</strong> find the <strong>smallest</strong> index that is stable. If no index qualifies, return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>.
+<li><strong>What's given:</strong> the array <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums</code>, and threshold <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code>.</li>
+<li><strong>What to find:</strong> for each index, the max-of-left-part minus min-of-right-part, then the earliest index where this is small enough.</li>
+<li><strong>What to return:</strong> that smallest stable index, or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">2. Real-Life Analogy</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine you're standing at some point along a hiking trail, looking both ways. Looking <strong>backward</strong> (toward the start of the trail, including where you're standing), you note the <strong>highest peak</strong> you can see behind you. Looking <strong>forward</strong> (toward the end of the trail, including where you're standing), you note the <strong>lowest valley</strong> you can see ahead of you.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Your "instability score" at this spot is: how much higher is that tallest peak behind you compared to that lowest valley ahead of you? If that difference is small enough (≤ some tolerance <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code>), you'd call this spot "stable" — the terrain immediately behind and ahead doesn't swing too wildly. You want to find the <strong>very first (leftmost)</strong> spot along the trail where this is true.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">3. Important Programming Concepts I Need First</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Array</h3>
+<li><strong>Concept:</strong> A numbered list of values, indexed from 0.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums = [5,0,1,4]</code> — index 0 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>, index 3 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4</code>.</li>
+<li><strong>Why we need it:</strong> Our input and all our reasoning happen over this array.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Variable</h3>
+<li><strong>Concept:</strong> A named "box" holding a value we can update.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int runningMax = 5;</code></li>
+<li><strong>Why we need it:</strong> We'll track a "max so far" and a "min so far" as we scan.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Loop</h3>
+<li><strong>Concept:</strong> Repeats an action across every item in a list.</li>
+<li><strong>Example:</strong> "For each index, update the running maximum."</li>
+<li><strong>Why we need it:</strong> We need to scan the array (potentially more than once) to build up the information needed at every index.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">If/else</h3>
+<li><strong>Concept:</strong> Branching based on a condition.</li>
+<li><strong>Example:</strong> "If this index's instability score is ≤ k, we found our answer."</li>
+<li><strong>Why we need it:</strong> Checking the stability condition, and updating running max/min, both require decisions.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Prefix Max (a new but simple pattern)</h3>
+<li><strong>Concept:</strong> A <strong>prefix max array</strong> is a helper array where position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> stores "the biggest value seen from the start of the array up through position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>." You build it left-to-right, and each entry only ever needs to compare the <em>previous</em> prefix max to the current element — no need to rescan everything from the start each time.</li>
+<li><strong>Example:</strong> For <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[5,0,1,4]</code>: prefixMax = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[5, 5, 5, 5]</code> (since <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code> is the biggest seen at every point from index 0 onward).</li>
+<li><strong>Why we need it:</strong> The problem needs "max of everything from 0 to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>" for <em>every</em> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> — precomputing this once, left to right, avoids recalculating that max from scratch for every index.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Suffix Min (the mirror-image idea)</h3>
+<li><strong>Concept:</strong> A <strong>suffix min array</strong> stores, at position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>, "the smallest value seen from position <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> all the way to the end." You build it <strong>right-to-left</strong>, comparing each entry to the <em>next</em> suffix min.</li>
+<li><strong>Example:</strong> For <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[5,0,1,4]</code>: suffixMin = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[0, 0, 1, 4]</code> (reading right to left: at index 3, min is 4; at index 2, min of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{1,4}</code> is 1; at index 1, min of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{0,1,4}</code> is 0; at index 0, min of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{5,0,1,4}</code> is 0).</li>
+<li><strong>Why we need it:</strong> The problem needs "min of everything from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> to the end" for every <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> — precomputing this once, right to left, similarly avoids repeated rescanning.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Time Complexity</h3>
+We'll use this to explain why our approach (with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> up to only 100 here, admittedly tiny) is efficient and clean.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">4. Understand the Input</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Take Example 1:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">nums = [5, 0, 1, 4]
+k = 3</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Index | 0 | 1 | 2 | 3 |
+|---|---|---|---|---|
+| Value | 5 | 0 | 1 | 4 |
+<li>We need, for <strong>each</strong> index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>, two numbers: the max from index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>, and the min from index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> to the end (index 3).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k = 3</code> is our tolerance — we want the smallest index where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(max of left part) - (min of right part) <= 3</code>.</li>
+<li>Why does index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> belong to <em>both</em> parts? Because the problem explicitly defines both ranges (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0..i</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i..n-1</code>) as inclusive of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> itself — this is a detail worth double-checking carefully, since it's easy to accidentally exclude <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> from one side.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">5. Understand the Output</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>
+<li>At index 0: max of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[5]</code> = 5; min of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[5,0,1,4]</code> = 0; score = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 - 0 = 5</code>. Not ≤ 3.</li>
+<li>At index 1: max of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[5,0]</code> = 5; min of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[0,1,4]</code> = 0; score = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 - 0 = 5</code>. Not ≤ 3.</li>
+<li>At index 2: max of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[5,0,1]</code> = 5; min of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[1,4]</code> = 1; score = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 - 1 = 4</code>. Not ≤ 3.</li>
+<li>At index 3: max of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[5,0,1,4]</code> = 5; min of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[4]</code> = 4; score = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 - 4 = 1</code>. <strong>This is ≤ 3!</strong> Stable.</li>
+<li>Since index 3 is the <em>first</em> index where the score drops to ≤ k, the answer is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">6. Solve the Example Manually</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's build the two helper arrays by hand for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums = [5, 0, 1, 4]</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 1: Build the prefix max array, left to right.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Index | Value | Compare to previous prefix max | New prefix max |
+|---|---|---|---|
+| 0 | 5 | (nothing before) start with 5 | 5 |
+| 1 | 0 | max(5, 0) = 5 | 5 |
+| 2 | 1 | max(5, 1) = 5 | 5 |
+| 3 | 4 | max(5, 4) = 5 | 5 |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax = [5, 5, 5, 5]</code></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 2: Build the suffix min array, right to left.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Index | Value | Compare to next suffix min | New suffix min |
+|---|---|---|---|
+| 3 | 4 | (nothing after) start with 4 | 4 |
+| 2 | 1 | min(1, 4) = 1 | 1 |
+| 1 | 0 | min(0, 1) = 0 | 0 |
+| 0 | 5 | min(5, 0) = 0 | 0 |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin = [0, 0, 1, 4]</code></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 3: Scan left to right, compute <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] - suffixMin[i]</code>, and stop at the first index where it's ≤ k.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Index | prefixMax | suffixMin | Score | ≤ k(3)? |
+|---|---|---|---|---|
+| 0 | 5 | 0 | 5 | No |
+| 1 | 5 | 0 | 5 | No |
+| 2 | 5 | 1 | 4 | No |
+| 3 | 5 | 4 | 1 | <strong>Yes!</strong> |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">First qualifying index: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>. ✔️ matches!</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">7. Think Like a Programmer</h2>
+<li><strong>What do I know?</strong> For any index, I need "max of everything up to here" and "min of everything from here onward."</li>
+<li><strong>What do I need to find?</strong> The smallest index where the difference of these two is small enough.</li>
+<li><strong>What can I try?</strong> The most direct idea: for each index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>, separately scan <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0..i</code> for the max and separately scan <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i..n-1</code> for the min, then compare. This works, but redoes a lot of scanning repeatedly for every <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>.</li>
+<li><strong>What happens if I try every possibility?</strong> For each of the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> indices, scanning up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> elements twice (once for the max part, once for the min part) costs about <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> per index, so <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> total. With <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> only up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">100</code> here, this is actually totally fine performance-wise — but it's still wasteful, and understanding the smarter way matters for building good habits (and for when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> is much bigger in similar problems).</li>
+<li><strong>Can I make it faster?</strong> Yes — notice that "max of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0..i</code>" only ever changes by <em>possibly</em> growing as <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> increases (each step, we just compare the new element to the <em>previous</em> max-so-far, we never need to rescan). Similarly, "min of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i..n-1</code>" only changes as <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> decreases (walking right to left, comparing to the <em>previous</em> min-so-far in that direction). This means we can compute <em>all</em> prefix maxes in a single left-to-right pass, and <em>all</em> suffix mins in a single right-to-left pass — each index's answer becomes an O(1) lookup after that.</li>
+<li><strong>What information should I remember?</strong> Two full helper arrays (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin</code>), each built with a single running "best so far" variable during its own pass.</li>
+<li><strong>What pattern do I notice?</strong> This is a classic <strong>prefix/suffix precomputation</strong> pattern: whenever you need "some aggregate over everything to the left" and/or "some aggregate over everything to the right," for <em>every</em> position, build those aggregates once in a single pass each, rather than recomputing them from scratch per position.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">8. Start With the Brute Force Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Brute force idea:</strong> For each index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> from 0 to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n-1</code>, scan <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums[0..i]</code> to find the max, scan <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums[i..n-1]</code> to find the min, compute the difference, and check against <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code>. Return the first <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> that qualifies.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why it works:</strong> It directly computes exactly what the problem defines, for every index, with no shortcuts — guaranteed correct.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Time complexity:</strong> For each of the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> indices, we do up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code> work scanning both halves, so <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> total.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Space complexity:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(1)</code> extra (just a couple of tracking variables per index, no persistent extra array needed).</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">class Solution {
+    public int firstStableIndex(int[] nums, int k) {
+        int n = nums.length;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (int i = 0; i &lt; n; i++) {
+            int maxLeft = Integer.MIN<em>VALUE;
+            for (int a = 0; a &lt;= i; a++) {
+                maxLeft = Math.max(maxLeft, nums[a]);
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int minRight = Integer.MAX</em>VALUE;
+            for (int b = i; b &lt; n; b++) {
+                minRight = Math.min(minRight, nums[b]);
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (maxLeft - minRight &lt;= k) {
+                return i;
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return -1;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">9. Explain the Brute Force Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int n = nums.length;</code> — total number of elements.</li>
+<li>The outer <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for (int i = 0; i < n; i++)</code> loop — tries every index in order, from smallest to largest (so the very first one that qualifies is naturally the <em>smallest</em> stable index).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int maxLeft = Integer.MIN<em>VALUE;</code> — start impossibly small, so any real value we compare against it will correctly update it.</li>
+<li>The inner <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for (int a = 0; a <= i; a++)</code> loop — scans every index from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> up to and including <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>, updating <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">maxLeft</code> to be the running biggest value seen. This directly computes <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">max(nums[0..i])</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int minRight = Integer.MAX</em>VALUE;</code> — start impossibly large, so it will correctly shrink down to the true minimum as we scan.</li>
+<li>The inner <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for (int b = i; b < n; b++)</code> loop — scans every index from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> to the end, updating <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">minRight</code> to the running smallest value. This computes <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">min(nums[i..n-1])</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (maxLeft - minRight <= k) return i;</code> — check the stability condition; if satisfied, we've found our answer, so return immediately.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return -1;</code> — if we finish the outer loop without ever returning, no index was stable.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">10. Why Might the Brute Force Not Be Ideal (in general)?</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">For this specific problem, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> is capped at just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">100</code>, so <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> is at most <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10,000</code> operations — genuinely no performance problem at all here. But imagine a <em>similar</em> problem where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code> could be <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">100,000</code> — then <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code> would balloon to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10</code> billion operations, far too slow. It's worth learning the faster technique now, both because it's cleaner code and because it's the <em>right</em> habit for when constraints are bigger.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">11. Find the Better Approach</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Brute Force:
+For each i, rescan 0..i for max AND rescan i..n-1 for min
+        ↓
+O(n) work PER index → O(n²) total
+        ↓
+Realize: max(0..i) only needs max(0..i-1) plus nums[i] — no full rescan needed
+        ↓
+Realize: min(i..n-1) only needs min(i+1..n-1) plus nums[i] — same idea, other direction
+        ↓
+Build prefixMax array in one left-to-right pass
+Build suffixMin array in one right-to-left pass
+        ↓
+Final answer: single pass comparing prefixMax[i] - suffixMin[i] to k
+        ↓
+O(n) total</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⭐ Key Insight</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Before the insight</h3>
+It feels like finding "max of everything up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>" and "min of everything from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> onward" requires looking at a growing/shrinking chunk of the array fresh, for every single <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The problem</h3>
+Rescanning a growing or shrinking range from scratch, for every index, repeats a huge amount of comparison work that's almost entirely redundant between consecutive indices.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The insight</h3>
+<strong><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">max(nums[0..i])</code> is just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">max(nums[0..i-1], nums[i])</code></strong> — the max up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> is simply "whatever the max was one step earlier, compared with the one new element." This means we can build the <em>entire</em> prefix-max array with a single left-to-right sweep, carrying forward one running value. The exact same logic applies in reverse for the suffix-min array, built with a single right-to-left sweep.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">After the insight</h3>
+Once both helper arrays exist, answering "what's the instability score at index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>?" for <em>every</em> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> becomes an instant lookup (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] - suffixMin[i]</code>) — no rescanning at all. The whole algorithm becomes three simple, single-direction passes.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">13. Dry Run the Optimized Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's dry-run <strong>Example 2</strong>: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums = [3, 2, 1], k = 1</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 1: Build prefixMax (left to right).</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Index | Value | prefixMax |
+|---|---|---|
+| 0 | 3 | 3 |
+| 1 | 2 | max(3,2)=3 |
+| 2 | 1 | max(3,1)=3 |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax = [3, 3, 3]</code></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 2: Build suffixMin (right to left).</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Index | Value | suffixMin |
+|---|---|---|
+| 2 | 1 | 1 |
+| 1 | 2 | min(2,1)=1 |
+| 0 | 3 | min(3,1)=1 |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin = [1, 1, 1]</code></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Step 3: Scan for the first index where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] - suffixMin[i] <= k(1)</code>.</strong></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Index | prefixMax | suffixMin | Score | ≤ 1? |
+|---|---|---|---|---|
+| 0 | 3 | 1 | 2 | No |
+| 1 | 3 | 1 | 2 | No |
+| 2 | 3 | 1 | 2 | No |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">No index qualifies → return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>. ✔️ matches!</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">14. Optimized Code</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">class Solution {
+    public int firstStableIndex(int[] nums, int k) {
+        int n = nums.length;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int[] prefixMax = new int[n];
+        prefixMax[0] = nums[0];
+        for (int i = 1; i &lt; n; i++) {
+            prefixMax[i] = Math.max(prefixMax[i - 1], nums[i]);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int[] suffixMin = new int[n];
+        suffixMin[n - 1] = nums[n - 1];
+        for (int i = n - 2; i &gt;= 0; i--) {
+            suffixMin[i] = Math.min(suffixMin[i + 1], nums[i]);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (int i = 0; i &lt; n; i++) {
+            if (prefixMax[i] - suffixMin[i] &lt;= k) {
+                return i;
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return -1;
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">class Solution {
+    firstStableIndex(nums, k) {
+        const n = nums.length;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const prefixMax = new Array(n);
+        prefixMax[0] = nums[0];
+        for (let i = 1; i &lt; n; i++) {
+            prefixMax[i] = Math.max(prefixMax[i - 1], nums[i]);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const suffixMin = new Array(n);
+        suffixMin[n - 1] = nums[n - 1];
+        for (let i = n - 2; i &gt;= 0; i--) {
+            suffixMin[i] = Math.min(suffixMin[i + 1], nums[i]);
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (let i = 0; i &lt; n; i++) {
+            if (prefixMax[i] - suffixMin[i] &lt;= k) {
+                return i;
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return -1;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">15. Explain Optimized Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int n = nums.length;</code> — total element count.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int[] prefixMax = new int[n];</code> — a new array where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i]</code> will hold <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">max(nums[0..i])</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[0] = nums[0];</code> — the base case: with only one element (index 0) considered, the max is that element itself.</li>
+<li>The <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for (int i = 1; i < n; i++)</code> loop — for every later index, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] = Math.max(prefixMax[i-1], nums[i])</code>: take whatever the max was one step back, compare it to the current element, and keep the bigger one.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int[] suffixMin = new int[n];</code> — similarly, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin[i]</code> will hold <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">min(nums[i..n-1])</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin[n-1] = nums[n-1];</code> — base case: with only the last element considered, the min is just that element.</li>
+<li>The <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for (int i = n - 2; i >= 0; i--)</code> loop — walks <strong>backward</strong> from the second-to-last index down to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>. <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin[i] = Math.min(suffixMin[i+1], nums[i])</code>: take whatever the min was one step ahead, compare it to the current element, keep the smaller one.</li>
+<li>The final <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for (int i = 0; i < n; i++)</code> loop — scans indices in increasing order and checks <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] - suffixMin[i] <= k</code>. The moment this is true, we return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> immediately (guaranteed to be the smallest such index).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return -1;</code> — if no index satisfies the condition, none is stable.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">16. Test With Multiple Examples</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 1 — Normal Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums=[5,0,1,4], k=3</code> → dry-ran manually in Section 6 → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 2 — Different Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums=[3,2,1], k=1</code> → dry-ran in Section 13 → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 3 — Edge Case (single element)</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums=[0], k=0</code>. <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n=1</code>. <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax=[0]</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin=[0]</code>. Check index 0: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[0] - suffixMin[0] = 0 - 0 = 0 <= 0</code>? Yes! → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> ✔️
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">17. Edge Cases</h2>
+<li><strong>Single-element array (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n=1</code>)</strong> → both helper arrays are just the base case, index 0's score is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums[0] - nums[0] = 0</code>, so it's stable exactly when <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k >= 0</code> — which is guaranteed by constraints, so a single-element array is <strong>always</strong> stable at index 0.</li>
+<li><strong>No stable index exists at all</strong> → the final scan finishes without returning, correctly falling through to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return -1</code>.</li>
+<li><strong>The array is already fully sorted increasing</strong> (e.g., <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[1,2,3,4]</code>) → at the last index, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax</code> = last element, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin</code> = last element, score is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>, so the last index is always stable.</li>
+<li><strong>The array is sorted strictly decreasing</strong> (e.g., <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[4,3,2,1]</code>) → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax</code> stays at the first element; <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin</code> stays at the last element throughout — every index has the same score (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">first - last</code>).</li>
+<li><strong>All elements identical</strong> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] == suffixMin[i]</code> everywhere → score is always <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> → index 0 is always stable.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">18. Time Complexity</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Brute Force:
+O(n²) — for each index, rescanning up to n elements twice
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Optimized:
+O(n) — one pass to build prefixMax, one pass to build suffixMin,
+        one pass to scan for the answer (3 × O(n) = O(n))</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why:</strong> Each of our three passes touches every element exactly once, doing constant work per element. The total work scales linearly with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">19. Space Complexity</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin</code> are each full arrays of length <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n</code>.</li></ul>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">So extra space used is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">20. Common Mistakes Beginners Make</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "The max range is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i-1</code>, and the min range is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i+1</code> to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n-1</code> (excluding <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> from both)."
+✅ Both <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">max(nums[0..i])</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">min(nums[i..n-1])</code> <strong>include</strong> index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> itself.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "I should rescan the whole 0..i range from scratch every time to compute the prefix max."
+✅ You only need the <em>previous</em> prefix max value plus the current element: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">max(0..i) = max(prefixMax[i-1], nums[i])</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">❌ "I'll build the suffix min array left to right, like the prefix max."
+✅ The suffix min must be built <strong>right to left</strong>, since <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">min(i..n-1)</code> depends on <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">min(i+1..n-1)</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">21. How to Recognize This Pattern in Other Problems</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Watch for these signal phrases:</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">&quot;For every index, consider everything to its left&quot; (max/min/sum/count from the start up to i)
+&quot;For every index, consider everything to its right&quot; (max/min/sum/count from i to the end)
+&quot;Prefix&quot; or &quot;suffix&quot; explicitly mentioned
+A formula combining a left-side aggregate and a right-side aggregate, evaluated at every position</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Whenever a problem asks you to compute some aggregate of everything to one side for every position, think <strong>prefix array</strong> or <strong>suffix array</strong> to optimize $O(N^2)$ to $O(N)$.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">22. Interview Thinking</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">1. Understand the input    → array + threshold k
+2. Understand the output   → smallest index where max-of-left minus min-of-right &lt;= k
+3. Try brute force         → for each index, separately scan both sides fresh
+4. Find what makes it slow → repeatedly rescanning overlapping ranges for every index
+5. Identify repeated work  → max(0..i) and max(0..i-1) differ by just one new element
+6. What can be stored?     → running prefix-max array and suffix-min array
+7. Optimize                → build both in one pass each, then a final O(n) scan
+8. Check edge cases        → single element, sorted increasing/decreasing, all-equal elements
+9. Analyze complexity      → O(n) time, O(n) space</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">23. Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Try these before checking the answers:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Why do we build the prefix max array by comparing to the <em>previous</em> prefix max, rather than the original array's previous <em>element</em>?
+2. If <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums = [7, 7, 7]</code>, what would <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin</code> look like, and what's the instability score at every index?
+3. Why is scanning left-to-right in the final step (rather than right-to-left) important for correctly returning the <em>smallest</em> stable index?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><br></p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">Answer to Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Because the prefix max needs to reflect the biggest value seen across <em>all</em> elements up to this point, not just a comparison with the single element right before it.
+2. <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax = [7,7,7]</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin = [7,7,7]</code> — every index has score <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">7 - 7 = 0</code>. Index 0 is stable, answer is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>.
+3. Scanning left to right guarantees you encounter indices in increasing order, so the very first match you find is naturally the smallest.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">24. Final Revision</h2>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🧠 Problem in One Sentence</h2>
+Find the smallest index where the maximum of everything to its left (inclusive) minus the minimum of everything to its right (inclusive) is at most <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code>.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🔑 Main Idea</h2>
+Precompute a prefix-max array (left to right) and a suffix-min array (right to left), then scan once for the first index where their difference is at most <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code>.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⚙️ Algorithm</h2>
+1. Build <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] = max(prefixMax[i-1], nums[i])</code>, left to right.
+2. Build <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">suffixMin[i] = min(suffixMin[i+1], nums[i])</code>, right to left.
+3. Scan indices left to right, returning the first <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> where <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">prefixMax[i] - suffixMin[i] <= k</code>.
+4. If none found, return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">-1</code>.
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⏱️ Complexity</h2>
+Time: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>
+Space: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n)</code>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">🎯 Pattern to Remember</h2>
+"Aggregate over everything to the left/right, for every index" → prefix/suffix precomputation, not repeated rescanning.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">25. Beginner Quiz</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong>(Understanding)</strong> Why is index <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> included in <em>both</em> the left range and the right range when computing its instability score?
+2. <strong>(Basic concept)</strong> What's the difference between how you build a prefix max array versus a suffix min array — which direction does each one scan?
+3. <strong>(Logic)</strong> Why is it safe to return the first index (scanning left to right) that satisfies the stability condition, without needing to check any later indices?
+4. <strong>(Dry run)</strong> For <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">nums = [2, 8, 1, 6], k = 5</code>, build the prefix max and suffix min arrays, and find the smallest stable index (or determine there isn't one).
+5. <strong>(Complexity/pattern)</strong> Why does this problem's brute force (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">O(n²)</code>) run instantly anyway given the constraints, and what specific phrase in the problem statement ("for each index... 0 to i" and "i to n-1") should cue you to reach for prefix/suffix arrays regardless of whether the constraints strictly require it?</p>
+    </div>
+  </article>
+
+  <footer style="max-width: 800px; margin: 4rem auto 0; padding: 2rem 1rem; border-top: 1px solid #27272a; text-align: center; color: #71717a; font-size: 0.9rem;">
+    <p>&copy; 2026 Mukesh Pal. All rights reserved. Full-Stack Developer & Co-Founder at CodeByte.</p>
+  </footer>
+</body>
+</html>
