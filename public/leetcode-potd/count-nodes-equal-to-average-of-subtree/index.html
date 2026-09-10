@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2265. Count Nodes Equal to Average of Subtree Solution | Mukesh Pal LeetCode POTD</title>
+  <meta name="description" content="Count how many nodes in a binary tree have a value equal to the rounded-down average of their subtree using a single post-order recursive traversal." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mukprabhakar.in/leetcode-potd/count-nodes-equal-to-average-of-subtree" />
+  
+  <!-- SPA redirect decoder for GitHub Pages -->
+  <script>window.location.href = '/?/leetcode-potd/count-nodes-equal-to-average-of-subtree';</script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem; border-bottom: 1px solid #27272a;">
+    <p><a href="/leetcode-potd">← Back to LeetCode POTD</a> | <a href="/">Portfolio Home</a></p>
+  </header>
+
+  <article style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.2;">2265. Count Nodes Equal to Average of Subtree</h1>
+      <p style="color: #a1a1aa; font-size: 0.95rem; margin-top: 0;">
+        Difficulty: <strong>Medium</strong> | Published on <strong>2026-09-10</strong>
+      </p>
+    </header>
+
+    <div style="font-size: 1.1rem; line-height: 1.8; color: #d4d4d8;">
+      <h1 style="color: #10b981; margin-top: 2.5rem;">2265. Count Nodes Equal to Average of Subtree</h1>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">This one introduces trees and recursion-on-trees for the first time in this series — a big new shape of problem. Let's build it up carefully from zero.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">1. Problem in Very Simple Language</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You're given a <strong>binary tree</strong> — we'll explain exactly what that is in a moment. Every node in the tree holds a number (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">val</code>).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">For <strong>every single node</strong> in the tree, consider its <strong>subtree</strong> — that node itself, plus every node "hanging below" it (its children, their children, and so on, all the way down). Compute the <strong>average</strong> of all the values in that subtree: add up every value in the subtree, divide by how many nodes are in the subtree, and <strong>round down</strong> to the nearest whole number (drop any decimal part).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Then check: does this node's <em>own</em> value equal that computed average?
+<ul style="line-height: 1.7; color: #d4d4d8; padding-left: 1.5rem;"><li><strong>Goal:</strong> count how many nodes, across the <em>entire</em> tree, satisfy "my own value equals the average of my subtree."</li>
+<li><strong>What's given:</strong> the root of a binary tree.</li>
+<li><strong>What to find:</strong> for every node, whether its value matches its subtree's average.</li>
+<li><strong>What to return:</strong> the total count of nodes where this is true.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">2. Real-Life Analogy</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine a company org chart, shaped like a tree: a CEO at the top, with managers below them, and employees below the managers, and so on. Every person has a "performance score" (their value).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">For <strong>every single person</strong> in the org chart, imagine you gather that person plus <strong>everyone who reports to them, directly or indirectly</strong> (their whole "team," including sub-teams) — and compute the <strong>average performance score</strong> of that entire team (rounding down).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You want to count: <strong>how many people have a performance score that exactly equals the average score of their own team</strong> (including themselves)? A brand-new hire with no reports is automatically their "own team of one," so their score trivially equals their team's average (themselves).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">3. Important Programming Concepts I Need First</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Binary Tree</h3>
+<li><strong>Concept:</strong> A tree where each node has at most <strong>two</strong> children, conventionally called <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code>. There's one special node at the very top called the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">root</code>, and nodes with no children are called "leaves."</li>
+<li><strong>Example:</strong> A node with <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">val=5</code>, whose <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> child has <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">val=3</code> and whose <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code> child is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> (meaning "no right child").</li>
+<li><strong>Why we need it:</strong> The input to this problem is exactly this kind of structure — we must navigate it using <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.left</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.right</code>, not array indices.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">TreeNode (the building block)</h3>
+<li><strong>Concept:</strong> Each node is an object with three parts: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">val</code> (its number), <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> (a reference to its left child, or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> if none), and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code> (same idea, for the right child).</li>
+<li><strong>Why we need it:</strong> We'll be constantly reading <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.val</code> and following <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.left</code>/<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.right</code> to explore the tree.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Subtree</h3>
+<li><strong>Concept:</strong> The subtree "rooted at" some node <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">X</code> consists of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">X</code> itself, plus everything reachable by following <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.left</code>/<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.right</code> pointers downward from <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">X</code> — i.e., all of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">X</code>'s descendants. A leaf node's subtree is just itself (a "team of one").</li>
+<li><strong>Why we need it:</strong> The entire problem is defined in terms of "average of a node's subtree" — we need to be crystal clear that this always includes the node itself.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Recursion on Trees (a very natural fit)</h3>
+<li><strong>Concept:</strong> Trees are naturally recursive structures: "the tree rooted at node X" = "node X itself" + "the tree rooted at X.left" + "the tree rooted at X.right." This means a recursive function that solves a problem for a whole tree can often be built by (a) solving the <em>same</em> problem for the left and right subtrees first, and (b) combining those results with the current node's own value.</li>
+<li><strong>Simple Example:</strong> To count <em>all</em> nodes in a tree: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">countNodes(node) = 1 + countNodes(node.left) + countNodes(node.right)</code>, with the base case <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">countNodes(null) = 0</code>.</li>
+<li><strong>Why we need it:</strong> Computing "sum and count of every subtree," for every node, is a textbook recursive-on-trees problem — each node's subtree sum/count is built directly from its children's subtree sums/counts.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Base Case (for tree recursion specifically)</h3>
+<li><strong>Concept:</strong> The natural "smallest" input for tree recursion is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> — an empty/nonexistent node (like "no child here"). We must decide what our function should return for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code>, since every recursive tree function eventually reaches this case as it walks down to the leaves and beyond.</li>
+<li><strong>Why we need it:</strong> Without a correct base case for <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code>, our recursion would either crash (trying to read <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">.val</code> on something that doesn't exist) or never terminate.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Returning Multiple Values from One Recursive Call</h3>
+<li><strong>Concept:</strong> Sometimes a single recursive call needs to report back <em>more than one</em> piece of information to its caller (here: both the subtree's sum AND its node count). In Java, a clean way to do this is to return a small array (like <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int[]{sum, count}</code>), or in JavaScript an array <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[sum, count]</code>.</li>
+<li><strong>Why we need it:</strong> For each node, we need both the total sum <em>and</em> the total count of its subtree to compute the average — a single return value isn't enough.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">4. Understand the Input</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Take Example 1:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">root = [4,8,5,0,1,null,6]</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">This array notation represents a binary tree, level by level (this is LeetCode's standard way of describing trees as flat arrays). Drawn out as an actual tree:</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">4
+            /   \
+           8     5
+          / \      \
+         0   1       6</code></pre>
+<li>The root node has value <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4</code>, with left child <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">8</code> and right child <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>.</li>
+<li>Node <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">8</code> has left child <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> and right child <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> (both leaves).</li>
+<li>Node <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code> has no left child (that's what the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> represents) and has right child <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">6</code> (a leaf).</li>
+<li>We need to check, for <em>every</em> node in this tree, whether its own value equals the average of its entire subtree.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">5. Understand the Output</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's check every node (there are 6 total: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4, 8, 5, 0, 1, 6</code>):
+<li><strong>Node 4 (root):</strong> its subtree is the <em>entire</em> tree: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{4,8,5,0,1,6}</code>. Sum = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">24</code>, count = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">6</code>, average = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">24/6 = 4</code>. Does <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4 == 4</code>? <strong>Yes.</strong></li>
+<li><strong>Node 8:</strong> its subtree is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{8,0,1}</code>. Sum = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">9</code>, count = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">3</code>, average = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">9/3 = 3</code>. Does <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">8 == 3</code>? No.</li>
+<li><strong>Node 5:</strong> its subtree is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{5,6}</code> (itself plus its right child, no left child). Sum = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">11</code>, count = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>, average = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">11/2 = 5</code> (integer division rounds down <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5.5</code> to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code>). Does <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5 == 5</code>? <strong>Yes.</strong></li>
+<li><strong>Node 0:</strong> a leaf, subtree is just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{0}</code>. Average = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0/1 = 0</code>. Does <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0 == 0</code>? <strong>Yes.</strong></li>
+<li><strong>Node 1:</strong> a leaf, subtree is just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{1}</code>. Average = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1/1 = 1</code>. Does <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1 == 1</code>? <strong>Yes.</strong></li>
+<li><strong>Node 6:</strong> a leaf, subtree is just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{6}</code>. Average = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">6/1 = 6</code>. Does <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">6 == 6</code>? <strong>Yes.</strong></li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Counting the "Yes" answers: node 4, node 5, node 0, node 1, node 6 — that's <strong>5</strong> nodes. Only node <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">8</code> fails to match. ✔️ matches the expected output!</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Notice: <strong>every leaf automatically matches</strong> (its subtree is just itself, so the average always trivially equals its own value) — this is a useful sanity-check pattern to keep in mind.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">6. Solve the Example Manually</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's manually trace through how we'd compute this <strong>recursively</strong>, from the bottom up (since we can't know a node's subtree sum until we know its children's subtree sums first).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">We process nodes in an order where children are fully handled <em>before</em> their parents (this is naturally how recursion unwinds):</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">| Node | Left child's (sum, count) | Right child's (sum, count) | This node's subtree sum | This node's subtree count | Average | Matches own value? |
+|---|---|---|---|---|---|---|
+| 0 (leaf) | none (null) | none (null) | 0 + 0 = 0 | 0 + 1 = 1 | 0/1=0 | 0==0 ✔️ |
+| 1 (leaf) | none | none | 1 | 1 | 1/1=1 | 1==1 ✔️ |
+| 6 (leaf) | none | none | 6 | 1 | 6/1=6 | 6==6 ✔️ |
+| 8 | (0,1) from left child "0" | (1,1) from right child "1" | 8 + 0 + 1 = 9 | 1 + 1 + 1 = 3 | 9/3=3 | 8==3? ❌ |
+| 5 | none (no left child) | (6,1) from right child "6" | 5 + 0 + 6 = 11 | 1 + 0 + 1 = 2 | 11/2=5 | 5==5 ✔️ |
+| 4 (root) | (9,3) from left child "8" | (11,2) from right child "5" | 4 + 9 + 11 = 24 | 1 + 3 + 2 = 6 | 24/6=4 | 4==4 ✔️ |</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Counting the ✔️ marks: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0, 1, 6, 5, 4</code> — that's 5 matches (node <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">8</code> is the only failure). ✔️ Total: <strong>5</strong>, matching the expected output!</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">7. Think Like a Programmer</h2>
+<li><strong>What do I know?</strong> For any node, if I already know the (sum, count) of its left subtree and right subtree, I can instantly compute its <em>own</em> subtree's (sum, count): <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mySum = node.val + leftSum + rightSum</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">myCount = 1 + leftCount + rightCount</code>.</li>
+<li><strong>What do I need to find?</strong> For every node, whether <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node.val == mySum / myCount</code> (integer division).</li>
+<li><strong>What can I try?</strong> A recursive function that, for a given node, first recursively computes its left child's (sum, count) and right child's (sum, count), <em>then</em> combines them with its own value to get its own (sum, count) — and along the way, checks the matching condition and updates a running counter.</li>
+<li><strong>What's the base case?</strong> A <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> node contributes <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(sum=0, count=0)</code> to whatever called it — this correctly represents "there's nothing here to add."</li>
+<li><strong>What order must things happen in?</strong> We must fully finish processing a node's <strong>children</strong> before we can compute that node's <em>own</em> subtree sum/count — this is naturally what post-order traversal provides.</li>
+<li><strong>How do I count matches across the WHOLE tree?</strong> Use a counter variable that gets incremented every time a node's condition is satisfied during the recursive traversal.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">8. Start With the Brute Force Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Naive idea:</strong> For each node, separately walk its <em>entire</em> subtree from scratch to compute the sum and count, then compare to its value.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Why it's correct but wasteful:</strong> A node near the root has its subtree scanned, then each of its children's subtrees get scanned again separately — leading to $O(N^2)$ work on skewed trees.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">// Illustrative naive approach (works, but wastefully re-scans subtrees) — for understanding only
+class Solution {
+    private int count = 0;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">public int averageOfSubtree(TreeNode root) {
+        checkEveryNode(root);
+        return count;
+    }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">private void checkEveryNode(TreeNode node) {
+        if (node == null) return;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int[] sumAndCount = sumAndCountOfSubtree(node); // full rescan, every time!
+        if (node.val == sumAndCount[0] / sumAndCount[1]) {
+            count++;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">checkEveryNode(node.left);
+        checkEveryNode(node.right);
+    }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">private int[] sumAndCountOfSubtree(TreeNode node) {
+        if (node == null) return new int[]{0, 0};
+        int[] left = sumAndCountOfSubtree(node.left);
+        int[] right = sumAndCountOfSubtree(node.right);
+        return new int[]{node.val + left[0] + right[0], 1 + left[1] + right[1]};
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">// Illustrative naive approach (works, but wastefully re-scans subtrees) — for understanding only
+class Solution {
+    averageOfSubtree(root) {
+        let count = 0;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const sumAndCountOfSubtree = (node) =&gt; {
+            if (node === null) return [0, 0];
+            const left = sumAndCountOfSubtree(node.left);
+            const right = sumAndCountOfSubtree(node.right);
+            return [node.val + left[0] + right[0], 1 + left[1] + right[1]];
+        };</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const checkEveryNode = (node) =&gt; {
+            if (node === null) return;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const [sum, totalCount] = sumAndCountOfSubtree(node);
+            if (node.val === Math.floor(sum / totalCount)) {
+                count++;
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">checkEveryNode(node.left);
+            checkEveryNode(node.right);
+        };</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">checkEveryNode(root);
+        return count;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">9. Explain the Naive Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">private int count = 0;</code> — a running total of how many nodes satisfy the condition, tracked as we go.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">checkEveryNode(root)</code> — kicks off a traversal that visits <em>every</em> node in the tree, one at a time.</li>
+<li>Inside <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">checkEveryNode</code>: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (node == null) return;</code> — base case, nothing to check for a non-existent node.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int[] sumAndCount = sumAndCountOfSubtree(node);</code> — for the <em>current</em> node, do a <strong>completely separate, full recursive scan</strong> of its entire subtree just to get its sum and count.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (node.val == sumAndCount[0] / sumAndCount[1]) count++;</code> — check the matching condition, using integer division.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">checkEveryNode(node.left); checkEveryNode(node.right);</code> — recursively check children, each triggering full sub-traversals.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">10. Why Is This Naive Approach Not Ideal?</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine a tree shaped like a long chain (each node has exactly one child, going 1000 nodes deep). For the topmost node, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">sumAndCountOfSubtree</code> walks 1000 nodes. For the second, it walks 999 nodes. Total work: roughly <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1000 + 999 + ... + 1 ≈ 500,000</code> operations ($O(N^2)$). We can eliminate all repeated rescans by computing the aggregate bottom-up in a single pass.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">11. Find the Better Approach</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">Naive:
+For each node, separately rescan its whole subtree to get sum/count
+        ↓
+O(n²) — massive repeated rescanning
+        ↓
+Realize: a node&#039;s subtree sum/count can be built DIRECTLY from its
+          children&#039;s subtree sum/count, which we&#039;re already computing
+          recursively anyway
+        ↓
+Combine &quot;compute sum/count&quot; and &quot;check the condition&quot; into ONE recursive function
+        ↓
+Each node is only ever &quot;fully processed&quot; once
+        ↓
+O(n) total</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⭐ Key Insight</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Before the insight</h3>
+It feels like we need two separate steps: first get every node's subtree sum/count; second, use that info to check matches.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The problem</h3>
+Doing these as two separate traversal passes leads to repeated $O(N^2)$ sub-scans.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The insight</h3>
+<strong>A single post-order recursive function can compute a subtree's <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(sum, count)</code> AND check-and-count the matching condition for that node, all in one pass.</strong> By the time <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node.left</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node.right</code> return their pairs to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node</code>, we immediately know <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node</code>'s subtree sum and count, evaluate <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node.val == sum / count</code>, increment the counter, and return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node</code>'s aggregated pair to its parent.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">After the insight</h3>
+Every node in the tree is processed <strong>exactly once</strong> in $O(1)$ time per node, scaling in $O(N)$ total time.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">13. Dry Run the Optimized Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's dry-run <strong>Example 2</strong>: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">root = [1]</code> (single node).
+<li>Call on root (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>): <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code> is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code>.</li>
+<li>Recursive call on <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left</code> (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code>) → returns <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0, 0)</code>.</li>
+<li>Recursive call on <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right</code> (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code>) → returns <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0, 0)</code>.</li>
+<li>Combine: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">mySum = 1 + 0 + 0 = 1</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">myCount = 1 + 0 + 0 = 1</code>.</li>
+<li>Check: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">average = 1 / 1 = 1</code>. <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node.val (1) == 1</code> → <strong>Match!</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">matchCount = 1</code>.</li>
+<li>Return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1, 1)</code>. Output = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>. ✔️</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">14. Optimized Code</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">class Solution {
+    private int matchCount = 0;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">public int averageOfSubtree(TreeNode root) {
+        computeSumAndCount(root);
+        return matchCount;
+    }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Returns {sum of this subtree, count of nodes in this subtree}
+    private int[] computeSumAndCount(TreeNode node) {
+        if (node == null) {
+            return new int[]{0, 0};
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int[] leftResult = computeSumAndCount(node.left);
+        int[] rightResult = computeSumAndCount(node.right);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int subtreeSum = node.val + leftResult[0] + rightResult[0];
+        int subtreeCount = 1 + leftResult[1] + rightResult[1];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int average = subtreeSum / subtreeCount; // integer division rounds down</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (average == node.val) {
+            matchCount++;
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return new int[]{subtreeSum, subtreeCount};
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">class Solution {
+    averageOfSubtree(root) {
+        let matchCount = 0;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">// Returns [subtreeSum, subtreeCount]
+        const computeSumAndCount = (node) =&gt; {
+            if (node === null) {
+                return [0, 0];
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const [leftSum, leftCount] = computeSumAndCount(node.left);
+            const [rightSum, rightCount] = computeSumAndCount(node.right);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const subtreeSum = node.val + leftSum + rightSum;
+            const subtreeCount = 1 + leftCount + rightCount;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const average = Math.floor(subtreeSum / subtreeCount);</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (average === node.val) {
+                matchCount++;
+            }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return [subtreeSum, subtreeCount];
+        };</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">computeSumAndCount(root);
+        return matchCount;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">15. Explain Optimized Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">private int matchCount = 0;</code> — accumulator variable across the entire traversal.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">averageOfSubtree(TreeNode root)</code> — initiates traversal on root and returns final count.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (node == null) return new int[]{0, 0};</code> — base case: null subtree contributes 0 sum and 0 count.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">computeSumAndCount(node.left)</code> & <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">computeSumAndCount(node.right)</code> — post-order traversal: resolve child subtrees first.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int subtreeSum = node.val + leftResult[0] + rightResult[0];</code> — aggregates current node with left and right sums.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int subtreeCount = 1 + leftResult[1] + rightResult[1];</code> — aggregates node count (1 for current node + child counts).</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int average = subtreeSum / subtreeCount;</code> — computes integer rounded-down average.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (average == node.val) matchCount++;</code> — tests condition and increments match counter.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return new int[]{subtreeSum, subtreeCount};</code> — passes accumulated subtree statistics to parent.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">16. Test With Multiple Examples</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 1 — Normal Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">root = [4,8,5,0,1,null,6]</code> → 5 matches (nodes 0, 1, 6, 5, 4) → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">5</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 2 — Different Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">root = [1]</code> → 1 match → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 3 — Single-child tree</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">root = [1, 2]</code> → Leaf 2 matches (avg 2), root 1 matches (avg (1+2)/2 = 1) → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> ✔️
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">17. Edge Cases</h2>
+<li><strong>Single node:</strong> Always matches (avg equals node value) → returns <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>.</li>
+<li><strong>All leaves in any tree:</strong> Always match trivially.</li>
+<li><strong>All equal values:</strong> Every subtree average equals that same value → returns total node count $N$.</li>
+<li><strong>Skewed / Degenerate tree (linked list structure):</strong> Handled in $O(N)$ without stack overflow within problem constraints ($N \le 1000$).</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">18. Time Complexity</h2>
+<li><strong>Optimized Solution:</strong> $O(N)$ — every node is visited exactly once, doing $O(1)$ operations per node.</li>
+<li><strong>Naive Rescan:</strong> $O(N^2)$ in worst-case skewed trees.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">19. Space Complexity</h2>
+<li><strong>Call Stack Space:</strong> $O(H)$, where $H$ is the height of the tree.</li>
+<li>Balanced tree: $O(\log N)$</li>
+<li>Skewed tree: $O(N)$</li>
+<li><strong>Auxiliary Variables:</strong> $O(1)$.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">20. Common Mistakes Beginners Make</h2>
+<li>❌ <strong>"Floating-point division is required."</strong></li>
+<li>✅ Integer division / <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Math.floor</code> naturally rounds down as specified.</li>
+<li>❌ <strong>"Subtree excludes the current node."</strong></li>
+<li>✅ A subtree rooted at $X$ includes $X$ itself plus all its descendants.</li>
+<li>❌ <strong>"Using two separate traversals."</strong></li>
+<li>✅ Bottom-up post-order combines statistics gathering and condition verification in one single pass.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">21. How to Recognize This Pattern in Other Problems</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Watch for:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">&quot;For every node in a binary tree, compute property of its subtree&quot;
+&quot;Subtree sum / average / maximum / height&quot;
+Bottom-up tree aggregation</code></pre>
+Whenever a parent needs aggregated metrics from its children, use <strong>post-order DFS returning a multi-value tuple <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(metric1, metric2)</code></strong>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">22. Interview Thinking</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">1. Understand the input    → root of a binary tree
+2. Understand the output   → count of nodes where value == average of its own subtree
+3. Try brute force         → separately recompute each node&#039;s subtree sum/count from scratch
+4. Find what makes it slow → massive repeated rescanning of overlapping subtrees
+5. Identify repeated work  → a node&#039;s subtree sum/count is directly derivable from its
+                              children&#039;s subtree sum/count, which we&#039;re already computing
+6. What can be stored?     → return (sum, count) up through the natural recursive call structure
+7. Optimize                → one post-order recursive function: compute children&#039;s results
+                              first, combine them, check the condition, return upward
+8. Check edge cases        → single node, leaves (always match), one-sided children, all-equal values
+9. Analyze complexity      → O(n) time, O(height) space</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">23. Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Try these before checking the answers:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Why must we fully compute <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">leftResult</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">rightResult</code> before computing <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">subtreeSum</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">subtreeCount</code>?
+2. If a node has <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">subtreeSum = 10</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">subtreeCount = 3</code>, what is the computed average, and would it match node value 4?
+3. Why does every leaf node automatically match?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><br></p>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Answer to Mini Challenge</h3>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. A parent's subtree statistics are defined as the sum of its children's subtree statistics plus its own; children must finish first.
+2. <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10 / 3 = 3</code> (integer division). It matches value 3, but does not match value 4.
+3. For any leaf, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">subtreeSum = leaf.val</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">subtreeCount = 1</code>, so <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">leaf.val / 1 = leaf.val</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">24. Final Revision</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">🧠 Problem in One Sentence</h3>
+Count how many nodes in a binary tree have a value equal to the rounded-down average of all values in their own subtree.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">🔑 Main Idea</h3>
+A single post-order recursive traversal computes each node's subtree <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(sum, count)</code> bottom-up and verifies the average condition on the fly in $O(N)$ time.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">⚙️ Algorithm</h3>
+1. Base case: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">node == null</code> returns <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0, 0)</code>.
+2. Recursively get <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">left = (leftSum, leftCount)</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">right = (rightSum, rightCount)</code>.
+3. <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">subtreeSum = node.val + leftSum + rightSum</code>; <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">subtreeCount = 1 + leftCount + rightCount</code>.
+4. If <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Math.floor(subtreeSum / subtreeCount) == node.val</code>, increment <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">matchCount</code>.
+5. Return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(subtreeSum, subtreeCount)</code>.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">⏱️ Complexity</h3>
+<li><strong>Time:</strong> $O(N)$</li>
+<li><strong>Space:</strong> $O(H)$</li></ul>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">25. Beginner Quiz</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong>(Understanding)</strong> Why does a subtree's definition always include the node itself, not just its descendants?
+2. <strong>(Basic concept)</strong> What does the base case <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return new int[]{0, 0};</code> for a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">null</code> node represent, in plain words?
+3. <strong>(Logic)</strong> Why can we safely check and count the current node's matching condition <em>before</em> returning its (sum, count) to its parent, rather than needing some separate later pass?
+4. <strong>(Dry run)</strong> For a tree <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">root = [2,2,2]</code> (root value 2, left child value 2, right child value 2), compute the (sum, count) at each node and determine the final answer.
+5. <strong>(Complexity/pattern)</strong> Why would the naive "rescan each subtree separately" approach be $O(N^2)$ for a chain-shaped tree specifically, and what general tree-problem signal should make you reach for a single combined post-order traversal instead?</p>
+    </div>
+  </article>
+
+  <footer style="max-width: 800px; margin: 4rem auto 0; padding: 2rem 1rem; border-top: 1px solid #27272a; text-align: center; color: #71717a; font-size: 0.9rem;">
+    <p>&copy; 2026 Mukesh Pal. All rights reserved. Full-Stack Developer & Co-Founder at CodeByte.</p>
+  </footer>
+</body>
+</html>
