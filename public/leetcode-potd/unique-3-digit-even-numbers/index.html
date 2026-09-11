@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3483. Unique 3-Digit Even Numbers Solution | Mukesh Pal LeetCode POTD</title>
+  <meta name="description" content="Count the number of distinct 3-digit even numbers without leading zeros that can be formed from an array of digits using position enumeration and hash set deduplication." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mukprabhakar.in/leetcode-potd/unique-3-digit-even-numbers" />
+  
+  <!-- SPA redirect decoder for GitHub Pages -->
+  <script>window.location.href = '/?/leetcode-potd/unique-3-digit-even-numbers';</script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem; border-bottom: 1px solid #27272a;">
+    <p><a href="/leetcode-potd">← Back to LeetCode POTD</a> | <a href="/">Portfolio Home</a></p>
+  </header>
+
+  <article style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <header style="margin-bottom: 2rem;">
+      <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.2;">3483. Unique 3-Digit Even Numbers</h1>
+      <p style="color: #a1a1aa; font-size: 0.95rem; margin-top: 0;">
+        Difficulty: <strong>Easy</strong> | Published on <strong>2026-09-11</strong>
+      </p>
+    </header>
+
+    <div style="font-size: 1.1rem; line-height: 1.8; color: #d4d4d8;">
+      <h1 style="color: #10b981; margin-top: 2.5rem;">3483. Unique 3-Digit Even Numbers</h1>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's teach this one from absolute zero, same structure as before. Good news: this problem's input is tiny (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits.length</code> is at most 10), so we can lean on a very direct brute-force approach and it'll be plenty fast — but we'll still build up the reasoning carefully.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">1. Problem in Very Simple Language</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You're given a small list of single digits, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits</code> (each between 0 and 9). Some digits might repeat in the list (like <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">[0,2,2]</code>, which has two <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>s).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You want to build <strong>3-digit numbers</strong> by picking three of these digits and arranging them in some order, following two rules:
+<ul style="line-height: 1.7; color: #d4d4d8; padding-left: 1.5rem;"><li><strong>No leading zero</strong> — the very first digit of your 3-digit number can't be <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> (otherwise it wouldn't really be a 3-digit number, e.g., <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">"024"</code> is really just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">24</code>, a 2-digit number).</li>
+<li><strong>Must be even</strong> — the <em>last</em> digit of your number must be even (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0, 2, 4, 6,</code> or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">8</code>), since a number is even exactly when its last digit is even.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">You can only use each <strong>copy</strong> of a digit once per number. So if <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [2,2,3]</code>, you have two separate <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>s available (you could use both of them in the same number, like <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">223</code>), but you couldn't use a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> a <em>third</em> time, since only two copies exist.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Goal:</strong> count how many <strong>distinct</strong> (different-looking) 3-digit even numbers can be formed this way.
+<li><strong>What's given:</strong> an array of digits (with possible repeats).</li>
+<li><strong>What to find:</strong> how many different 3-digit even numbers can be built, respecting the no-leading-zero and "use each copy at most once" rules.</li>
+<li><strong>What to return:</strong> that count.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">2. Real-Life Analogy</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Imagine you have a small pile of numbered tiles — say, tiles showing <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1, 2, 3, 4</code>. You want to lay out exactly <strong>three</strong> of these tiles in a row to form a 3-digit number. Two rules apply: you can't start the row with a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> tile (that would look silly, like a phone number starting with a blank), and the <em>last</em> tile in the row must show an even digit (so the whole number reads as even). If your pile has two tiles that look identical (like two <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>s), you're allowed to use <em>both</em> of them in the same row — but you can never use more copies of a tile than you physically have in your pile. You want to know: how many genuinely different-looking 3-tile rows can you form this way?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">3. Important Programming Concepts I Need First</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Array</h3>
+<li><strong>Concept:</strong> A numbered list of values.</li>
+<li><strong>Example:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [1,2,3,4]</code> — a list of 4 single-digit numbers.</li>
+<li><strong>Why we need it:</strong> Our input is exactly this kind of list.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Set (for tracking distinct results)</h3>
+<li><strong>Concept:</strong> A collection that automatically ignores duplicate entries — adding the same value twice has no extra effect; the size of the set tells you how many <em>distinct</em> values it holds.</li>
+<li><strong>Example:</strong> Adding <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">124</code>, then <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">124</code> again, then <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">132</code> to a set leaves it with just <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{124, 132}</code> — size 2, not 3.</li>
+<li><strong>Why we need it:</strong> Different choices of <em>which</em> digit copies we use might still produce the exact same-looking 3-digit number — a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set</code> naturally handles this deduplication for us.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Nested loops (trying every combination of positions)</h3>
+<li><strong>Concept:</strong> To try "every possible choice for the first digit, and for each of those, every possible choice for the second digit, and for each of those, every possible choice for the third digit," we nest three loops inside each other.</li>
+<li><strong>Why we need it:</strong> With <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits.length</code> at most 10, trying every ordered triple of <em>distinct positions</em> (not distinct values — positions!) is only up to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10 × 10 × 10 = 1000</code> combinations at most — completely fast enough to brute-force directly.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Using positions (indices), not just values, to respect "copies"</h3>
+<li><strong>Concept:</strong> Since a digit might repeat in the array (like two <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>s at, say, index 1 and index 2), we must be careful to select <strong>three different positions</strong> in the array (never reusing the <em>same</em> position twice), even if two different positions happen to hold the <em>same</em> value.</li>
+<li><strong>Why we need it:</strong> This is exactly how the problem's "each copy used once" rule gets enforced correctly — by picking distinct array <em>indices</em>, not by trying to track "how many 2's have I used" separately.</li>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Building a number from its digits</h3>
+<li><strong>Concept:</strong> If you have three digits <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a</code> (hundreds place), <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">b</code> (tens place), <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">c</code> (ones place), the actual number they form is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">a × 100 + b × 10 + c</code>.</li>
+<li><strong>Example:</strong> digits <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1, 2, 4</code> in that order → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1×100 + 2×10 + 4 = 124</code>.</li>
+<li><strong>Why we need it:</strong> Once we've picked three positions (in some order), we need to convert that ordered triple of digit-values into the actual 3-digit number.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">4. Understand the Input</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Take Example 2:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">digits = [0, 2, 2]</code></pre>
+<li>Index 0 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>, index 1 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>, index 2 holds <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>.</li>
+<li>Even though the <em>values</em> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> look identical, they live at two genuinely different positions (index 1 and index 2) — so we're allowed to use "the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> at index 1" and "the <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> at index 2" together in the same number, since that only uses each <em>position</em> once.</li>
+<li>We want: distinct 3-digit even numbers, using exactly 3 of these positions (all of them, actually, since there are only 3 total), with no leading zero and an even last digit.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">5. Understand the Output</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code>
+<li>Let's think about which arrangements of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{0, 2, 2}</code> (using each position exactly once, since there are exactly 3 positions and we need exactly 3 digits) give valid, distinct 3-digit even numbers.</li>
+<li>Arrangement <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0, 2, 2</code> → number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">022</code> → <strong>invalid</strong>, leading zero.</li>
+<li>Arrangement <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2, 0, 2</code> → number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">202</code> → valid! Leading digit <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> (fine), last digit <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> (even, fine).</li>
+<li>Arrangement <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2, 2, 0</code> → number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">220</code> → valid! Leading digit <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> (fine), last digit <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> (even, fine).</li>
+<li>Distinct valid numbers found: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{202, 220}</code> → count = <strong>2</strong>. ✔️ matches!</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">6. Solve the Example Manually</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's manually work through <strong>Example 1</strong>: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [1,2,3,4]</code> (all distinct values, 4 positions total).</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Since we need exactly 3 digits out of these 4 available positions, and order matters, let's reason smartly using our two rules:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Rule for the last digit (must be even):</strong> Out of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{1,2,3,4}</code>, only <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4</code> are even. So the <em>last</em> digit of our number must be either <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">4</code>.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Rule for the first digit (can't be 0):</strong> None of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1,2,3,4</code> are <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> anyway, so this rule doesn't eliminate anything here — <em>any</em> of the 4 digits is fine as a leading digit.
+<li><strong>Case A: last digit = 2.</strong> Remaining available digits: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{1,3,4}</code>. Ordered pairs for first two positions: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,3),(1,4),(3,1),(3,4),(4,1),(4,3)</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">132, 142, 312, 342, 412, 432</code> (6 numbers).</li>
+<li><strong>Case B: last digit = 4.</strong> Remaining available digits: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{1,2,3}</code>. Ordered pairs for first two positions: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(1,2),(1,3),(2,1),(2,3),(3,1),(3,2)</code> → <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">124, 134, 214, 234, 314, 324</code> (6 numbers).</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Total:</strong> 6 + 6 = <strong>12</strong> distinct numbers. ✔️ matches!</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">7. Think Like a Programmer</h2>
+<li><strong>What do I know?</strong> I have up to 10 digit positions; I need to pick 3 distinct positions, arrange them in an order, and check two simple rules.</li>
+<li><strong>What do I need to find?</strong> How many <em>distinct-looking</em> valid 3-digit numbers can result.</li>
+<li><strong>What can I try?</strong> Try every possible ordered choice of 3 distinct positions (three nested loops, each picking a different index), build the resulting number, check the two validity rules, and if valid, add it to a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set</code> (which automatically handles deduplication).</li>
+<li><strong>What happens if I try every possibility?</strong> With at most 10 positions, trying every ordered triple of distinct positions is at most <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">10 × 9 × 8 = 720</code> combinations — trivially fast for any computer.</li>
+<li><strong>What information should I remember?</strong> A <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set<Integer></code> to collect every valid number we form, so duplicates are automatically only counted once.</li>
+<li><strong>What pattern do I notice?</strong> Enumerate all valid arrangements of a small set of positions, filter by simple rules, deduplicate results using a hash set.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">8. Start With the Brute Force Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><strong>Brute force idea:</strong> Use three nested loops, each iterating over all indices of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits</code>, to try every possible ordered triple of <strong>distinct</strong> indices <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(i, j, k)</code>. For each such triple, form the number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits[i]<em>100 + digits[j]</em>10 + digits[k]</code>, and if it satisfies "first digit isn't 0" and "last digit is even," add it to a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set<Integer></code>. At the end, return the set's size.</p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">import java.util.<em>;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">class Solution {
+    public int totalNumbers(int[] digits) {
+        int n = digits.length;
+        Set&lt;Integer&gt; validNumbers = new HashSet&lt;&gt;();</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (int i = 0; i &lt; n; i++) {
+            for (int j = 0; j &lt; n; j++) {
+                if (j == i) continue; // must be a different position than i
+                for (int k = 0; k &lt; n; k++) {
+                    if (k == i || k == j) continue; // must be different from both i and j</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int firstDigit = digits[i];
+                    int secondDigit = digits[j];
+                    int thirdDigit = digits[k];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (firstDigit == 0) continue;      // no leading zero
+                    if (thirdDigit % 2 != 0) continue;  // last digit must be even</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int number = firstDigit </em> 100 + secondDigit <em> 10 + thirdDigit;
+                    validNumbers.add(number);
+                }
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return validNumbers.size();
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">class Solution {
+    totalNumbers(digits) {
+        const n = digits.length;
+        const validNumbers = new Set();
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (let i = 0; i &lt; n; i++) {
+            for (let j = 0; j &lt; n; j++) {
+                if (j === i) continue; // must be a different position than i
+                for (let k = 0; k &lt; n; k++) {
+                    if (k === i || k === j) continue; // must be different from both i and j</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const firstDigit = digits[i];
+                    const secondDigit = digits[j];
+                    const thirdDigit = digits[k];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (firstDigit === 0) continue;      // no leading zero
+                    if (thirdDigit % 2 !== 0) continue;  // last digit must be even</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const number = firstDigit </em> 100 + secondDigit <em> 10 + thirdDigit;
+                    validNumbers.add(number);
+                }
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return validNumbers.size;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">9. Explain the Brute Force Code Line by Line</h2>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int n = digits.length;</code> — total number of available digit positions.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set<Integer> validNumbers = new HashSet<>();</code> — will collect every distinct valid number we successfully form.</li>
+<li>The three nested <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">for</code> loops (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code>) — each ranges over all valid array indices (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">n-1</code>), attempting to try every possible ordered assignment of positions.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (j == i) continue;</code> — skip this combination if <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j</code> is the same position as <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (k == i || k == j) continue;</code> — skip if <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k</code> collides with either <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i</code> or <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j</code>.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int firstDigit = digits[i]; ...</code> — read out the actual digit values at these three chosen positions.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (firstDigit == 0) continue;</code> — enforce the "no leading zero" rule.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">if (thirdDigit % 2 != 0) continue;</code> — enforce the "must be even" rule.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">int number = firstDigit </em> 100 + secondDigit <em> 10 + thirdDigit;</code> — compute the actual 3-digit integer.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">validNumbers.add(number);</code> — record the number; duplicate values are automatically ignored.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">return validNumbers.size();</code> — return the count of distinct numbers formed.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">10. Why Might We Want to Understand This More Deeply?</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">With <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits.length ≤ 10</code>, the enumeration takes at most 720 iterations. The <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set</code> does critical work when duplicate values exist at different indices.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">11. When Do Duplicate-Looking Numbers Arise?</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Duplicate-looking numbers arise when the array contains <strong>repeated values</strong> at different positions (e.g., <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [6,6,6]</code>).
+<li>There are $3 \times 2 \times 1 = 6$ index permutations: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(0,1,2), (0,2,1), ...</code>.</li>
+<li>All 6 permutations evaluate to <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">666</code>.</li>
+<li>Without a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set</code>, a plain counter would return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">6</code> (wrong). With a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set</code>, only <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> unique number <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">{666}</code> is kept (correct).</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">⭐ Key Insight</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Before the insight</h3>
+It might seem like we should count the number of valid index permutations directly.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The problem</h3>
+That counts <strong>arrangements of indices</strong>, not <strong>distinct-looking numbers</strong>. Repeated digits cause severe overcounting.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">The insight</h3>
+<strong>The problem asks for distinct </em>numbers<em>, not distinct </em>position choices<em>.</strong> Enumerate index triples to respect physical tile counts, construct the number, and insert into a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set</code> for automatic deduplication.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">After the insight</h3>
+No complex combinatorial formulas or exclusion-inclusion logic needed — brute force with a Set is simple, foolproof, and takes under 1 ms.
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">13. Dry Run the Solution</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Let's dry-run <strong>Example 4</strong>: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [1,3,5]</code>.
+<li>All values are odd.</li>
+<li>The check <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">thirdDigit % 2 != 0</code> skips every single combination.</li>
+<li><code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">validNumbers.size() = 0</code>. ✔️ Output = <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>.</li></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">14. Optimized Code</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-java">import java.util.</em>;
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">class Solution {
+    public int totalNumbers(int[] digits) {
+        int n = digits.length;
+        Set&lt;Integer&gt; validNumbers = new HashSet&lt;&gt;();</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (int i = 0; i &lt; n; i++) {
+            for (int j = 0; j &lt; n; j++) {
+                if (j == i) continue;
+                for (int k = 0; k &lt; n; k++) {
+                    if (k == i || k == j) continue;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int firstDigit = digits[i];
+                    int secondDigit = digits[j];
+                    int thirdDigit = digits[k];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (firstDigit == 0) continue;
+                    if (thirdDigit % 2 != 0) continue;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">int number = firstDigit <em> 100 + secondDigit </em> 10 + thirdDigit;
+                    validNumbers.add(number);
+                }
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return validNumbers.size();
+    }
+}</code></pre></p>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-javascript">class Solution {
+    totalNumbers(digits) {
+        const n = digits.length;
+        const validNumbers = new Set();
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">for (let i = 0; i &lt; n; i++) {
+            for (let j = 0; j &lt; n; j++) {
+                if (j === i) continue;
+                for (let k = 0; k &lt; n; k++) {
+                    if (k === i || k === j) continue;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const firstDigit = digits[i];
+                    const secondDigit = digits[j];
+                    const thirdDigit = digits[k];</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">if (firstDigit === 0) continue;
+                    if (thirdDigit % 2 !== 0) continue;</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">const number = firstDigit <em> 100 + secondDigit </em> 10 + thirdDigit;
+                    validNumbers.add(number);
+                }
+            }
+        }</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">return validNumbers.size;
+    }
+}</code></pre></p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">15. Explain the Code Line by Line</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">See Section 9 for complete line-by-line documentation.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">16. Test With Multiple Examples</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 1 — Normal Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [1,2,3,4]</code> → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">12</code> ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 2 — Different Case</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [0,2,2]</code> → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">2</code> (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">202</code>, <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">220</code>) ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 3 — All identical values</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [6,6,6]</code> → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> (<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">666</code>) ✔️
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Example 4 — No even digits</h3>
+<code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [1,3,5]</code> → Output: <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> ✔️
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">17. Edge Cases</h2>
+<li><strong>All digits odd:</strong> Output <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>.</li>
+<li><strong>All digits identical:</strong> Output <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code> if valid even 3-digit number, otherwise <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>.</li>
+<li><strong>Array contains 0:</strong> <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> cannot be leading, but is valid in tens/ones place.</li>
+<li><strong>$N = 3$ (minimum size):</strong> Exactly 6 permutations evaluated.</li>
+<li><strong>$N = 10$ (maximum size):</strong> Up to 720 combinations evaluated instantly.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">18. Time Complexity</h2>
+<li><strong>Time Complexity:</strong> $O(N^3)$ where $N \le 10$, yielding at most 720 iterations — executes in microseconds ($O(1)$ effectively).</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">19. Space Complexity</h2>
+<li><strong>Space Complexity:</strong> $O(1)$ auxiliary space — at most 900 unique 3-digit integers (100 to 999) can be stored in the hash set.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">20. Common Mistakes Beginners Make</h2>
+<li>❌ <strong>"Tracking values used instead of array indices."</strong></li>
+<li>✅ You must track distinct index positions to allow using multiple copies of identical digits.</li>
+<li>❌ <strong>"Using a counter instead of a Set."</strong></li>
+<li>✅ Repeated digit values cause different index triplets to yield identical numbers.</li>
+<li>❌ <strong>"Disallowing 0 in middle or last positions."</strong></li>
+<li>✅ <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code> is only forbidden as the leading hundreds digit; <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">202</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">220</code> are valid.</li>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">21. How to Recognize This Pattern in Other Problems</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Watch for:
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">&quot;Form distinct numbers from given digits&quot;
+&quot;Each copy can be used once&quot;
+Small input bounds (N &lt;= 15)</code></pre>
+When $N \le 15$, exhaustive permutation search with a Hash Set is optimal, clear, and bug-resistant.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">22. Interview Thinking</h2>
+<pre style="background: #18181b; padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid #27272a;"><code class="language-text">1. Understand the input    → array of digits, possibly with repeats, small size
+2. Understand the output   → count of DISTINCT valid 3-digit even numbers formable
+3. Try brute force         → enumerate every ordered triple of distinct POSITIONS
+4. Find what makes it slow → nothing — n&lt;=10 makes O(n^3) trivially fast
+5. Identify repeated work  → use Set for deduplication of identical numbers
+6. What can be stored?     → a Set&lt;Integer&gt; to naturally deduplicate final results
+7. Optimize                → brute force is already optimal for N &lt;= 10
+8. Check edge cases        → all-odd digits, all-identical digits, digits containing 0
+9. Analyze complexity      → O(n^3) time, O(1) space</code></pre>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">23. Mini Challenge</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">Try these before checking the answers:</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. Why do we check <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">j == i</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">k == i || k == j</code> separately instead of <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i == j == k</code>?
+2. If <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [4,4,4,4]</code>, how many index triples pass checks, and what is the final set size?
+3. Why does the order of checking <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">firstDigit == 0</code> vs <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">thirdDigit % 2 != 0</code> not matter?</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;"><br></p>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">Answer to Mini Challenge</h3>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i == j == k</code> would miss partial collisions like <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">i == j != k</code> (reusing index $i$ twice).
+2. All 24 index permutations produce <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">444</code>; the final set size is <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">1</code>.
+3. Both checks are independent filter conditions; their evaluation order does not affect the outcome.</p>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">24. Final Revision</h2>
+<h3 style="color: #ffffff; margin-top: 1.5rem;">🧠 Problem in One Sentence</h3>
+Count the distinct 3-digit even numbers (no leading zero) formable by arranging 3 distinct positions from the given digit array.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">🔑 Main Idea</h3>
+Enumerate all pairwise-distinct index triplets <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">(i, j, k)</code>, validate <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits[i] != 0</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits[k] % 2 == 0</code>, and collect valid values in a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set</code>.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">⚙️ Algorithm</h3>
+1. Loop $i$ from $0$ to $n-1$, $j$ from $0$ to $n-1$ ($j \ne i$), $k$ from $0$ to $n-1$ ($k \ne i, k \ne j$).
+2. Check <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits[i] != 0</code> and <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits[k] % 2 == 0</code>.
+3. Compute <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">val = digits[i]<em>100 + digits[j]</em>10 + digits[k]</code> and insert into <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set</code>.
+4. Return <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">set.size()</code>.
+<h3 style="color: #ffffff; margin-top: 1.5rem;">⏱️ Complexity</h3>
+<li><strong>Time:</strong> $O(N^3)$</li>
+<li><strong>Space:</strong> $O(1)$</li></ul>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">---</p>
+<h2 style="color: #ffffff; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; margin-top: 2rem;">25. Beginner Quiz</h2>
+<p style="line-height: 1.8; color: #d4d4d8; margin-bottom: 1.5rem;">1. <strong>(Understanding)</strong> Why must we select distinct array positions rather than checking values?
+2. <strong>(Basic concept)</strong> Why is a <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">Set</code> required instead of an incrementing integer counter?
+3. <strong>(Logic)</strong> Why does <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [1,3,5]</code> always yield <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">0</code>?
+4. <strong>(Dry run)</strong> For <code style="background: #27272a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #f43f5e; font-size: 0.9em;">digits = [2,0,0]</code>, list the valid permutations and find the final count.
+5. <strong>(Complexity/pattern)</strong> Why is $O(N^3)$ optimal for $N \le 10$?</p>
+    </div>
+  </article>
+
+  <footer style="max-width: 800px; margin: 4rem auto 0; padding: 2rem 1rem; border-top: 1px solid #27272a; text-align: center; color: #71717a; font-size: 0.9rem;">
+    <p>&copy; 2026 Mukesh Pal. All rights reserved. Full-Stack Developer & Co-Founder at CodeByte.</p>
+  </footer>
+</body>
+</html>
