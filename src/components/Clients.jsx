@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
+import SEOEnhancement from './SEOEnhancement';
 
 const Clients = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -85,6 +86,11 @@ const Clients = () => {
 
   return (
     <div className="relative min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#0a0a0a]">
+      <SEOEnhancement
+        title="Clients & Testimonials | Mukesh Pal - Full-Stack Developer"
+        description="Trusted by companies, startups, and institutions including IIMT University, Oye College, RBS Tours, and e-commerce platforms for custom web and full-stack solutions."
+        type="website"
+      />
       {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-green-500/10 blur-[120px] animate-pulse-glow" />
@@ -223,7 +229,7 @@ const Clients = () => {
               Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-400">Scale Together?</span>
             </h2>
             <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
-              Join our growing list of elite partners. Let's build something extraordinary that pushes the boundaries of digital innovation.
+              Join our growing list of elite partners. Let&apos;s build something extraordinary that pushes the boundaries of digital innovation.
             </p>
             <Link
               to="/#contact"

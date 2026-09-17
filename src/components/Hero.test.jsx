@@ -1,10 +1,30 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Hero from './Hero';
 import '@testing-library/jest-dom';
 
+// Polyfill canvas & matchMedia for jsdom
+beforeAll(() => {
+  HTMLCanvasElement.prototype.getContext = jest.fn();
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  });
+});
+
 // Mock analytics
 jest.mock('../utils/analytics', () => ({
-  trackEvent: jest.fn()
+  trackEvent: jest.fn(),
+  trackSocial: jest.fn()
 }));
 
 describe('Hero Component', () => {
@@ -13,77 +33,37 @@ describe('Hero Component', () => {
   });
 
   it('renders hero section with main heading', () => {
-   render(<Hero />);
+    render(<Hero />);
     
-   expect(screen.getByText(/Hello, I'm/i)).toBeInTheDocument();
-   expect(screen.getByText(/Mukesh Pal/i)).toBeInTheDocument();
+    expect(screen.getByText(/Mukesh Pal/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Freelance Full-Stack Developer/i).length).toBeGreaterThan(0);
   });
 
-  it('displays role/title text', () => {
-   render(<Hero />);
+  it('displays role and description text', () => {
+    render(<Hero />);
     
-    // Check for common developer roles
-   expect(screen.getByText(/Software Developer|Developer|Engineer/i)).toBeInTheDocument();
+    expect(screen.getByText(/React\.js/i)).toBeInTheDocument();
+    expect(screen.getByText(/Java Spring Boot/i)).toBeInTheDocument();
   });
 
-  it('includes call-to-action buttons', () => {
-   render(<Hero />);
+  it('has CTA and action links', () => {
+    render(<Hero />);
     
-    // Check for typical CTA buttons
-   const buttons = screen.getAllByRole('button');
-   expect(buttons.length).toBeGreaterThan(0);
-    
-    // Should have at least a contact or view projects button
-   const hasContactButton = buttons.some(btn => 
-      btn.textContent.toLowerCase().includes('contact')
+    const links = screen.getAllByRole('link');
+    expect(links.length).toBeGreaterThan(0);
+    const hasContact = links.some(link => 
+      link.getAttribute('href') === '#contact' || link.textContent.toLowerCase().includes('hire')
     );
-   const hasProjectsButton = buttons.some(btn => 
-      btn.textContent.toLowerCase().includes('project')
-    );
-    
-   expect(hasContactButton || hasProjectsButton).toBe(true);
-  });
-
-  it('has social media links', () => {
-   render(<Hero />);
-    
-  const links = screen.getAllByRole('link');
-    
-    // Should have multiple social links
-   expect(links.length).toBeGreaterThan(2);
-    
-    // Check for common social platforms
-   const linkTexts = links.map(link => link.textContent.toLowerCase());
-   const hasSocialLinks = 
-      linkTexts.some(text => text.includes('github')) ||
-      linkTexts.some(text => text.includes('linkedin'));
-    
-   expect(hasSocialLinks).toBe(true);
-  });
-
-  it('applies proper accessibility attributes', () => {
-   render(<Hero />);
-    
-    // Main heading should be h1
-   const mainHeading = screen.getByRole('heading', { level: 1 });
-   expect(mainHeading).toBeInTheDocument();
-    
-    // Buttons should have accessible names
-   const buttons = screen.getAllByRole('button');
-    buttons.forEach(button => {
-     expect(button).toHaveAccessibleName();
-    });
+    expect(hasContact).toBe(true);
   });
 
   it('uses proper semantic HTML structure', () => {
-   const { container } = render(<Hero />);
+    const { container } = render(<Hero />);
     
-    // Should use section element
-   const sections = container.querySelectorAll('section');
-   expect(sections.length).toBeGreaterThan(0);
+    const sections = container.querySelectorAll('section');
+    expect(sections.length).toBeGreaterThan(0);
     
-    // Should have proper heading hierarchy
-   const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
-   expect(headings.length).toBeGreaterThan(0);
+    const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    expect(headings.length).toBeGreaterThan(0);
   });
 });

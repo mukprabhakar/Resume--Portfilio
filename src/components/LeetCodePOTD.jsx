@@ -721,9 +721,15 @@ const LeetCodePOTD = () => {
         {/* Header */}
         <div className="border-b border-white pb-8 mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white uppercase mb-2">
-              LeetCode POTD
-            </h1>
+            {selectedChallenge ? (
+              <p className="text-2xl md:text-3xl font-black tracking-tighter text-zinc-400 uppercase mb-2">
+                LeetCode POTD
+              </p>
+            ) : (
+              <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white uppercase mb-2">
+                LeetCode POTD
+              </h1>
+            )}
             <p className="text-zinc-500 text-xs font-light max-w-xl leading-relaxed">
               Beginner-friendly breakdowns, dry runs, and verified solutions — built so a complete
               beginner can follow along and actually understand the algorithm, not just copy code.
@@ -844,9 +850,9 @@ const LeetCodePOTD = () => {
               </div>
 
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-                <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
+                <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white">
                   {selectedChallenge.title}
-                </h2>
+                </h1>
                 <button
                   onClick={() => toggleUnderstood(selectedChallenge.slug)}
                   className={`shrink-0 text-[10px] uppercase font-bold tracking-wider px-3 py-2 rounded border transition ${

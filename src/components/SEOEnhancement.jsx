@@ -20,6 +20,49 @@ const SEOEnhancement = ({ title, description, image, type = 'website', keywords 
       }
     }
 
+    // Helper to update or create meta tags
+    const updateOrCreateMeta = (attrName, attrValue, content) => {
+      if (!content) return
+      let meta = document.querySelector(`meta[${attrName}="${attrValue}"]`)
+      if (!meta) {
+        meta = document.createElement('meta')
+        meta.setAttribute(attrName, attrValue)
+        document.head.appendChild(meta)
+      }
+      meta.setAttribute('content', content)
+    }
+
+    // Update canonical link
+    let canonicalLink = document.querySelector('link[rel="canonical"]')
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link')
+      canonicalLink.rel = 'canonical'
+      document.head.appendChild(canonicalLink)
+    }
+    canonicalLink.setAttribute('href', currentUrl)
+
+    // Update Open Graph tags
+    updateOrCreateMeta('property', 'og:title', title)
+    updateOrCreateMeta('property', 'og:description', description)
+    updateOrCreateMeta('property', 'og:url', currentUrl)
+    updateOrCreateMeta('property', 'og:type', type)
+    if (image) {
+      updateOrCreateMeta('property', 'og:image', image)
+    }
+
+    // Update Twitter tags
+    updateOrCreateMeta('name', 'twitter:title', title)
+    updateOrCreateMeta('name', 'twitter:description', description)
+    updateOrCreateMeta('name', 'twitter:url', currentUrl)
+    if (image) {
+      updateOrCreateMeta('name', 'twitter:image', image)
+    }
+
+    // Update keywords if provided
+    if (keywords) {
+      updateOrCreateMeta('name', 'keywords', keywords)
+    }
+
     // Add breadcrumbs schema
     const breadcrumbSchema = {
       "@context": "https://schema.org",
@@ -84,7 +127,7 @@ const SEOEnhancement = ({ title, description, image, type = 'website', keywords 
     }
     webpageSchemaEl.textContent = JSON.stringify(webpageSchema, null, 2)
 
-  }, [title, description, image, location.pathname, currentUrl])
+  }, [title, description, image, type, keywords, location.pathname, currentUrl])
 
   return null // This component doesn't render anything
 }

@@ -60,7 +60,13 @@ export const validateEnv = () => {
     'VITE_EMAILJS_PUBLIC_KEY'
   ]
 
-  const missing = required.filter(key => !import.meta.env[key])
+  let env = {};
+  try {
+    env = (new Function('return typeof import.meta !== "undefined" ? import.meta.env : null'))() || (typeof process !== 'undefined' ? process.env : {}) || {};
+  } catch (e) {
+    env = typeof process !== 'undefined' ? process.env : {};
+  }
+  const missing = required.filter(key => !env[key]);
   
   if (missing.length > 0) {
     console.warn('Missing environment variables:', missing)

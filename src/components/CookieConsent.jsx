@@ -71,7 +71,7 @@ export default function CookieConsent() {
             </div>
             
             <p id="cookie-consent-description" className="text-sm text-zinc-300 leading-relaxed mb-5">
-              We use cookies to enhance your browsing experience, analyze site traffic, and deliver personalized content. By clicking "Accept All", you consent to our use of cookies. Read our privacy preferences for details.
+              We use cookies to enhance your browsing experience, analyze site traffic, and deliver personalized content. By clicking &ldquo;Accept All&rdquo;, you consent to our use of cookies. Read our privacy preferences for details.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-2 justify-end">

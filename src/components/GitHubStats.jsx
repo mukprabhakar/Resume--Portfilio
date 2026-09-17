@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { trackEvent } from '../utils/analytics'
 import { sanitizeHTML, sanitizeURL, sanitizeObject, sanitizeErrorMessage } from '../utils/security'
+import SEOEnhancement from './SEOEnhancement'
 
 const GitHubStats = () => {
   const [stats, setStats] = useState({
@@ -316,9 +317,14 @@ const GitHubStats = () => {
 
   return (
     <section id="github-stats" className="py-16 sm:py-20 bg-zinc-900 pt-20" aria-labelledby="github-stats-heading">
+      <SEOEnhancement
+        title="GitHub Contributions & Open Source | Mukesh Pal"
+        description="Discover GitHub statistics, open source contributions, repositories, and achievements by Mukesh Pal."
+        type="website"
+      />
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-12 sm:mb-16">
-          <h2 id="github-stats-heading" className="text-3xl sm:text-4xl font-bold gradient-text mb-3 sm:mb-4 animate-float">GitHub Statistics</h2>
+          <h1 id="github-stats-heading" className="text-3xl sm:text-4xl font-bold gradient-text mb-3 sm:mb-4 animate-float">GitHub Statistics & Open Source</h1>
           <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto rounded-full"></div>
           <p className="mt-3 sm:mt-4 text-zinc-400 max-w-md sm:max-w-2xl mx-auto text-base sm:text-lg">
             Open source contributions and development activity on GitHub.

@@ -93,10 +93,11 @@ const Hero = () => {
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext ? canvas.getContext('2d') : null
+    if (!ctx) return
 
     // Respect users who prefer reduced motion: skip the animation entirely.
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const prefersReducedMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false
     if (prefersReducedMotion) return
 
     let rafId
@@ -396,7 +397,7 @@ const Hero = () => {
                   alt="Mukesh Pal – Full-Stack Developer" 
                   width="320"
                   height="320"
-                  fetchpriority="high"
+                  fetchPriority="high"
                   decoding="async"
                   onLoad={() => setIsImageLoaded(true)}
                   className="w-full h-full object-cover"

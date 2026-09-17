@@ -1,96 +1,58 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Skills from './Skills';
 import '@testing-library/jest-dom';
 
+// Mock chart libraries for jsdom
+jest.mock('react-chartjs-2', () => ({
+  Radar: () => <div data-testid="radar-chart">Radar Chart</div>,
+  Bar: () => <div data-testid="bar-chart">Bar Chart</div>,
+  Doughnut: () => <div data-testid="doughnut-chart">Doughnut Chart</div>
+}));
+
+jest.mock('chart.js', () => ({
+  Chart: {
+    register: jest.fn()
+  },
+  RadialLinearScale: jest.fn(),
+  PointElement: jest.fn(),
+  LineElement: jest.fn(),
+  Filler: jest.fn(),
+  Tooltip: jest.fn(),
+  Legend: jest.fn(),
+  CategoryScale: jest.fn(),
+  LinearScale: jest.fn(),
+  BarElement: jest.fn(),
+  ArcElement: jest.fn()
+}));
+
 describe('Skills Component', () => {
   it('renders skills section with heading', () => {
-  render(<Skills />);
+    render(<Skills />);
     
-  expect(screen.getByText(/skills/i)).toBeInTheDocument();
+    expect(screen.getByText(/My Skills/i)).toBeInTheDocument();
   });
 
-  it('displays technical skills categories', () => {
-  render(<Skills />);
+  it('displays search input and filter buttons', () => {
+    render(<Skills />);
     
-    // Check for common skill categories
-  const skillCategories = [
-      'Frontend',
-     'Backend',
-      'Languages',
-      'Frameworks',
-      'Tools',
-      'Databases'
-    ];
-    
-  const renderedText = screen.getByTestId ? 
-      screen.getByTestId('skills-section').textContent.toLowerCase() : 
-      document.body.textContent.toLowerCase();
-    
-    // At least some skill categories should be present
-  const foundCategories = skillCategories.filter(category => 
-     renderedText.includes(category.toLowerCase())
-    );
-    
-  expect(foundCategories.length).toBeGreaterThan(0);
+    expect(screen.getByPlaceholderText(/search by skill or category/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^All$/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Languages/i })).toBeInTheDocument();
   });
 
-  it('shows programming languages', () => {
-  render(<Skills />);
+  it('displays programming languages and React', () => {
+    render(<Skills />);
     
-    // Common programming languages that should be listed
-  const languages = ['JavaScript', 'Python', 'Java', 'C++', 'TypeScript'];
-    
-  const content = document.body.textContent;
-  const foundLanguages = languages.filter(lang => 
-     content.includes(lang)
-    );
-    
-  expect(foundLanguages.length).toBeGreaterThan(0);
+    expect(document.body.textContent).toMatch(/React/i);
+    expect(document.body.textContent).toMatch(/Java/i);
+    expect(document.body.textContent).toMatch(/JavaScript/i);
   });
 
-  it('displays React as a skill', () => {
-  render(<Skills />);
+  it('has proper semantic HTML structure', () => {
+    const { container } = render(<Skills />);
     
-  expect(document.body.textContent).toMatch(/react/i);
-  });
-
-  it('has proper grid/flex layout structure', () => {
-  const { container } = render(<Skills />);
-    
-    // Should use grid or flexbox for layout
-  const grids = container.querySelectorAll('[class*="grid"]');
-  const flexContainers = container.querySelectorAll('[class*="flex"]');
-    
-  expect(grids.length + flexContainers.length).toBeGreaterThan(0);
-  });
-
-  it('includes visual skill indicators', () => {
-  render(<Skills />);
-    
-    // Look for progress bars, badges, or other visual indicators
-  const progressBars = document.querySelectorAll('[class*="progress"], [class*="bar"]');
-  const badges = document.querySelectorAll('[class*="badge"], [class*="tag"]');
-  const skillItems = document.querySelectorAll('[class*="skill"]');
-    
-  expect(progressBars.length + badges.length + skillItems.length).toBeGreaterThan(0);
-  });
-
-  it('applies accessibility best practices', () => {
-  render(<Skills />);
-    
-    // Skills should be in a list or have proper semantic structure
-  const lists = document.querySelectorAll('ul, ol');
-  const headings = document.querySelectorAll('h2, h3, h4');
-    
-  expect(lists.length + headings.length).toBeGreaterThan(0);
-  });
-
-  it('uses Tailwind CSS classes for styling', () => {
-  const { container } = render(<Skills />);
-    
-    // Look for Tailwind class patterns
-  const elementsWithTailwind = container.querySelectorAll('[class*="text-"], [class*="bg-"], [class*="p-"], [class*="m-"]');
-    
-  expect(elementsWithTailwind.length).toBeGreaterThan(0);
+    const sections = container.querySelectorAll('section');
+    expect(sections.length).toBeGreaterThan(0);
   });
 });

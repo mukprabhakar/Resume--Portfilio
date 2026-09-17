@@ -128,7 +128,7 @@ const Header = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent hidden xs:block">Mukesh Pal</h1>
+          <span className="text-base sm:text-xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent hidden xs:block">Mukesh Pal</span>
         </Link>
 
         {/* Desktop Navigation */}

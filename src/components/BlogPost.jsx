@@ -458,7 +458,7 @@ const BlogPost = () => {
                       />
                     </span>
                   ),
-                  h1: ({ children }) => <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-16 mb-8 tracking-tight">{children}</h1>,
+                  h1: ({ children }) => <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-16 mb-8 tracking-tight">{children}</h2>,
                   h2: ({ children }) => <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mt-14 mb-6 tracking-tight relative pb-4"><span className="absolute bottom-0 left-0 w-12 h-1 bg-emerald-500 rounded-full"></span>{children}</h2>,
                   h3: ({ children }) => <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold text-zinc-100 mt-10 mb-4 tracking-tight">{children}</h3>,
                   p: ({ children }) => <p className="text-zinc-300 leading-relaxed md:leading-loose mb-8 text-lg">{children}</p>,
@@ -467,7 +467,7 @@ const BlogPost = () => {
                   a: ({ href, children }) => <a href={href} className="text-emerald-400 hover:text-emerald-300 underline underline-offset-4 decoration-emerald-500/30 hover:decoration-emerald-400 transition-all font-medium" target="_blank" rel="noopener noreferrer">{children}</a>,
                   blockquote: ({ children }) => (
                     <blockquote className="relative my-10 pl-8 pr-4 py-4 border-l-4 border-emerald-500 bg-emerald-500/5 rounded-r-xl text-zinc-300 italic text-xl md:text-2xl font-light leading-relaxed">
-                      <div className="absolute top-2 left-3 text-emerald-500/20 text-6xl font-serif">"</div>
+                      <div className="absolute top-2 left-3 text-emerald-500/20 text-6xl font-serif">&ldquo;</div>
                       <div className="relative z-10">{children}</div>
                     </blockquote>
                   ),
@@ -587,7 +587,7 @@ const BlogPost = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-blue-500/10"></div>
             <div className="relative z-10">
               <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">Have a project in mind?</h3>
-              <p className="text-zinc-400 text-lg mb-8 max-w-2xl mx-auto">Let's connect and discuss how we can bring your amazing ideas to life through high-quality code and beautiful design.</p>
+              <p className="text-zinc-400 text-lg mb-8 max-w-2xl mx-auto">Let&apos;s connect and discuss how we can bring your amazing ideas to life through high-quality code and beautiful design.</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/blog"

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { fetchAllCodingStats } from '../services/codingStatsService'
 import { trackEvent } from '../utils/analytics'
+import SEOEnhancement from './SEOEnhancement'
 
 const CodingChallenges = () => {
   const [codingStats, setCodingStats] = useState({
@@ -126,11 +127,16 @@ const CodingChallenges = () => {
 
   return (
     <section id="coding-challenges" className="py-12 sm:py-16 bg-zinc-900 pt-20" aria-labelledby="coding-challenges-heading">
+      <SEOEnhancement
+        title="Competitive Programming & Problem Solving | Mukesh Pal"
+        description="Competitive programming profile and problem-solving stats of Mukesh Pal across LeetCode, GeeksforGeeks, CodeChef, and HackerRank."
+        type="website"
+      />
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
-          <h2 id="coding-challenges-heading" className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text mb-2 sm:mb-3 animate-float">
-            Coding Challenges
-          </h2>
+          <h1 id="coding-challenges-heading" className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text mb-2 sm:mb-3 animate-float">
+            Competitive Programming & Coding Challenges
+          </h1>
           <div className="w-12 sm:w-16 md:w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto rounded-full"></div>
           <p className="mt-2 sm:mt-3 text-zinc-400 max-w-md mx-auto text-sm sm:text-base md:text-lg">
             Problems solved on competitive programming platforms

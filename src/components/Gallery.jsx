@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { trackEvent } from '../utils/analytics'
+import SEOEnhancement from './SEOEnhancement'
 
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState(null)
@@ -209,6 +210,11 @@ const Gallery = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 bg-[#09090b] text-zinc-100 relative overflow-hidden">
+      <SEOEnhancement
+        title="Moments in Tech & Gallery | Mukesh Pal"
+        description="Visual portfolio and tech journey of Mukesh Pal featuring moments at ISRO NRSC, TEDx, hackathons, and technology conferences."
+        type="website"
+      />
       {/* Background decorations */}
       <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-emerald-500/10 via-blue-500/5 to-transparent pointer-events-none"></div>
       <div className="absolute top-[-150px] right-[-100px] w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>

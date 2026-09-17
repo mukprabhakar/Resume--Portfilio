@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { trackEvent } from '../utils/analytics'
 import TiltCard from './TiltCard'
+import SEOEnhancement from './SEOEnhancement'
 
 const AllProjects = ({ projectsData }) => {
   const [selectedProject, setSelectedProject] = useState(null)
@@ -17,6 +18,11 @@ const AllProjects = ({ projectsData }) => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 bg-gradient-to-br from-zinc-900 to-zinc-800">
+      <SEOEnhancement
+        title="All Projects - Mukesh Pal | Full-Stack Developer Portfolio"
+        description="Comprehensive portfolio of full-stack applications, SaaS platforms, GIS systems, and AI tools built by Mukesh Pal using React, Spring Boot, and Python."
+        type="website"
+      />
       <div className="container mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16 animate-fade-in">

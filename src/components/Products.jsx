@@ -239,7 +239,7 @@ const Products = () => {
               Need a Custom <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Software Product?</span>
             </h2>
             <p className="text-zinc-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Have a custom SaaS or mobile application idea? Let's team up to build a secure, robust, and scalable product from scratch.
+              Have a custom SaaS or mobile application idea? Let&apos;s team up to build a secure, robust, and scalable product from scratch.
             </p>
             <Link
               to="/#contact"

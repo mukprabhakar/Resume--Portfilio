@@ -79,7 +79,7 @@ const ClientsSection = () => {
           </h2>
           <div className="w-20 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto mb-6"></div>
           <p className="text-zinc-400 max-w-2xl mx-auto text-lg">
-            I'm proud to partner with innovative organizations and help them achieve their goals through technology
+            I&apos;m proud to partner with innovative organizations and help them achieve their goals through technology
           </p>
         </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchWordPressPosts } from '../services/wordpressService'
+import SEOEnhancement from './SEOEnhancement'
 
 const BlogPosts = () => {
   const [posts, setPosts] = useState([])
@@ -140,6 +141,11 @@ const BlogPosts = () => {
 
   return (
     <section className="min-h-screen py-24 bg-[#0a0a0c] relative overflow-hidden text-zinc-100 font-sans">
+      <SEOEnhancement
+        title="Blog - Mukesh Pal | Full-Stack Developer & Tech Blogger"
+        description="Read technical articles by Mukesh Pal on React.js, Java Spring Boot, AI, web development, and software engineering."
+        type="website"
+      />
       {/* Background Effects */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDelay: '2s' }}></div>
@@ -379,7 +385,7 @@ const BlogPosts = () => {
             </div>
             <h3 className="text-2xl font-bold text-white mb-3">No posts found</h3>
             <p className="text-zinc-400 max-w-md mx-auto">
-              We couldn't find any articles matching your current search or tag filters. Try adjusting them!
+              We couldn&apos;t find any articles matching your current search or tag filters. Try adjusting them!
             </p>
             <button 
               onClick={() => {setSearchQuery(''); setSelectedTag(null);}}

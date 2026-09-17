@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { trackEvent } from '../utils/analytics'
+import SEOEnhancement from './SEOEnhancement'
 
 const CredlyBadges = () => {
   const [badges, setBadges] = useState([])
@@ -95,9 +96,14 @@ const CredlyBadges = () => {
 
   return (
     <section id="credly-badges" className="py-16 sm:py-20 bg-zinc-900 pt-20" aria-labelledby="badges-heading">
+      <SEOEnhancement
+        title="Certifications & Credly Badges | Mukesh Pal"
+        description="Explore verified professional certifications and skill badges earned by Mukesh Pal on Credly from Microsoft, Google Cloud, IBM, and more."
+        type="website"
+      />
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-12 sm:mb-16">
-          <h2 id="badges-heading" className="text-3xl sm:text-4xl font-bold gradient-text mb-3 sm:mb-4">Credly Badges</h2>
+          <h1 id="badges-heading" className="text-3xl sm:text-4xl font-bold gradient-text mb-3 sm:mb-4">Certifications & Credly Badges</h1>
           <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto"></div>
           <p className="mt-3 sm:mt-4 text-zinc-400 max-w-md sm:max-w-2xl mx-auto text-base sm:text-lg">
             Professional certifications and achievements earned through Credly platform.
